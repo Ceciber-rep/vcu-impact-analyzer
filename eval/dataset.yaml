@@ -1,0 +1,196 @@
+# Evaluation dataset for the LLM impact assessment.
+#
+# Each scenario = baseline spec + one edit (S1 uses the real revised spec),
+# analysed against the ORIGINAL test register (all its messiness kept).
+#
+# Labels were written by hand from the documents, before any model was run.
+# Status codes:
+#   D = directly_affected   P = possibly_affected
+#   R = needs_human_review  N = not_affected
+# Per test:
+#   accept    : statuses considered correct (ambiguous cases accept several)
+#   preferred : the single best answer (used for the stricter score)
+#   critical  : a wrong answer here is a key failure (missed impact or named trap)
+#   why       : the reasoning behind the label
+#   actions   : (added for prompt v2) constraints on required_actions decided by the
+#               LLM: `must` = actions that must be present, `must_not` = forbidden.
+#               fix_link is not scored here: the application sets it from the links.
+#   accept_from_v2 : statuses also accepted from prompt v2 on. Prompt v2 redefines
+#               directly_affected as "verifies the changed behaviour" and moves
+#               "re-run vs update text only" into required_actions. Only the two
+#               cells where v1 labels and v1 prompt disagreed are adjusted; v1
+#               scores are computed without this field.
+
+defaults:
+  # Tests that are clearly unrelated to the change unless a scenario overrides them.
+  unrelated: {accept: [N], preferred: N}
+  # Broken traceability, unrelated content: flagging for review is also acceptable.
+  broken_link_unrelated: {accept: [N, R], preferred: N}
+  # TV-008: orphaned link (VCU-OLD-88); content unrelated to any current requirement.
+  orphan: {accept: [R, N], preferred: R}
+
+scenarios:
+  - id: S1
+    title: "DR-01 response time tightened 100 -> 80 ms (real revision B)"
+    source: revised   # use data/input/VCU_Spec_Revised.docx as-is
+    tests:
+      TV-001: {accept: [D], preferred: D, critical: true,
+               why: "Linked to DR-01; previous 94 ms exceeds the new 80 ms limit; script hard-codes 100 ms.",
+               actions: {must: [rerun, update_procedure]}}
+      TV-002: {accept: [D, P], preferred: P, critical: true,
+               why: "Linked to DR-01 but evidence has no timing, so it cannot show 80 ms compliance. Missing it is a miss.",
+               actions: {must: [rerun]}}
+      TV-003: {accept: [D, P, R], preferred: D, critical: true,
+               why: "No link, but it is a torque transient at 75-95% demand with 92 ms > 80 ms; legacy 95 ms tolerance; notes say high-load links were lost.",
+               actions: {must: [rerun]}}
+      TV-004: {accept: [N], preferred: N, critical: true,
+               why: "TRAP: 88 ms is brake command latency on a different clock (workshop note); BRK-03 did not change.",
+               actions: {must_not: [rerun, update_procedure]}}
+      TV-005: unrelated
+      TV-006: unrelated
+      TV-007: {accept: [P, R], preferred: R, critical: true,
+               why: "TBD link, NOT RUN, torque delivery at 80% pedal (> 70% DR-01 trigger). TRAP: 80% pedal is not 80 ms."}
+      TV-008: orphan
+      TV-009: {accept: [P, N], preferred: P,
+               why: "Accelerator response in Sport/Comfort ramp; no quantitative response-time assertion."}
+      TV-010: unrelated
+      TV-011: unrelated
+      TV-012: {accept: [N, R], preferred: N, critical: true,
+               why: "TRAP: a timing test with a ms value, but platform start-up only; unrelated to torque response.",
+               actions: {must_not: [rerun, update_procedure]}}
+
+  - id: S2
+    title: "BRK-03 gains a brake command latency limit of 80 ms"
+    edits:
+      - {op: replace, req: VCU-BRK-03,
+         old: "regardless of pedal position or requested driving mode.",
+         new: "regardless of pedal position or requested driving mode. The brake command shall be issued within 80 milliseconds of the emergency brake input."}
+    tests:
+      TV-001: {accept: [N], preferred: N, critical: true,
+               why: "REVERSE TRAP: 94 ms is torque latency, different clock from brake latency; DR-01 unchanged.",
+               actions: {must_not: [rerun, update_procedure]}}
+      TV-002: {accept: [D, P], preferred: P, critical: true,
+               why: "Linked to BRK-03, brake/pedal arbitration; old evidence reports no timing.",
+               actions: {must: [rerun]}}
+      TV-003: broken_link_unrelated
+      TV-004: {accept: [D], preferred: D, critical: true,
+               why: "Brake command latency 88 ms > new 80 ms; procedure target 100 ms must be updated.",
+               actions: {must: [rerun, update_procedure]}}
+      TV-005: unrelated
+      TV-006: unrelated
+      TV-007: broken_link_unrelated
+      TV-008: orphan
+      TV-009: unrelated
+      TV-010: unrelated
+      TV-011: {accept: [D, P], preferred: P, critical: true,
+               why: "Linked to BRK-03 (torque cancellation on braking); no timing in evidence.",
+               actions: {must: [rerun]}}
+      TV-012: broken_link_unrelated
+
+  - id: S3
+    title: "DR-02 spike filter threshold 10 -> 5 ms"
+    edits:
+      - {op: replace, req: VCU-DR-02, old: "shorter than 10 milliseconds", new: "shorter than 5 milliseconds"}
+    tests:
+      TV-001: {accept: [N, P], preferred: N,
+               why: "Step response, not a spike; pedal validation is upstream of DR-01 timing but the test is not about filtering."}
+      TV-002: unrelated
+      TV-003: broken_link_unrelated
+      TV-004: unrelated
+      TV-005: unrelated
+      TV-006: unrelated
+      TV-007: broken_link_unrelated
+      TV-008: orphan
+      TV-009: unrelated
+      TV-010: {accept: [D, P], preferred: D, critical: true,
+               why: "A 7 ms pulse is no longer shorter than the filter limit, so the expected 'no propagated torque request' outcome is no longer guaranteed by DR-02.",
+               actions: {must: [update_procedure]}}
+      TV-011: unrelated
+      TV-012: broken_link_unrelated
+
+  - id: S4
+    title: "DR-01 response time relaxed 100 -> 120 ms"
+    edits:
+      - {op: replace, req: VCU-DR-01, old: "within 100 milliseconds", new: "within 120 milliseconds"}
+    tests:
+      TV-001: {accept: [P, N], preferred: P, critical: true,
+               why: "94 ms still meets 120 ms; the 100 ms in script/procedure is stricter, so only an alignment update. Directly affected is over-flagging.",
+               actions: {must: [update_procedure], must_not: [rerun]}, accept_from_v2: [D]}
+      TV-002: {accept: [N, P], preferred: N}
+      TV-003: {accept: [N, P, R], preferred: N,
+               why: "92 ms and the 95 ms legacy tolerance are within 120 ms; link still missing.",
+               actions: {must_not: [rerun]}}
+      TV-004: {accept: [N], preferred: N, critical: true, why: "Brake clock trap, unchanged requirement.",
+               actions: {must_not: [rerun, update_procedure]}}
+      TV-005: unrelated
+      TV-006: unrelated
+      TV-007: {accept: [R, P, N], preferred: R}
+      TV-008: orphan
+      TV-009: {accept: [N, P], preferred: N}
+      TV-010: unrelated
+      TV-011: unrelated
+      TV-012: broken_link_unrelated
+
+  - id: S5
+    title: "DGN-04 reworded, same meaning"
+    edits:
+      - {op: set, req: VCU-DGN-04,
+         text: "When the wheel-speed signal is lost, the controller shall switch to a degraded operating mode and record a diagnostic event."}
+    tests:
+      TV-001: unrelated
+      TV-002: unrelated
+      TV-003: broken_link_unrelated
+      TV-004: unrelated
+      TV-005: {accept: [N, P], preferred: N, critical: true,
+               why: "Editorial rewording; behaviour and test procedure unchanged. Directly affected is over-flagging.",
+               actions: {must_not: [rerun, update_procedure]}}
+      TV-006: unrelated
+      TV-007: broken_link_unrelated
+      TV-008: orphan
+      TV-009: unrelated
+      TV-010: unrelated
+      TV-011: unrelated
+      TV-012: broken_link_unrelated
+
+  - id: S6
+    title: "MOD-06 operating mode requirement removed"
+    edits:
+      - {op: remove, req: VCU-MOD-06}
+    tests:
+      TV-001: unrelated
+      TV-002: unrelated
+      TV-003: broken_link_unrelated
+      TV-004: unrelated
+      TV-005: unrelated
+      TV-006: {accept: [P, N], preferred: P,
+               why: "Uses a Comfort -> Sport mode change as stimulus; modes are no longer specified."}
+      TV-007: broken_link_unrelated
+      TV-008: orphan
+      TV-009: {accept: [R, P, D], preferred: R, critical: true,
+               why: "Its only link now points to a removed requirement: retire or re-link.",
+               actions: {must_not: [rerun]}}
+      TV-010: unrelated
+      TV-011: unrelated
+      TV-012: broken_link_unrelated
+
+  - id: S7
+    title: "New requirement VCU-THM-07 thermal torque derating"
+    edits:
+      - {op: add, after: VCU-MOD-06, req: VCU-THM-07, title: "Thermal torque derating",
+         text: "Under elevated thermal load, the controller shall limit positive propulsion torque to the derated envelope and log a derating diagnostic event."}
+    tests:
+      TV-001: unrelated
+      TV-002: unrelated
+      TV-003: {accept: [P, N, R], preferred: P,
+               why: "High-load torque transient; high load is not necessarily thermal load."}
+      TV-004: unrelated
+      TV-005: unrelated
+      TV-006: unrelated
+      TV-007: {accept: [P, R], preferred: P, critical: true,
+               why: "'Acceleration at thermal load', TBD link, NOT RUN: the natural candidate to verify the new requirement.",
+               actions: {must: [update_procedure]}, accept_from_v2: [D]}
+      TV-008: orphan
+      TV-009: unrelated
+      TV-010: unrelated
+      TV-011: unrelated
+      TV-012: broken_link_unrelated

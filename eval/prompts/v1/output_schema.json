@@ -1,0 +1,103 @@
+{
+ "additionalProperties": false,
+ "properties": {
+  "change_interpretations": {
+   "items": {
+    "additionalProperties": false,
+    "properties": {
+     "requirement_id": {
+      "type": "string"
+     },
+     "nature": {
+      "enum": [
+       "tightened",
+       "relaxed",
+       "reworded_same_meaning",
+       "scope_changed",
+       "added",
+       "removed",
+       "other"
+      ],
+      "type": "string"
+     },
+     "engineering_summary": {
+      "description": "One or two sentences: what changed and what it means for verification.",
+      "type": "string"
+     }
+    },
+    "required": [
+     "requirement_id",
+     "nature",
+     "engineering_summary"
+    ],
+    "type": "object"
+   },
+   "type": "array"
+  },
+  "assessments": {
+   "items": {
+    "additionalProperties": false,
+    "properties": {
+     "test_id": {
+      "type": "string"
+     },
+     "status": {
+      "enum": [
+       "directly_affected",
+       "possibly_affected",
+       "needs_human_review",
+       "not_affected"
+      ],
+      "type": "string"
+     },
+     "confidence": {
+      "enum": [
+       "high",
+       "medium",
+       "low"
+      ],
+      "type": "string"
+     },
+     "related_requirements": {
+      "description": "IDs of the changed requirements this judgment refers to; empty if none.",
+      "items": {
+       "type": "string"
+      },
+      "type": "array"
+     },
+     "reason": {
+      "description": "Short evidence-based explanation (1-3 sentences).",
+      "type": "string"
+     },
+     "evidence": {
+      "description": "Short quotes or facts from the register, notes or spec supporting the reason.",
+      "items": {
+       "type": "string"
+      },
+      "type": "array"
+     },
+     "recommended_action": {
+      "description": "Concrete next step for the engineer.",
+      "type": "string"
+     }
+    },
+    "required": [
+     "test_id",
+     "status",
+     "confidence",
+     "related_requirements",
+     "reason",
+     "evidence",
+     "recommended_action"
+    ],
+    "type": "object"
+   },
+   "type": "array"
+  }
+ },
+ "required": [
+  "change_interpretations",
+  "assessments"
+ ],
+ "type": "object"
+}

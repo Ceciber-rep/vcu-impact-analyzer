@@ -1,0 +1,11 @@
+# Models compared in the evaluation (IDs confirmed with live smoke calls on 2026-11-16).
+# Keys come from .env (GEMINI_API_KEY, GROQ_API_KEY); a provider without a key is skipped.
+# Not included:
+#   - GitHub Models: service retired on 2026-07-30 (endpoint answers "OK" to every request).
+#   - Cerebras, Mistral: no key (user reported that a paid account was required).
+models:
+  - {name: gemini-3.5-flash, provider: gemini, model: gemini-3.5-flash}
+  - {name: gemini-3.5-flash-lite, provider: gemini, model: gemini-3.5-flash-lite}
+  - {name: groq-gpt-oss-120b, provider: groq, model: openai/gpt-oss-120b}
+  - {name: groq-qwen3.8-27b, provider: groq, model: qwen/qwen3.8-27b}
+  - {name: ollama-qwen3-8b, provider: ollama, model: "qwen3:8b"}
