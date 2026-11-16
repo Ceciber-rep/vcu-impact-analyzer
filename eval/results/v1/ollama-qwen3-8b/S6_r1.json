@@ -1,0 +1,154 @@
+{
+ "ok": true,
+ "model_label": "ollama:qwen3:8b",
+ "prompt_version": "v1",
+ "created_at": "2026-11-16T16:45:38+00:00",
+ "latency_s": 511.84,
+ "attempts": 1,
+ "prompt_tokens": 3598,
+ "completion_tokens": 2790,
+ "structured_mode": "ollama_format_schema",
+ "result": {
+  "change_interpretations": [
+   {
+    "requirement_id": "VCU-MOD-06",
+    "nature": "removed",
+    "engineering_summary": "The 'Operating mode' requirement is removed, eliminating the Comfort/Sport mode selection and its associated torque ramp profile changes. Brake override priority remains unaffected by mode selection."
+   }
+  ],
+  "assessments": [
+   {
+    "test_id": "TV-001",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "Test verifies pedal response time (VCU-DR-01), which is unchanged. The removed requirement (VCU-MOD-06) does not affect torque response timing.",
+    "evidence": [
+     "94 ms (from result)",
+     "100 ms (from procedure)"
+    ],
+    "recommended_action": "No action needed."
+   },
+   {
+    "test_id": "TV-002",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "Test validates brake override priority (VCU-BRK-03), which remains unchanged. The removed requirement (VCU-MOD-06) does not alter brake command priority.",
+    "evidence": [
+     "85 % (from procedure)"
+    ],
+    "recommended_action": "No action needed."
+   },
+   {
+    "test_id": "TV-003",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "Test measures high-load torque transient (no linked requirement). The removed requirement (VCU-MOD-06) does not affect torque response under load.",
+    "evidence": [
+     "92 ms (from result)",
+     "75 % (from procedure)"
+    ],
+    "recommended_action": "No action needed."
+   },
+   {
+    "test_id": "TV-004",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "Test checks brake command latency (VCU-BRK-03), which is unchanged. The removed requirement (VCU-MOD-06) does not affect brake command timing.",
+    "evidence": [
+     "88 ms (from result)",
+     "100 ms (from procedure)"
+    ],
+    "recommended_action": "No action needed."
+   },
+   {
+    "test_id": "TV-005",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "Test verifies sensor failure handling (VCU-DGN-04), which is unchanged. The removed requirement (VCU-MOD-06) does not affect sensor degradation logic.",
+    "evidence": [],
+    "recommended_action": "No action needed."
+   },
+   {
+    "test_id": "TV-006",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "Test logs mode changes (VCU-LOG-05), which is unchanged. The removed requirement (VCU-MOD-06) does not affect logging requirements.",
+    "evidence": [],
+    "recommended_action": "No action needed."
+   },
+   {
+    "test_id": "TV-007",
+    "status": "not_affected",
+    "confidence": "medium",
+    "related_requirements": [],
+    "reason": "Test has no requirement link (TBD). The removed requirement (VCU-MOD-06) does not affect thermal load testing.",
+    "evidence": [
+     "80 % (from procedure)"
+    ],
+    "recommended_action": "Clarify ownership and requirement link."
+   },
+   {
+    "test_id": "TV-008",
+    "status": "not_affected",
+    "confidence": "low",
+    "related_requirements": [],
+    "reason": "Test references unknown requirement (VCU-OLD-88). The removed requirement (VCU-MOD-06) does not affect legacy diagnostic checks.",
+    "evidence": [],
+    "recommended_action": "Verify requirement existence and relevance."
+   },
+   {
+    "test_id": "TV-009",
+    "status": "directly_affected",
+    "confidence": "high",
+    "related_requirements": [
+     "VCU-MOD-06"
+    ],
+    "reason": "Test compares Sport vs Comfort modes (VCU-MOD-06), which is removed. The procedure and requirement link are invalid.",
+    "evidence": [
+     "PASS (trend)"
+    ],
+    "recommended_action": "Re-evaluate test relevance and update requirement links."
+   },
+   {
+    "test_id": "TV-010",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "Test validates pedal signal filtering (VCU-DR-02), which is unchanged. The removed requirement (VCU-MOD-06) does not affect signal validation.",
+    "evidence": [
+     "7 ms (from procedure)"
+    ],
+    "recommended_action": "No action needed."
+   },
+   {
+    "test_id": "TV-011",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "Test verifies brake override priority (VCU-BRK-03), which is unchanged. The removed requirement (VCU-MOD-06) does not affect brake command priority.",
+    "evidence": [],
+    "recommended_action": "No action needed."
+   },
+   {
+    "test_id": "TV-012",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "Test checks wake-up timing (no linked requirement). The removed requirement (VCU-MOD-06) does not affect system startup timing.",
+    "evidence": [
+     "433 ms (from result)",
+     "500 ms (from procedure)"
+    ],
+    "recommended_action": "No action needed."
+   }
+  ]
+ },
+ "warnings": [],
+ "raw_text": "{\n\n\"change_interpretations\": [\n  {\n    \"requirement_id\": \"VCU-MOD-06\",\n    \"nature\": \"removed\",\n    \"engineering_summary\": \"The 'Operating mode' requirement is removed, eliminating the Comfort/Sport mode selection and its associated torque ramp profile changes. Brake override priority remains unaffected by mode selection.\"\n  }\n],\n\"assessments\": [\n  {\n    \"test_id\": \"TV-001\",\n    \"status\": \"not_affected\",\n    \"confidence\": \"high\",\n    \"related_requirements\": [],\n    \"reason\": \"Test verifies pedal response time (VCU-DR-01), which is unchanged. The removed requirement (VCU-MOD-06) does not affect torque response timing.\",\n    \"evidence\": [\"94 ms (from result)\", \"100 ms (from procedure)\"],\n    \"recommended_action\": \"No action needed.\"\n  },\n  {\n    \"test_id\": \"TV-002\",\n    \"status\": \"not_affected\",\n    \"confidence\": \"high\",\n    \"related_requirements\": [],\n    \"reason\": \"Test validates brake override priority (VCU-BRK-03), which remains unchanged. The removed requirement (VCU-MOD-06) does not alter brake command priority.\",\n    \"evidence\": [\"85 % (from procedure)\"],\n    \"recommended_action\": \"No action needed.\"\n  },\n  {\n    \"test_id\": \"TV-003\",\n    \"status\": \"not_affected\",\n    \"confidence\": \"high\",\n    \"related_requirements\": [],\n    \"reason\": \"Test measures high-load torque transient (no linked requirement). The removed requirement (VCU-MOD-06) does not affect torque response under load.\",\n    \"evidence\": [\"92 ms (from result)\", \"75 % (from procedure)\"],\n    \"recommended_action\": \"No action needed.\"\n  },\n  {\n    \"test_id\": \"TV-004\",\n    \"status\": \"not_affected\",\n    \"confidence\": \"high\",\n    \"related_requirements\": [],\n    \"reason\": \"Test checks brake command latency (VCU-BRK-03), which is unchanged. The removed requirement (VCU-MOD-06) does not affect brake command timing.\",\n    \"evidence\": [\"88 ms (from result)\", \"100 ms (from procedure)\"],\n    \"recommended_action\": \"No action needed.\"\n  },\n  {\n    \"test_id\": \"TV-005\",\n    \"status\": \"not_affected\",\n    \"confidence\": \"high\",\n    \"related_requirements\": [],\n    \"reason\": \"Test verifies sensor failure handling (VCU-DGN-04), which is unchanged. The removed requirement (VCU-MOD-06) does not affect sensor degradation logic.\",\n    \"evidence\": [],\n    \"recommended_action\": \"No action needed.\"\n  },\n  {\n    \"test_id\": \"TV-006\",\n    \"status\": \"not_affected\",\n    \"confidence\": \"high\",\n    \"related_requirements\": [],\n    \"reason\": \"Test logs mode changes (VCU-LOG-05), which is unchanged. The removed requirement (VCU-MOD-06) does not affect logging requirements.\",\n    \"evidence\": [],\n    \"recommended_action\": \"No action needed.\"\n  },\n  {\n    \"test_id\": \"TV-007\",\n    \"status\": \"not_affected\",\n    \"confidence\": \"medium\",\n    \"related_requirements\": [],\n    \"reason\": \"Test has no requirement link (TBD). The removed requirement (VCU-MOD-06) does not affect thermal load testing.\",\n    \"evidence\": [\"80 % (from procedure)\"],\n    \"recommended_action\": \"Clarify ownership and requirement link.\"\n  },\n  {\n    \"test_id\": \"TV-008\",\n    \"status\": \"not_affected\",\n    \"confidence\": \"low\",\n    \"related_requirements\": [],\n    \"reason\": \"Test references unknown requirement (VCU-OLD-88). The removed requirement (VCU-MOD-06) does not affect legacy diagnostic checks.\",\n    \"evidence\": [],\n    \"recommended_action\": \"Verify requirement existence and relevance.\"\n  },\n  {\n    \"test_id\": \"TV-009\",\n    \"status\": \"directly_affected\",\n    \"confidence\": \"high\",\n    \"related_requirements\": [\"VCU-MOD-06\"],\n    \"reason\": \"Test compares Sport vs Comfort modes (VCU-MOD-06), which is removed. The procedure and requirement link are invalid.\",\n    \"evidence\": [\"PASS (trend)\"],\n    \"recommended_action\": \"Re-evaluate test relevance and update requirement links.\"\n  },\n  {\n    \"test_id\": \"TV-010\",\n    \"status\": \"not_affected\",\n    \"confidence\": \"high\",\n    \"related_requirements\": [],\n    \"reason\": \"Test validates pedal signal filtering (VCU-DR-02), which is unchanged. The removed requirement (VCU-MOD-06) does not affect signal validation.\",\n    \"evidence\": [\"7 ms (from procedure)\"],\n    \"recommended_action\": \"No action needed.\"\n  },\n  {\n    \"test_id\": \"TV-011\",\n    \"status\": \"not_affected\",\n    \"confidence\": \"high\",\n    \"related_requirements\": [],\n    \"reason\": \"Test verifies brake override priority (VCU-BRK-03), which is unchanged. The removed requirement (VCU-MOD-06) does not affect brake command priority.\",\n    \"evidence\": [],\n    \"recommended_action\": \"No action needed.\"\n  },\n  {\n    \"test_id\": \"TV-012\",\n    \"status\": \"not_affected\",\n    \"confidence\": \"high\",\n    \"related_requirements\": [],\n    \"reason\": \"Test checks wake-up timing (no linked requirement). The removed requirement (VCU-MOD-06) does not affect system startup timing.\",\n    \"evidence\": [\"433 ms (from result)\", \"500 ms (from procedure)\"],\n    \"recommended_action\": \"No action needed.\"\n  }\n] }"
+}

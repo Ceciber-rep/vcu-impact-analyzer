@@ -1,0 +1,167 @@
+{
+ "ok": true,
+ "model_label": "groq:openai/gpt-oss-120b",
+ "prompt_version": "v1",
+ "created_at": "2026-11-16T15:19:58+00:00",
+ "latency_s": 43.72,
+ "attempts": 1,
+ "prompt_tokens": 3855,
+ "completion_tokens": 3072,
+ "structured_mode": "json_schema",
+ "result": {
+  "change_interpretations": [
+   {
+    "requirement_id": "VCU-MOD-06",
+    "nature": "removed",
+    "engineering_summary": "The operating mode requirement has been removed, so verification of mode selection behavior is no longer mandated; tests that exercised mode changes may become obsolete or need repurposing."
+   }
+  ],
+  "assessments": [
+   {
+    "test_id": "TV-001",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "The test validates VCU-DR-01 response time, which is unchanged; the previous PASS (94\u202fms) satisfies the 100\u202fms limit.",
+    "evidence": [
+     "PASS (94 ms) < 100 ms limit",
+     "Requirement VCU-DR-01 unchanged"
+    ],
+    "recommended_action": "Retain the test unchanged."
+   },
+   {
+    "test_id": "TV-002",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "It checks arbitration between pedal and emergency brake per VCU-BRK-03 and VCU-DR-01, both unchanged; no timing metric is required for the removed requirement.",
+    "evidence": [
+     "Procedure applies 85\u202f% pedal with emergency brake",
+     "Both requirement links are valid and unchanged"
+    ],
+    "recommended_action": "Keep the test as is."
+   },
+   {
+    "test_id": "TV-003",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "The test measures high\u2011load torque transient and has no link to VCU-MOD-06; the removed mode requirement does not influence this behavior.",
+    "evidence": [
+     "Sweep demand 75\u201395\u202f% and record 92\u202fms",
+     "No requirement reference to VCU-MOD-06"
+    ],
+    "recommended_action": "No change needed."
+   },
+   {
+    "test_id": "TV-004",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "Validates brake actuator latency against VCU-BRK-03, which remains unchanged; the removal of VCU-MOD-06 does not affect this test.",
+    "evidence": [
+     "PASS (88 ms) within 100\u202fms limit",
+     "Requirement VCU-BRK-03 unchanged"
+    ],
+    "recommended_action": "Retain the test unchanged."
+   },
+   {
+    "test_id": "TV-005",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "Confirms degraded mode on wheel\u2011speed sensor loss per VCU-DGN-04, an unchanged requirement; mode removal is unrelated.",
+    "evidence": [
+     "PASS result confirming degraded mode and fault log",
+     "Requirement VCU-DGN-04 unchanged"
+    ],
+    "recommended_action": "Keep the test as is."
+   },
+   {
+    "test_id": "TV-006",
+    "status": "possibly_affected",
+    "confidence": "medium",
+    "related_requirements": [
+     "VCU-MOD-06"
+    ],
+    "reason": "The test logs a mode change (Comfort\u202f\u2192\u202fSport) per VCU-LOG-05, but the mode selection requirement (VCU-MOD-06) has been removed, making the trigger potentially obsolete.",
+    "evidence": [
+     "Procedure changes Comfort to Sport",
+     "Requirement VCU-MOD-06 removed in this revision"
+    ],
+    "recommended_action": "Review the test purpose and modify it to generate a mode\u2011change event that remains relevant, or replace it with an alternative logging trigger."
+   },
+   {
+    "test_id": "TV-007",
+    "status": "needs_human_review",
+    "confidence": "low",
+    "related_requirements": [],
+    "reason": "The requirement link is TBD and ownership is unclear, so it cannot be determined whether the test is impacted by the removed mode requirement.",
+    "evidence": [
+     "requirement_reference_raw: TBD",
+     "Comment: Ownership and source link to be clarified"
+    ],
+    "recommended_action": "Clarify the requirement linkage and test ownership before deciding on impact."
+   },
+   {
+    "test_id": "TV-008",
+    "status": "needs_human_review",
+    "confidence": "low",
+    "related_requirements": [],
+    "reason": "The test references an unknown legacy requirement (VCU-OLD-88); traceability is broken, preventing assessment of relevance to the removed mode requirement.",
+    "evidence": [
+     "requirement_reference_raw: VCU-OLD-88 (unknown_requirement)",
+     "Comment: Imported row; requirements catalog changed"
+    ],
+    "recommended_action": "Map the legacy requirement to the current specification or retire the test if no longer applicable."
+   },
+   {
+    "test_id": "TV-009",
+    "status": "directly_affected",
+    "confidence": "high",
+    "related_requirements": [
+     "VCU-MOD-06"
+    ],
+    "reason": "The test explicitly verifies the sport vs. comfort torque\u2011ramp behavior defined by VCU-MOD-06, which has been removed; its evidence is no longer valid.",
+    "evidence": [
+     "requirement_reference_raw: VCU-MOD-06 (removed_in_revision)",
+     "Previous result: PASS (trend) based on now\u2011removed requirement"
+    ],
+    "recommended_action": "Deprecate or redesign the test to align with the updated specification."
+   },
+   {
+    "test_id": "TV-010",
+    "status": "needs_human_review",
+    "confidence": "low",
+    "related_requirements": [],
+    "reason": "No assessment was produced by the model for this test (added by post-check).",
+    "evidence": [],
+    "recommended_action": "Assess this test manually."
+   },
+   {
+    "test_id": "TV-011",
+    "status": "needs_human_review",
+    "confidence": "low",
+    "related_requirements": [],
+    "reason": "No assessment was produced by the model for this test (added by post-check).",
+    "evidence": [],
+    "recommended_action": "Assess this test manually."
+   },
+   {
+    "test_id": "TV-012",
+    "status": "needs_human_review",
+    "confidence": "low",
+    "related_requirements": [],
+    "reason": "No assessment was produced by the model for this test (added by post-check).",
+    "evidence": [],
+    "recommended_action": "Assess this test manually."
+   }
+  ]
+ },
+ "warnings": [
+  "LLM returned no assessment for TV-010; marked needs_human_review.",
+  "LLM returned no assessment for TV-011; marked needs_human_review.",
+  "LLM returned no assessment for TV-012; marked needs_human_review."
+ ],
+ "raw_text": "{\n  \"change_interpretations\": [\n    {\n      \"requirement_id\": \"VCU-MOD-06\",\n      \"nature\": \"removed\",\n      \"engineering_summary\": \"The operating mode requirement has been removed, so verification of mode selection behavior is no longer mandated; tests that exercised mode changes may become obsolete or need repurposing.\"\n    }\n  ],\n  \"assessments\": [\n    {\n      \"test_id\": \"TV-001\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"reason\": \"The test validates VCU-DR-01 response time, which is unchanged; the previous PASS (94\u202fms) satisfies the 100\u202fms limit.\",\n      \"evidence\": [\n        \"PASS (94 ms) < 100 ms limit\",\n        \"Requirement VCU-DR-01 unchanged\"\n      ],\n      \"recommended_action\": \"Retain the test unchanged.\"\n    },\n    {\n      \"test_id\": \"TV-002\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"reason\": \"It checks arbitration between pedal and emergency brake per VCU-BRK-03 and VCU-DR-01, both unchanged; no timing metric is required for the removed requirement.\",\n      \"evidence\": [\n        \"Procedure applies 85\u202f% pedal with emergency brake\",\n        \"Both requirement links are valid and unchanged\"\n      ],\n      \"recommended_action\": \"Keep the test as is.\"\n    },\n    {\n      \"test_id\": \"TV-003\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"reason\": \"The test measures high\u2011load torque transient and has no link to VCU-MOD-06; the removed mode requirement does not influence this behavior.\",\n      \"evidence\": [\n        \"Sweep demand 75\u201395\u202f% and record 92\u202fms\",\n        \"No requirement reference to VCU-MOD-06\"\n      ],\n      \"recommended_action\": \"No change needed.\"\n    },\n    {\n      \"test_id\": \"TV-004\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"reason\": \"Validates brake actuator latency against VCU-BRK-03, which remains unchanged; the removal of VCU-MOD-06 does not affect this test.\",\n      \"evidence\": [\n        \"PASS (88 ms) within 100\u202fms limit\",\n        \"Requirement VCU-BRK-03 unchanged\"\n      ],\n      \"recommended_action\": \"Retain the test unchanged.\"\n    },\n    {\n      \"test_id\": \"TV-005\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"reason\": \"Confirms degraded mode on wheel\u2011speed sensor loss per VCU-DGN-04, an unchanged requirement; mode removal is unrelated.\",\n      \"evidence\": [\n        \"PASS result confirming degraded mode and fault log\",\n        \"Requirement VCU-DGN-04 unchanged\"\n      ],\n      \"recommended_action\": \"Keep the test as is.\"\n    },\n    {\n      \"test_id\": \"TV-006\",\n      \"status\": \"possibly_affected\",\n      \"confidence\": \"medium\",\n      \"related_requirements\": [\n        \"VCU-MOD-06\"\n      ],\n      \"reason\": \"The test logs a mode change (Comfort\u202f\u2192\u202fSport) per VCU-LOG-05, but the mode selection requirement (VCU-MOD-06) has been removed, making the trigger potentially obsolete.\",\n      \"evidence\": [\n        \"Procedure changes Comfort to Sport\",\n        \"Requirement VCU-MOD-06 removed in this revision\"\n      ],\n      \"recommended_action\": \"Review the test purpose and modify it to generate a mode\u2011change event that remains relevant, or replace it with an alternative logging trigger.\"\n    },\n    {\n      \"test_id\": \"TV-007\",\n      \"status\": \"needs_human_review\",\n      \"confidence\": \"low\",\n      \"related_requirements\": [],\n      \"reason\": \"The requirement link is TBD and ownership is unclear, so it cannot be determined whether the test is impacted by the removed mode requirement.\",\n      \"evidence\": [\n        \"requirement_reference_raw: TBD\",\n        \"Comment: Ownership and source link to be clarified\"\n      ],\n      \"recommended_action\": \"Clarify the requirement linkage and test ownership before deciding on impact.\"\n    },\n    {\n      \"test_id\": \"TV-008\",\n      \"status\": \"needs_human_review\",\n      \"confidence\": \"low\",\n      \"related_requirements\": [],\n      \"reason\": \"The test references an unknown legacy requirement (VCU-OLD-88); traceability is broken, preventing assessment of relevance to the removed mode requirement.\",\n      \"evidence\": [\n        \"requirement_reference_raw: VCU-OLD-88 (unknown_requirement)\",\n        \"Comment: Imported row; requirements catalog changed\"\n      ],\n      \"recommended_action\": \"Map the legacy requirement to the current specification or retire the test if no longer applicable.\"\n    },\n    {\n      \"test_id\": \"TV-009\",\n      \"status\": \"directly_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [\n        \"VCU-MOD-06\"\n      ],\n      \"reason\": \"The test explicitly verifies the sport vs. comfort torque\u2011ramp behavior defined by VCU-MOD-06, which has been removed; its evidence is no longer valid.\",\n      \"evidence\": [\n        \"requirement_reference_raw: VCU-MOD-06 (removed_in_revision)\",\n        \"Previous result: PASS (trend) based on now\u2011removed requirement\"\n      ],\n      \"recommended_action\": \"Deprecate or redesign the test to align with the updated specification.\"\n    }]}"
+}

@@ -1,0 +1,170 @@
+{
+ "ok": true,
+ "model_label": "ollama:qwen3:8b",
+ "prompt_version": "v1",
+ "created_at": "2026-11-16T16:37:45+00:00",
+ "latency_s": 487.59,
+ "attempts": 1,
+ "prompt_tokens": 3620,
+ "completion_tokens": 2466,
+ "structured_mode": "ollama_format_schema",
+ "result": {
+  "change_interpretations": [
+   {
+    "requirement_id": "VCU-DGN-04",
+    "nature": "reworded_same_meaning",
+    "engineering_summary": "The requirement now specifies that the controller must switch to degraded mode when the wheel-speed signal is lost, rather than when the input is unavailable. This is a rewording with the same meaning but uses more precise terminology. Verification tests that check sensor failure scenarios must ensure the new wording is reflected in procedures and evidence."
+   }
+  ],
+  "assessments": [
+   {
+    "test_id": "TV-001",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "This test verifies pedal step response and torque delivery timing, which are unrelated to the sensor degradation requirement change. The requirement VCU-DR-01 remains unchanged and is not related to wheel-speed signal loss.",
+    "evidence": [
+     "Procedure references VCU-DR-01 (unchanged requirement)",
+     "Test measures pedal response, not sensor failure behavior"
+    ],
+    "recommended_action": "No action required. Test remains valid for unchanged requirement."
+   },
+   {
+    "test_id": "TV-002",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "This test verifies brake-pedal arbitration and brake override priority (VCU-BRK-03), which are unrelated to the sensor degradation requirement change. The requirement VCU-BRK-03 remains unchanged.",
+    "evidence": [
+     "Procedure references VCU-BRK-03 (unchanged requirement)",
+     "Test focuses on brake command priority, not sensor failure behavior"
+    ],
+    "recommended_action": "No action required. Test remains valid for unchanged requirement."
+   },
+   {
+    "test_id": "TV-003",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "This test evaluates torque transient response under load, which is unrelated to the sensor degradation requirement change. The requirement VCU-DR-01 remains unchanged and is not related to wheel-speed signal loss.",
+    "evidence": [
+     "Procedure references no requirements related to sensor failure",
+     "Test measures torque delivery, not sensor failure behavior"
+    ],
+    "recommended_action": "No action required. Test remains valid for unchanged requirement."
+   },
+   {
+    "test_id": "TV-004",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "This test verifies brake actuator response latency (VCU-BRK-03), which is unrelated to the sensor degradation requirement change. The requirement VCU-BRK-03 remains unchanged.",
+    "evidence": [
+     "Procedure references VCU-BRK-03 (unchanged requirement)",
+     "Test focuses on brake command latency, not sensor failure behavior"
+    ],
+    "recommended_action": "No action required. Test remains valid for unchanged requirement."
+   },
+   {
+    "test_id": "TV-005",
+    "status": "directly_affected",
+    "confidence": "high",
+    "related_requirements": [
+     "VCU-DGN-04"
+    ],
+    "reason": "This test directly verifies the behavior described in the modified requirement VCU-DGN-04. The procedure unplug wheel-speed sensor and confirms degraded mode, which now must trigger a switch to degraded mode and record a diagnostic event. The previous PASS evidence may no longer meet the new requirement's wording.",
+    "evidence": [
+     "Procedure explicitly tests wheel-speed sensor failure scenario",
+     "Requirement change alters the condition for degraded mode activation"
+    ],
+    "recommended_action": "Re-validate test procedure and evidence to ensure alignment with the new requirement wording."
+   },
+   {
+    "test_id": "TV-006",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "This test verifies mode change logging (VCU-LOG-05), which is unrelated to the sensor degradation requirement change. The requirement VCU-LOG-05 remains unchanged.",
+    "evidence": [
+     "Procedure references VCU-LOG-05 (unchanged requirement)",
+     "Test focuses on mode change audit trail, not sensor failure behavior"
+    ],
+    "recommended_action": "No action required. Test remains valid for unchanged requirement."
+   },
+   {
+    "test_id": "TV-007",
+    "status": "needs_human_review",
+    "confidence": "low",
+    "related_requirements": [],
+    "reason": "This test has a TBD requirement link, making traceability broken. The test procedure involves thermal load and pedal position, which may or may not relate to the sensor degradation requirement change. Further clarification is needed on the requirement link.",
+    "evidence": [
+     "Requirement_reference_raw is TBD",
+     "Test owner and source link require clarification"
+    ],
+    "recommended_action": "Clarify requirement link and determine relevance to the sensor degradation change."
+   },
+   {
+    "test_id": "TV-008",
+    "status": "needs_human_review",
+    "confidence": "low",
+    "related_requirements": [],
+    "reason": "This test references an unknown requirement (VCU-OLD-88), making traceability broken. The test procedure involves diagnostic replay, which may or may not relate to the sensor degradation requirement change. Further investigation is needed to determine relevance.",
+    "evidence": [
+     "Requirement_reference_raw is unknown_requirement",
+     "Test may involve legacy diagnostics unrelated to current change"
+    ],
+    "recommended_action": "Investigate requirement link and determine relevance to the sensor degradation change."
+   },
+   {
+    "test_id": "TV-009",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "This test verifies mode-specific torque ramp profiles (VCU-MOD-06), which is unrelated to the sensor degradation requirement change. The requirement VCU-MOD-06 remains unchanged.",
+    "evidence": [
+     "Procedure references VCU-MOD-06 (unchanged requirement)",
+     "Test focuses on mode-specific behavior, not sensor failure"
+    ],
+    "recommended_action": "No action required. Test remains valid for unchanged requirement."
+   },
+   {
+    "test_id": "TV-010",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "This test verifies pedal signal filtering (VCU-DR-02), which is unrelated to the sensor degradation requirement change. The requirement VCU-DR-02 remains unchanged.",
+    "evidence": [
+     "Procedure references VCU-DR-02 (unchanged requirement)",
+     "Test focuses on signal filtering, not sensor failure behavior"
+    ],
+    "recommended_action": "No action required. Test remains valid for unchanged requirement."
+   },
+   {
+    "test_id": "TV-011",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "This test verifies brake override priority (VCU-BRK-03), which is unrelated to the sensor degradation requirement change. The requirement VCU-BRK-03 remains unchanged.",
+    "evidence": [
+     "Procedure references VCU-BRK-03 (unchanged requirement)",
+     "Test focuses on brake command priority, not sensor failure behavior"
+    ],
+    "recommended_action": "No action required. Test remains valid for unchanged requirement."
+   },
+   {
+    "test_id": "TV-012",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "This test verifies ECU wake-up timing, which is unrelated to the sensor degradation requirement change. No requirement link exists, and the test procedure does not involve sensor failure scenarios.",
+    "evidence": [
+     "No requirement link",
+     "Test focuses on platform startup behavior, not sensor failure"
+    ],
+    "recommended_action": "No action required. Test remains valid for unrelated requirement."
+   }
+  ]
+ },
+ "warnings": [],
+ "raw_text": "{\n\n\"change_interpretations\": [\n  {\n    \"requirement_id\": \"VCU-DGN-04\",\n    \"nature\": \"reworded_same_meaning\",\n    \"engineering_summary\": \"The requirement now specifies that the controller must switch to degraded mode when the wheel-speed signal is lost, rather than when the input is unavailable. This is a rewording with the same meaning but uses more precise terminology. Verification tests that check sensor failure scenarios must ensure the new wording is reflected in procedures and evidence.\"\n  }\n],\n\"assessments\": [\n  {\n    \"test_id\": \"TV-001\",\n    \"status\": \"not_affected\",\n    \"confidence\": \"high\",\n    \"related_requirements\": [],\n    \"reason\": \"This test verifies pedal step response and torque delivery timing, which are unrelated to the sensor degradation requirement change. The requirement VCU-DR-01 remains unchanged and is not related to wheel-speed signal loss.\",\n    \"evidence\": [\n      \"Procedure references VCU-DR-01 (unchanged requirement)\",\n      \"Test measures pedal response, not sensor failure behavior\"\n    ],\n    \"recommended_action\": \"No action required. Test remains valid for unchanged requirement.\"\n  },\n  {\n    \"test_id\": \"TV-002\",\n    \"status\": \"not_affected\",\n    \"confidence\": \"high\",\n    \"related_requirements\": [],\n    \"reason\": \"This test verifies brake-pedal arbitration and brake override priority (VCU-BRK-03), which are unrelated to the sensor degradation requirement change. The requirement VCU-BRK-03 remains unchanged.\",\n    \"evidence\": [\n      \"Procedure references VCU-BRK-03 (unchanged requirement)\",\n      \"Test focuses on brake command priority, not sensor failure behavior\"\n    ],\n    \"recommended_action\": \"No action required. Test remains valid for unchanged requirement.\"\n  },\n  {\n    \"test_id\": \"TV-003\",\n    \"status\": \"not_affected\",\n    \"confidence\": \"high\",\n    \"related_requirements\": [],\n    \"reason\": \"This test evaluates torque transient response under load, which is unrelated to the sensor degradation requirement change. The requirement VCU-DR-01 remains unchanged and is not related to wheel-speed signal loss.\",\n    \"evidence\": [\n      \"Procedure references no requirements related to sensor failure\",\n      \"Test measures torque delivery, not sensor failure behavior\"\n    ],\n    \"recommended_action\": \"No action required. Test remains valid for unchanged requirement.\"\n  },\n  {\n    \"test_id\": \"TV-004\",\n    \"status\": \"not_affected\",\n    \"confidence\": \"high\",\n    \"related_requirements\": [],\n    \"reason\": \"This test verifies brake actuator response latency (VCU-BRK-03), which is unrelated to the sensor degradation requirement change. The requirement VCU-BRK-03 remains unchanged.\",\n    \"evidence\": [\n      \"Procedure references VCU-BRK-03 (unchanged requirement)\",\n      \"Test focuses on brake command latency, not sensor failure behavior\"\n    ],\n    \"recommended_action\": \"No action required. Test remains valid for unchanged requirement.\"\n  },\n  {\n    \"test_id\": \"TV-005\",\n    \"status\": \"directly_affected\",\n    \"confidence\": \"high\",\n    \"related_requirements\": [\"VCU-DGN-04\"],\n    \"reason\": \"This test directly verifies the behavior described in the modified requirement VCU-DGN-04. The procedure unplug wheel-speed sensor and confirms degraded mode, which now must trigger a switch to degraded mode and record a diagnostic event. The previous PASS evidence may no longer meet the new requirement's wording.\",\n    \"evidence\": [\n      \"Procedure explicitly tests wheel-speed sensor failure scenario\",\n      \"Requirement change alters the condition for degraded mode activation\"\n    ],\n    \"recommended_action\": \"Re-validate test procedure and evidence to ensure alignment with the new requirement wording.\"\n  },\n  {\n    \"test_id\": \"TV-006\",\n    \"status\": \"not_affected\",\n    \"confidence\": \"high\",\n    \"related_requirements\": [],\n    \"reason\": \"This test verifies mode change logging (VCU-LOG-05), which is unrelated to the sensor degradation requirement change. The requirement VCU-LOG-05 remains unchanged.\",\n    \"evidence\": [\n      \"Procedure references VCU-LOG-05 (unchanged requirement)\",\n      \"Test focuses on mode change audit trail, not sensor failure behavior\"\n    ],\n    \"recommended_action\": \"No action required. Test remains valid for unchanged requirement.\"\n  },\n  {\n    \"test_id\": \"TV-007\",\n    \"status\": \"needs_human_review\",\n    \"confidence\": \"low\",\n    \"related_requirements\": [],\n    \"reason\": \"This test has a TBD requirement link, making traceability broken. The test procedure involves thermal load and pedal position, which may or may not relate to the sensor degradation requirement change. Further clarification is needed on the requirement link.\",\n    \"evidence\": [\n      \"Requirement_reference_raw is TBD\",\n      \"Test owner and source link require clarification\"\n    ],\n    \"recommended_action\": \"Clarify requirement link and determine relevance to the sensor degradation change.\"\n  },\n  {\n    \"test_id\": \"TV-008\",\n    \"status\": \"needs_human_review\",\n    \"confidence\": \"low\",\n    \"related_requirements\": [],\n    \"reason\": \"This test references an unknown requirement (VCU-OLD-88), making traceability broken. The test procedure involves diagnostic replay, which may or may not relate to the sensor degradation requirement change. Further investigation is needed to determine relevance.\",\n    \"evidence\": [\n      \"Requirement_reference_raw is unknown_requirement\",\n      \"Test may involve legacy diagnostics unrelated to current change\"\n    ],\n    \"recommended_action\": \"Investigate requirement link and determine relevance to the sensor degradation change.\"\n  },\n  {\n    \"test_id\": \"TV-009\",\n    \"status\": \"not_affected\",\n    \"confidence\": \"high\",\n    \"related_requirements\": [],\n    \"reason\": \"This test verifies mode-specific torque ramp profiles (VCU-MOD-06), which is unrelated to the sensor degradation requirement change. The requirement VCU-MOD-06 remains unchanged.\",\n    \"evidence\": [\n      \"Procedure references VCU-MOD-06 (unchanged requirement)\",\n      \"Test focuses on mode-specific behavior, not sensor failure\"\n    ],\n    \"recommended_action\": \"No action required. Test remains valid for unchanged requirement.\"\n  },\n  {\n    \"test_id\": \"TV-010\",\n    \"status\": \"not_affected\",\n    \"confidence\": \"high\",\n    \"related_requirements\": [],\n    \"reason\": \"This test verifies pedal signal filtering (VCU-DR-02), which is unrelated to the sensor degradation requirement change. The requirement VCU-DR-02 remains unchanged.\",\n    \"evidence\": [\n      \"Procedure references VCU-DR-02 (unchanged requirement)\",\n      \"Test focuses on signal filtering, not sensor failure behavior\"\n    ],\n    \"recommended_action\": \"No action required. Test remains valid for unchanged requirement.\"\n  },\n  {\n    \"test_id\": \"TV-011\",\n    \"status\": \"not_affected\",\n    \"confidence\": \"high\",\n    \"related_requirements\": [],\n    \"reason\": \"This test verifies brake override priority (VCU-BRK-03), which is unrelated to the sensor degradation requirement change. The requirement VCU-BRK-03 remains unchanged.\",\n    \"evidence\": [\n      \"Procedure references VCU-BRK-03 (unchanged requirement)\",\n      \"Test focuses on brake command priority, not sensor failure behavior\"\n    ],\n    \"recommended_action\": \"No action required. Test remains valid for unchanged requirement.\"\n  },\n  {\n    \"test_id\": \"TV-012\",\n    \"status\": \"not_affected\",\n    \"confidence\": \"high\",\n    \"related_requirements\": [],\n    \"reason\": \"This test verifies ECU wake-up timing, which is unrelated to the sensor degradation requirement change. No requirement link exists, and the test procedure does not involve sensor failure scenarios.\",\n    \"evidence\": [\n      \"No requirement link\",\n      \"Test focuses on platform startup behavior, not sensor failure\"\n    ],\n    \"recommended_action\": \"No action required. Test remains valid for unrelated requirement.\"\n  }\n] }"
+}

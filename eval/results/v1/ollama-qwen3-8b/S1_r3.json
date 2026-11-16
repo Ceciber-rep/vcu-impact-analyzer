@@ -1,0 +1,175 @@
+{
+ "ok": true,
+ "model_label": "ollama:qwen3:8b",
+ "prompt_version": "v1",
+ "created_at": "2026-11-16T15:52:43+00:00",
+ "latency_s": 510.15,
+ "attempts": 1,
+ "prompt_tokens": 3696,
+ "completion_tokens": 3067,
+ "structured_mode": "ollama_format_schema",
+ "result": {
+  "change_interpretations": [
+   {
+    "requirement_id": "VCU-DR-01",
+    "nature": "tightened",
+    "engineering_summary": "The maximum allowed response time for driver torque has been reduced from 100 ms to 80 ms. This requires re-evaluation of all tests that measure torque response times, as previous PASS evidence may no longer meet the new stricter requirement."
+   }
+  ],
+  "assessments": [
+   {
+    "test_id": "TV-001",
+    "status": "directly_affected",
+    "confidence": "high",
+    "related_requirements": [
+     "VCU-DR-01"
+    ],
+    "reason": "The test verifies the 100 ms threshold for torque response time. The new requirement tightens this to 80 ms. The previous PASS evidence (94 ms) now fails the new stricter limit. The test procedure and result must be updated to reflect the new requirement.",
+    "evidence": [
+     "Procedure: 'confirm requested positive torque no later than 100 ms after pedal validation.'",
+     "Previous result: 'PASS (94 ms)'"
+    ],
+    "recommended_action": "Re-run the test with the new 80 ms threshold and update the test script and result documentation."
+   },
+   {
+    "test_id": "TV-002",
+    "status": "possibly_affected",
+    "confidence": "medium",
+    "related_requirements": [
+     "VCU-DR-01"
+    ],
+    "reason": "The test references VCU-DR-01, which was modified. However, the procedure does not explicitly measure response time, and timing evidence is not recorded. The test may plausibly exercise the changed behaviour, but the evidence is insufficient to confirm relevance.",
+    "evidence": [
+     "Requirement link: VCU-DR-01",
+     "Procedure: 'Apply 85% pedal with emergency-brake input'"
+    ],
+    "recommended_action": "Re-check the test procedure and results to determine if the response time metric is relevant to the change."
+   },
+   {
+    "test_id": "TV-003",
+    "status": "directly_affected",
+    "confidence": "high",
+    "related_requirements": [
+     "VCU-DR-01"
+    ],
+    "reason": "The test procedure mentions a 92 ms maximum response time, which is now invalid under the new 80 ms requirement. The test's previous PASS evidence (92 ms) no longer meets the tightened limit. The test must be re-evaluated with the new threshold.",
+    "evidence": [
+     "Procedure: 'Sweep demand 75\u201395%... recorded maximum 92 ms.'",
+     "Previous result: 'PASS (92 ms)'"
+    ],
+    "recommended_action": "Re-run the test with the new 80 ms threshold and update the test script and result documentation."
+   },
+   {
+    "test_id": "TV-004",
+    "status": "directly_affected",
+    "confidence": "high",
+    "related_requirements": [
+     "VCU-DR-01"
+    ],
+    "reason": "The test procedure specifies a 100 ms threshold for brake command latency, which is now tightened to 80 ms. The previous result (88 ms) fails the new stricter requirement. The test must be re-evaluated with the updated threshold.",
+    "evidence": [
+     "Procedure: 'target brake command latency within 100 ms.'",
+     "Previous result: 'PASS (88 ms)'"
+    ],
+    "recommended_action": "Re-run the test with the new 80 ms threshold and update the test script and result documentation."
+   },
+   {
+    "test_id": "TV-005",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "The test verifies sensor failure handling (VCU-DGN-04), which was not modified. The change to VCU-DR-01 does not affect sensor degradation or diagnostic logging.",
+    "evidence": [
+     "Requirement link: VCU-DGN-04",
+     "Procedure: 'Unplug simulated wheel-speed sensor'"
+    ],
+    "recommended_action": "No action required; the test remains unaffected."
+   },
+   {
+    "test_id": "TV-006",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "The test verifies mode change logging (VCU-LOG-05), which was not modified. The change to VCU-DR-01 does not affect mode event auditing.",
+    "evidence": [
+     "Requirement link: VCU-LOG-05",
+     "Procedure: 'Change Comfort to Sport'"
+    ],
+    "recommended_action": "No action required; the test remains unaffected."
+   },
+   {
+    "test_id": "TV-007",
+    "status": "needs_human_review",
+    "confidence": "low",
+    "related_requirements": [],
+    "reason": "The requirement link is TBD, making traceability broken. The test's procedure mentions 80% pedal, but the requirement is unclear. Ownership and relevance to the change cannot be determined from available information.",
+    "evidence": [
+     "Requirement link: TBD",
+     "Procedure: 'At 80% pedal and elevated load'"
+    ],
+    "recommended_action": "Clarify the requirement link and determine if the test is relevant to the change."
+   },
+   {
+    "test_id": "TV-008",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "The test references a removed requirement (VCU-OLD-88), which is unrelated to the change. The change to VCU-DR-01 does not affect legacy diagnostic replay.",
+    "evidence": [
+     "Requirement link: VCU-OLD-88 (unknown_requirement)",
+     "Procedure: 'Re-run old diagnostic trace'"
+    ],
+    "recommended_action": "No action required; the test remains unaffected."
+   },
+   {
+    "test_id": "TV-009",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "The test verifies torque ramp profiles (VCU-MOD-06), which was not modified. The change to VCU-DR-01 does not affect mode-specific torque delivery.",
+    "evidence": [
+     "Requirement link: VCU-MOD-06",
+     "Procedure: 'Compare accelerator response under Sport vs Comfort'"
+    ],
+    "recommended_action": "No action required; the test remains unaffected."
+   },
+   {
+    "test_id": "TV-010",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "The test verifies pedal signal filtering (VCU-DR-02), which was not modified. The change to VCU-DR-01 does not affect transient spike handling.",
+    "evidence": [
+     "Requirement link: VCU-DR-02",
+     "Procedure: 'Inject 7 ms false pedal pulse'"
+    ],
+    "recommended_action": "No action required; the test remains unaffected."
+   },
+   {
+    "test_id": "TV-011",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "The test verifies brake override priority (VCU-BRK-03), which was not modified. The change to VCU-DR-01 does not affect brake command latency or priority.",
+    "evidence": [
+     "Requirement link: VCU-BRK-03",
+     "Procedure: 'Request emergency braking and verify positive torque drops'"
+    ],
+    "recommended_action": "No action required; the test remains unaffected."
+   },
+   {
+    "test_id": "TV-012",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "The test verifies wake-up timing, which is unrelated to the change in VCU-DR-01. The 500 ms threshold is not affected by the torque response time modification.",
+    "evidence": [
+     "Procedure: 'Power cycle the ECU; verify readiness within 500 ms.'"
+    ],
+    "recommended_action": "No action required; the test remains unaffected."
+   }
+  ]
+ },
+ "warnings": [],
+ "raw_text": "{\n\n\"change_interpretations\": [\n  {\n    \"requirement_id\": \"VCU-DR-01\",\n    \"nature\": \"tightened\",\n    \"engineering_summary\": \"The maximum allowed response time for driver torque has been reduced from 100 ms to 80 ms. This requires re-evaluation of all tests that measure torque response times, as previous PASS evidence may no longer meet the new stricter requirement.\"\n  }\n],\n\"assessments\": [\n  {\n    \"test_id\": \"TV-001\",\n    \"status\": \"directly_affected\",\n    \"confidence\": \"high\",\n    \"related_requirements\": [\"VCU-DR-01\"],\n    \"reason\": \"The test verifies the 100 ms threshold for torque response time. The new requirement tightens this to 80 ms. The previous PASS evidence (94 ms) now fails the new stricter limit. The test procedure and result must be updated to reflect the new requirement.\",\n    \"evidence\": [\n      \"Procedure: 'confirm requested positive torque no later than 100 ms after pedal validation.'\",\n      \"Previous result: 'PASS (94 ms)'\"\n    ],\n    \"recommended_action\": \"Re-run the test with the new 80 ms threshold and update the test script and result documentation.\"\n  },\n  {\n    \"test_id\": \"TV-002\",\n    \"status\": \"possibly_affected\",\n    \"confidence\": \"medium\",\n    \"related_requirements\": [\"VCU-DR-01\"],\n    \"reason\": \"The test references VCU-DR-01, which was modified. However, the procedure does not explicitly measure response time, and timing evidence is not recorded. The test may plausibly exercise the changed behaviour, but the evidence is insufficient to confirm relevance.\",\n    \"evidence\": [\n      \"Requirement link: VCU-DR-01\",\n      \"Procedure: 'Apply 85% pedal with emergency-brake input'\"\n    ],\n    \"recommended_action\": \"Re-check the test procedure and results to determine if the response time metric is relevant to the change.\"\n  },\n  {\n    \"test_id\": \"TV-003\",\n    \"status\": \"directly_affected\",\n    \"confidence\": \"high\",\n    \"related_requirements\": [\"VCU-DR-01\"],\n    \"reason\": \"The test procedure mentions a 92 ms maximum response time, which is now invalid under the new 80 ms requirement. The test's previous PASS evidence (92 ms) no longer meets the tightened limit. The test must be re-evaluated with the new threshold.\",\n    \"evidence\": [\n      \"Procedure: 'Sweep demand 75\u201395%... recorded maximum 92 ms.'\",\n      \"Previous result: 'PASS (92 ms)'\"\n    ],\n    \"recommended_action\": \"Re-run the test with the new 80 ms threshold and update the test script and result documentation.\"\n  },\n  {\n    \"test_id\": \"TV-004\",\n    \"status\": \"directly_affected\",\n    \"confidence\": \"high\",\n    \"related_requirements\": [\"VCU-DR-01\"],\n    \"reason\": \"The test procedure specifies a 100 ms threshold for brake command latency, which is now tightened to 80 ms. The previous result (88 ms) fails the new stricter requirement. The test must be re-evaluated with the updated threshold.\",\n    \"evidence\": [\n      \"Procedure: 'target brake command latency within 100 ms.'\",\n      \"Previous result: 'PASS (88 ms)'\"\n    ],\n    \"recommended_action\": \"Re-run the test with the new 80 ms threshold and update the test script and result documentation.\"\n  },\n  {\n    \"test_id\": \"TV-005\",\n    \"status\": \"not_affected\",\n    \"confidence\": \"high\",\n    \"related_requirements\": [],\n    \"reason\": \"The test verifies sensor failure handling (VCU-DGN-04), which was not modified. The change to VCU-DR-01 does not affect sensor degradation or diagnostic logging.\",\n    \"evidence\": [\n      \"Requirement link: VCU-DGN-04\",\n      \"Procedure: 'Unplug simulated wheel-speed sensor'\"\n    ],\n    \"recommended_action\": \"No action required; the test remains unaffected.\"\n  },\n  {\n    \"test_id\": \"TV-006\",\n    \"status\": \"not_affected\",\n    \"confidence\": \"high\",\n    \"related_requirements\": [],\n    \"reason\": \"The test verifies mode change logging (VCU-LOG-05), which was not modified. The change to VCU-DR-01 does not affect mode event auditing.\",\n    \"evidence\": [\n      \"Requirement link: VCU-LOG-05\",\n      \"Procedure: 'Change Comfort to Sport'\"\n    ],\n    \"recommended_action\": \"No action required; the test remains unaffected.\"\n  },\n  {\n    \"test_id\": \"TV-007\",\n    \"status\": \"needs_human_review\",\n    \"confidence\": \"low\",\n    \"related_requirements\": [],\n    \"reason\": \"The requirement link is TBD, making traceability broken. The test's procedure mentions 80% pedal, but the requirement is unclear. Ownership and relevance to the change cannot be determined from available information.\",\n    \"evidence\": [\n      \"Requirement link: TBD\",\n      \"Procedure: 'At 80% pedal and elevated load'\"\n    ],\n    \"recommended_action\": \"Clarify the requirement link and determine if the test is relevant to the change.\"\n  },\n  {\n    \"test_id\": \"TV-008\",\n    \"status\": \"not_affected\",\n    \"confidence\": \"high\",\n    \"related_requirements\": [],\n    \"reason\": \"The test references a removed requirement (VCU-OLD-88), which is unrelated to the change. The change to VCU-DR-01 does not affect legacy diagnostic replay.\",\n    \"evidence\": [\n      \"Requirement link: VCU-OLD-88 (unknown_requirement)\",\n      \"Procedure: 'Re-run old diagnostic trace'\"\n    ],\n    \"recommended_action\": \"No action required; the test remains unaffected.\"\n  },\n  {\n    \"test_id\": \"TV-009\",\n    \"status\": \"not_affected\",\n    \"confidence\": \"high\",\n    \"related_requirements\": [],\n    \"reason\": \"The test verifies torque ramp profiles (VCU-MOD-06), which was not modified. The change to VCU-DR-01 does not affect mode-specific torque delivery.\",\n    \"evidence\": [\n      \"Requirement link: VCU-MOD-06\",\n      \"Procedure: 'Compare accelerator response under Sport vs Comfort'\"\n    ],\n    \"recommended_action\": \"No action required; the test remains unaffected.\"\n  },\n  {\n    \"test_id\": \"TV-010\",\n    \"status\": \"not_affected\",\n    \"confidence\": \"high\",\n    \"related_requirements\": [],\n    \"reason\": \"The test verifies pedal signal filtering (VCU-DR-02), which was not modified. The change to VCU-DR-01 does not affect transient spike handling.\",\n    \"evidence\": [\n      \"Requirement link: VCU-DR-02\",\n      \"Procedure: 'Inject 7 ms false pedal pulse'\"\n    ],\n    \"recommended_action\": \"No action required; the test remains unaffected.\"\n  },\n  {\n    \"test_id\": \"TV-011\",\n    \"status\": \"not_affected\",\n    \"confidence\": \"high\",\n    \"related_requirements\": [],\n    \"reason\": \"The test verifies brake override priority (VCU-BRK-03), which was not modified. The change to VCU-DR-01 does not affect brake command latency or priority.\",\n    \"evidence\": [\n      \"Requirement link: VCU-BRK-03\",\n      \"Procedure: 'Request emergency braking and verify positive torque drops'\"\n    ],\n    \"recommended_action\": \"No action required; the test remains unaffected.\"\n  },\n  {\n    \"test_id\": \"TV-012\",\n    \"status\": \"not_affected\",\n    \"confidence\": \"high\",\n    \"related_requirements\": [],\n    \"reason\": \"The test verifies wake-up timing, which is unrelated to the change in VCU-DR-01. The 500 ms threshold is not affected by the torque response time modification.\",\n    \"evidence\": [\n      \"Procedure: 'Power cycle the ECU; verify readiness within 500 ms.'\"\n    ],\n    \"recommended_action\": \"No action required; the test remains unaffected.\"\n  }\n] }"
+}

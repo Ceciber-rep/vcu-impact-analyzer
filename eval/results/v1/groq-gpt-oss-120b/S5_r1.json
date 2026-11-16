@@ -1,0 +1,164 @@
+{
+ "ok": true,
+ "model_label": "groq:openai/gpt-oss-120b",
+ "prompt_version": "v1",
+ "created_at": "2026-11-16T15:19:19+00:00",
+ "latency_s": 54.09,
+ "attempts": 1,
+ "prompt_tokens": 3877,
+ "completion_tokens": 1880,
+ "structured_mode": "json_schema",
+ "result": {
+  "change_interpretations": [
+   {
+    "requirement_id": "VCU-DGN-04",
+    "nature": "reworded_same_meaning",
+    "engineering_summary": "The wording of the wheel\u2011speed loss requirement was changed but the functional intent (enter degraded mode and record a diagnostic event) remains identical, so verification objectives are unchanged."
+   }
+  ],
+  "assessments": [
+   {
+    "test_id": "TV-001",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "The test validates the accelerator\u2011torque response time (100\u202fms) defined in VCU-DR-01, which was not modified.",
+    "evidence": [
+     "PASS (94\u202fms) meets 100\u202fms threshold",
+     "Requirement VCU-DR-01 unchanged"
+    ],
+    "recommended_action": "Retain test unchanged."
+   },
+   {
+    "test_id": "TV-002",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "It checks pedal\u2011brake arbitration against VCU-DR-01 and VCU-BRK-03, both unchanged.",
+    "evidence": [
+     "Procedure uses 85\u202f% pedal, no timing claim",
+     "Both referenced requirements unchanged"
+    ],
+    "recommended_action": "No change needed."
+   },
+   {
+    "test_id": "TV-003",
+    "status": "not_affected",
+    "confidence": "medium",
+    "related_requirements": [],
+    "reason": "The test has no linked requirement and exercises high\u2011load torque timing unrelated to the changed wheel\u2011speed requirement.",
+    "evidence": [
+     "No requirement_reference_raw",
+     "Procedure focuses on torque transient"
+    ],
+    "recommended_action": "Keep test as is; no impact from spec change."
+   },
+   {
+    "test_id": "TV-004",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "Validates emergency\u2011brake latency per VCU-BRK-03, which is unchanged.",
+    "evidence": [
+     "PASS (88\u202fms) vs 100\u202fms limit",
+     "Requirement VCU-BRK-03 unchanged"
+    ],
+    "recommended_action": "No action required."
+   },
+   {
+    "test_id": "TV-005",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [
+     "VCU-DGN-04"
+    ],
+    "reason": "The functional behavior (switch to degraded mode and log a diagnostic event) is identical despite rewording of VCU-DGN-04.",
+    "evidence": [
+     "Procedure matches both old and new text",
+     "Requirement change is purely editorial"
+    ],
+    "recommended_action": "Update test documentation to reference new wording if desired, but test execution remains valid."
+   },
+   {
+    "test_id": "TV-006",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "Logs mode change per VCU-LOG-05, which was not altered.",
+    "evidence": [
+     "Procedure aligns with unchanged requirement"
+    ],
+    "recommended_action": "Retain test unchanged."
+   },
+   {
+    "test_id": "TV-007",
+    "status": "needs_human_review",
+    "confidence": "low",
+    "related_requirements": [],
+    "reason": "Requirement link is TBD, breaking traceability; relevance to the wheel\u2011speed change cannot be determined.",
+    "evidence": [
+     "requirement_reference_raw is \"TBD\"",
+     "Workshop note flags TBD links as unvalidated"
+    ],
+    "recommended_action": "Clarify the intended requirement and ownership before deciding impact."
+   },
+   {
+    "test_id": "TV-008",
+    "status": "needs_human_review",
+    "confidence": "low",
+    "related_requirements": [],
+    "reason": "Links to an unknown requirement (VCU-OLD-88); traceability is broken, so impact cannot be assessed.",
+    "evidence": [
+     "parsed_links status \"unknown_requirement\""
+    ],
+    "recommended_action": "Identify the current requirement that replaces VCU-OLD-88 and update the test record."
+   },
+   {
+    "test_id": "TV-009",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "Evaluates torque\u2011ramp profiles per VCU-MOD-06, which is unchanged.",
+    "evidence": [
+     "Procedure matches requirement VCU-MOD-06"
+    ],
+    "recommended_action": "No change needed."
+   },
+   {
+    "test_id": "TV-010",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "Checks pedal\u2011spike filtering per VCU-DR-02, unchanged by the spec revision.",
+    "evidence": [
+     "Procedure injects 7\u202fms pulse as per requirement"
+    ],
+    "recommended_action": "Retain test as is."
+   },
+   {
+    "test_id": "TV-011",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "Validates brake\u2011override priority defined in VCU-BRK-03, which is unchanged.",
+    "evidence": [
+     "Procedure aligns with unchanged requirement"
+    ],
+    "recommended_action": "No action required."
+   },
+   {
+    "test_id": "TV-012",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "Tests ECU wake\u2011up timing; no link to the changed wheel\u2011speed requirement.",
+    "evidence": [
+     "Procedure and result unrelated to VCU-DGN-04"
+    ],
+    "recommended_action": "Keep test unchanged."
+   }
+  ]
+ },
+ "warnings": [],
+ "raw_text": "{\"change_interpretations\":[{\"requirement_id\":\"VCU-DGN-04\",\"nature\":\"reworded_same_meaning\",\"engineering_summary\":\"The wording of the wheel\u2011speed loss requirement was changed but the functional intent (enter degraded mode and record a diagnostic event) remains identical, so verification objectives are unchanged.\"}],\"assessments\":[{\"test_id\":\"TV-001\",\"status\":\"not_affected\",\"confidence\":\"high\",\"related_requirements\":[],\"reason\":\"The test validates the accelerator\u2011torque response time (100\u202fms) defined in VCU-DR-01, which was not modified.\",\"evidence\":[\"PASS (94\u202fms) meets 100\u202fms threshold\",\"Requirement VCU-DR-01 unchanged\"],\"recommended_action\":\"Retain test unchanged.\"},{\"test_id\":\"TV-002\",\"status\":\"not_affected\",\"confidence\":\"high\",\"related_requirements\":[],\"reason\":\"It checks pedal\u2011brake arbitration against VCU-DR-01 and VCU-BRK-03, both unchanged.\",\"evidence\":[\"Procedure uses 85\u202f% pedal, no timing claim\",\"Both referenced requirements unchanged\"],\"recommended_action\":\"No change needed.\"},{\"test_id\":\"TV-003\",\"status\":\"not_affected\",\"confidence\":\"medium\",\"related_requirements\":[],\"reason\":\"The test has no linked requirement and exercises high\u2011load torque timing unrelated to the changed wheel\u2011speed requirement.\",\"evidence\":[\"No requirement_reference_raw\",\"Procedure focuses on torque transient\"],\"recommended_action\":\"Keep test as is; no impact from spec change.\"},{\"test_id\":\"TV-004\",\"status\":\"not_affected\",\"confidence\":\"high\",\"related_requirements\":[],\"reason\":\"Validates emergency\u2011brake latency per VCU-BRK-03, which is unchanged.\",\"evidence\":[\"PASS (88\u202fms) vs 100\u202fms limit\",\"Requirement VCU-BRK-03 unchanged\"],\"recommended_action\":\"No action required.\"},{\"test_id\":\"TV-005\",\"status\":\"not_affected\",\"confidence\":\"high\",\"related_requirements\":[\"VCU-DGN-04\"],\"reason\":\"The functional behavior (switch to degraded mode and log a diagnostic event) is identical despite rewording of VCU-DGN-04.\",\"evidence\":[\"Procedure matches both old and new text\",\"Requirement change is purely editorial\"],\"recommended_action\":\"Update test documentation to reference new wording if desired, but test execution remains valid.\"},{\"test_id\":\"TV-006\",\"status\":\"not_affected\",\"confidence\":\"high\",\"related_requirements\":[],\"reason\":\"Logs mode change per VCU-LOG-05, which was not altered.\",\"evidence\":[\"Procedure aligns with unchanged requirement\"],\"recommended_action\":\"Retain test unchanged.\"},{\"test_id\":\"TV-007\",\"status\":\"needs_human_review\",\"confidence\":\"low\",\"related_requirements\":[],\"reason\":\"Requirement link is TBD, breaking traceability; relevance to the wheel\u2011speed change cannot be determined.\",\"evidence\":[\"requirement_reference_raw is \\\"TBD\\\"\",\"Workshop note flags TBD links as unvalidated\"],\"recommended_action\":\"Clarify the intended requirement and ownership before deciding impact.\"},{\"test_id\":\"TV-008\",\"status\":\"needs_human_review\",\"confidence\":\"low\",\"related_requirements\":[],\"reason\":\"Links to an unknown requirement (VCU-OLD-88); traceability is broken, so impact cannot be assessed.\",\"evidence\":[\"parsed_links status \\\"unknown_requirement\\\"\"],\"recommended_action\":\"Identify the current requirement that replaces VCU-OLD-88 and update the test record.\"},{\"test_id\":\"TV-009\",\"status\":\"not_affected\",\"confidence\":\"high\",\"related_requirements\":[],\"reason\":\"Evaluates torque\u2011ramp profiles per VCU-MOD-06, which is unchanged.\",\"evidence\":[\"Procedure matches requirement VCU-MOD-06\"],\"recommended_action\":\"No change needed.\"},{\"test_id\":\"TV-010\",\"status\":\"not_affected\",\"confidence\":\"high\",\"related_requirements\":[],\"reason\":\"Checks pedal\u2011spike filtering per VCU-DR-02, unchanged by the spec revision.\",\"evidence\":[\"Procedure injects 7\u202fms pulse as per requirement\"],\"recommended_action\":\"Retain test as is.\"},{\"test_id\":\"TV-011\",\"status\":\"not_affected\",\"confidence\":\"high\",\"related_requirements\":[],\"reason\":\"Validates brake\u2011override priority defined in VCU-BRK-03, which is unchanged.\",\"evidence\":[\"Procedure aligns with unchanged requirement\"],\"recommended_action\":\"No action required.\"},{\"test_id\":\"TV-012\",\"status\":\"not_affected\",\"confidence\":\"high\",\"related_requirements\":[],\"reason\":\"Tests ECU wake\u2011up timing; no link to the changed wheel\u2011speed requirement.\",\"evidence\":[\"Procedure and result unrelated to VCU-DGN-04\"],\"recommended_action\":\"Keep test unchanged.\"}]}"
+}

@@ -1,0 +1,170 @@
+{
+ "ok": true,
+ "model_label": "groq:openai/gpt-oss-120b",
+ "prompt_version": "v1",
+ "created_at": "2026-11-16T15:16:46+00:00",
+ "latency_s": 51.64,
+ "attempts": 1,
+ "prompt_tokens": 3904,
+ "completion_tokens": 2367,
+ "structured_mode": "json_schema",
+ "result": {
+  "change_interpretations": [
+   {
+    "requirement_id": "VCU-DR-02",
+    "nature": "tightened",
+    "engineering_summary": "The controller must now ignore transient pedal spikes shorter than 5\u202fms instead of 10\u202fms, halving the allowed duration and tightening the input\u2011validation filter."
+   }
+  ],
+  "assessments": [
+   {
+    "test_id": "TV-001",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "The test validates torque response time after a validated pedal step, not the handling of short spikes, and references VCU-DR-01 only.",
+    "evidence": [
+     "procedure: Step validated accelerator demand to 75%; confirm requested positive torque no later than 100 ms after pedal validation.",
+     "requirement_reference_raw: VCU-DR-01"
+    ],
+    "recommended_action": "No change needed for this test."
+   },
+   {
+    "test_id": "TV-002",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "The test checks arbitration between high pedal demand and emergency brake, with no spike timing involved, and links to VCU-DR-01 and VCU-BRK-03.",
+    "evidence": [
+     "procedure: Apply 85% pedal with emergency\u2011brake input; inspect torque and pressure command priorities.",
+     "requirement_reference_raw: VCU-DR-01; VCU-BRK-03"
+    ],
+    "recommended_action": "No change needed for this test."
+   },
+   {
+    "test_id": "TV-003",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "The test measures high\u2011load torque transients over a demand sweep; it does not involve transient pedal spikes and has no requirement link.",
+    "evidence": [
+     "procedure: Sweep demand 75\u201395% at nominal and high\u2011load cases; recorded maximum 92 ms.",
+     "requirement_reference_raw: (empty)"
+    ],
+    "recommended_action": "No change needed for this test."
+   },
+   {
+    "test_id": "TV-004",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "This test validates emergency\u2011brake actuator latency (VCU-BRK-03) and uses a different clock; it does not address pedal\u2011spike filtering.",
+    "evidence": [
+     "procedure: Trigger emergency brake alone; target brake command latency within 100 ms.",
+     "requirement_reference_raw: VCU-BRK-03"
+    ],
+    "recommended_action": "No change needed for this test."
+   },
+   {
+    "test_id": "TV-005",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "The test verifies wheel\u2011speed sensor failure handling (VCU-DGN-04) and is unrelated to pedal\u2011spike timing.",
+    "evidence": [
+     "procedure: Unplug simulated wheel\u2011speed sensor and confirm degraded mode + fault log.",
+     "requirement_reference_raw: VCU-DGN-04"
+    ],
+    "recommended_action": "No change needed for this test."
+   },
+   {
+    "test_id": "TV-006",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "The test audits mode\u2011change logging (VCU-LOG-05) and does not involve pedal\u2011signal validation.",
+    "evidence": [
+     "procedure: Change Comfort to Sport; log timestamp and build identifier.",
+     "requirement_reference_raw: VCU-LOG-05"
+    ],
+    "recommended_action": "No change needed for this test."
+   },
+   {
+    "test_id": "TV-007",
+    "status": "needs_human_review",
+    "confidence": "low",
+    "related_requirements": [],
+    "reason": "The test has a TBD requirement link and exercises high pedal demand; it could involve input validation but the missing traceability prevents a definitive decision.",
+    "evidence": [
+     "requirement_reference_raw: TBD",
+     "procedure: At 80% pedal and elevated load, check that torque delivery is consistent with vehicle response definition."
+    ],
+    "recommended_action": "Clarify the intended requirement link and determine if spike filtering is relevant."
+   },
+   {
+    "test_id": "TV-008",
+    "status": "needs_human_review",
+    "confidence": "low",
+    "related_requirements": [],
+    "reason": "The test references an unknown requirement (VCU-OLD-88); without a valid link it is unclear whether the change to VCU-DR-02 impacts it.",
+    "evidence": [
+     "requirement_reference_raw: VCU-OLD-88",
+     "parsed_links status: unknown_requirement"
+    ],
+    "recommended_action": "Identify the current requirement that replaces VCU-OLD-88 and assess relevance."
+   },
+   {
+    "test_id": "TV-009",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "The test compares torque ramps between Comfort and Sport modes (VCU-MOD-06) and contains no spike\u2011timing checks.",
+    "evidence": [
+     "procedure: Compare accelerator response under Sport vs Comfort during ramp and release.",
+     "requirement_reference_raw: VCU-MOD-06"
+    ],
+    "recommended_action": "No change needed for this test."
+   },
+   {
+    "test_id": "TV-010",
+    "status": "directly_affected",
+    "confidence": "high",
+    "related_requirements": [
+     "VCU-DR-02"
+    ],
+    "reason": "The test injects a 7\u202fms false pedal pulse to verify that no torque request propagates; the new limit of 5\u202fms means a 7\u202fms spike should no longer be ignored, invalidating the current PASS evidence.",
+    "evidence": [
+     "procedure: Inject 7 ms false pedal pulse and verify no propagated torque request.",
+     "numeric change: spike ignore threshold reduced from 10 ms to 5 ms."
+    ],
+    "recommended_action": "Update the test to use a \u22645\u202fms pulse and revise the acceptance criteria; re\u2011run to capture new behavior."
+   },
+   {
+    "test_id": "TV-011",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "The test validates brake\u2011override priority (VCU-BRK-03) and does not involve transient pedal spikes.",
+    "evidence": [
+     "procedure: While demand is high, request emergency braking and verify positive torque drops according to brake priority.",
+     "requirement_reference_raw: VCU-BRK-03"
+    ],
+    "recommended_action": "No change needed for this test."
+   },
+   {
+    "test_id": "TV-012",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "The wake\u2011up timing test (no requirement link) measures ECU power\u2011up latency and is unrelated to pedal\u2011spike filtering.",
+    "evidence": [
+     "procedure: Power cycle the ECU; verify readiness within 500 ms.",
+     "extracted_values: 433 ms (result)"
+    ],
+    "recommended_action": "No change needed for this test."
+   }
+  ]
+ },
+ "warnings": [],
+ "raw_text": "{\n  \"change_interpretations\": [\n    {\n      \"requirement_id\": \"VCU-DR-02\",\n      \"nature\": \"tightened\",\n      \"engineering_summary\": \"The controller must now ignore transient pedal spikes shorter than 5\u202fms instead of 10\u202fms, halving the allowed duration and tightening the input\u2011validation filter.\"\n    }\n  ],\n  \"assessments\": [\n    {\n      \"test_id\": \"TV-001\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"reason\": \"The test validates torque response time after a validated pedal step, not the handling of short spikes, and references VCU-DR-01 only.\",\n      \"evidence\": [\n        \"procedure: Step validated accelerator demand to 75%; confirm requested positive torque no later than 100 ms after pedal validation.\",\n        \"requirement_reference_raw: VCU-DR-01\"\n      ],\n      \"recommended_action\": \"No change needed for this test.\"\n    },\n    {\n      \"test_id\": \"TV-002\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"reason\": \"The test checks arbitration between high pedal demand and emergency brake, with no spike timing involved, and links to VCU-DR-01 and VCU-BRK-03.\",\n      \"evidence\": [\n        \"procedure: Apply 85% pedal with emergency\u2011brake input; inspect torque and pressure command priorities.\",\n        \"requirement_reference_raw: VCU-DR-01; VCU-BRK-03\"\n      ],\n      \"recommended_action\": \"No change needed for this test.\"\n    },\n    {\n      \"test_id\": \"TV-003\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"reason\": \"The test measures high\u2011load torque transients over a demand sweep; it does not involve transient pedal spikes and has no requirement link.\",\n      \"evidence\": [\n        \"procedure: Sweep demand 75\u201395% at nominal and high\u2011load cases; recorded maximum 92 ms.\",\n        \"requirement_reference_raw: (empty)\"\n      ],\n      \"recommended_action\": \"No change needed for this test.\"\n    },\n    {\n      \"test_id\": \"TV-004\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"reason\": \"This test validates emergency\u2011brake actuator latency (VCU-BRK-03) and uses a different clock; it does not address pedal\u2011spike filtering.\",\n      \"evidence\": [\n        \"procedure: Trigger emergency brake alone; target brake command latency within 100 ms.\",\n        \"requirement_reference_raw: VCU-BRK-03\"\n      ],\n      \"recommended_action\": \"No change needed for this test.\"\n    },\n    {\n      \"test_id\": \"TV-005\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"reason\": \"The test verifies wheel\u2011speed sensor failure handling (VCU-DGN-04) and is unrelated to pedal\u2011spike timing.\",\n      \"evidence\": [\n        \"procedure: Unplug simulated wheel\u2011speed sensor and confirm degraded mode + fault log.\",\n        \"requirement_reference_raw: VCU-DGN-04\"\n      ],\n      \"recommended_action\": \"No change needed for this test.\"\n    },\n    {\n      \"test_id\": \"TV-006\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"reason\": \"The test audits mode\u2011change logging (VCU-LOG-05) and does not involve pedal\u2011signal validation.\",\n      \"evidence\": [\n        \"procedure: Change Comfort to Sport; log timestamp and build identifier.\",\n        \"requirement_reference_raw: VCU-LOG-05\"\n      ],\n      \"recommended_action\": \"No change needed for this test.\"\n    },\n    {\n      \"test_id\": \"TV-007\",\n      \"status\": \"needs_human_review\",\n      \"confidence\": \"low\",\n      \"related_requirements\": [],\n      \"reason\": \"The test has a TBD requirement link and exercises high pedal demand; it could involve input validation but the missing traceability prevents a definitive decision.\",\n      \"evidence\": [\n        \"requirement_reference_raw: TBD\",\n        \"procedure: At 80% pedal and elevated load, check that torque delivery is consistent with vehicle response definition.\"\n      ],\n      \"recommended_action\": \"Clarify the intended requirement link and determine if spike filtering is relevant.\"\n    },\n    {\n      \"test_id\": \"TV-008\",\n      \"status\": \"needs_human_review\",\n      \"confidence\": \"low\",\n      \"related_requirements\": [],\n      \"reason\": \"The test references an unknown requirement (VCU-OLD-88); without a valid link it is unclear whether the change to VCU-DR-02 impacts it.\",\n      \"evidence\": [\n        \"requirement_reference_raw: VCU-OLD-88\",\n        \"parsed_links status: unknown_requirement\"\n      ],\n      \"recommended_action\": \"Identify the current requirement that replaces VCU-OLD-88 and assess relevance.\"\n    },\n    {\n      \"test_id\": \"TV-009\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"reason\": \"The test compares torque ramps between Comfort and Sport modes (VCU-MOD-06) and contains no spike\u2011timing checks.\",\n      \"evidence\": [\n        \"procedure: Compare accelerator response under Sport vs Comfort during ramp and release.\",\n        \"requirement_reference_raw: VCU-MOD-06\"\n      ],\n      \"recommended_action\": \"No change needed for this test.\"\n    },\n    {\n      \"test_id\": \"TV-010\",\n      \"status\": \"directly_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [\n        \"VCU-DR-02\"\n      ],\n      \"reason\": \"The test injects a 7\u202fms false pedal pulse to verify that no torque request propagates; the new limit of 5\u202fms means a 7\u202fms spike should no longer be ignored, invalidating the current PASS evidence.\",\n      \"evidence\": [\n        \"procedure: Inject 7 ms false pedal pulse and verify no propagated torque request.\",\n        \"numeric change: spike ignore threshold reduced from 10 ms to 5 ms.\"\n      ],\n      \"recommended_action\": \"Update the test to use a \u22645\u202fms pulse and revise the acceptance criteria; re\u2011run to capture new behavior.\"\n    },\n    {\n      \"test_id\": \"TV-011\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"reason\": \"The test validates brake\u2011override priority (VCU-BRK-03) and does not involve transient pedal spikes.\",\n      \"evidence\": [\n        \"procedure: While demand is high, request emergency braking and verify positive torque drops according to brake priority.\",\n        \"requirement_reference_raw: VCU-BRK-03\"\n      ],\n      \"recommended_action\": \"No change needed for this test.\"\n    },\n    {\n      \"test_id\": \"TV-012\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"reason\": \"The wake\u2011up timing test (no requirement link) measures ECU power\u2011up latency and is unrelated to pedal\u2011spike filtering.\",\n      \"evidence\": [\n        \"procedure: Power cycle the ECU; verify readiness within 500 ms.\",\n        \"extracted_values: 433 ms (result)\"\n      ],\n      \"recommended_action\": \"No change needed for this test.\"\n    }\n  ]\n}"
+}

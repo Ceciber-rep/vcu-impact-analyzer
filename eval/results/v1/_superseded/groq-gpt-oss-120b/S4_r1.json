@@ -1,0 +1,170 @@
+{
+ "ok": true,
+ "model_label": "groq:openai/gpt-oss-120b",
+ "prompt_version": "v1",
+ "created_at": "2026-11-16T15:18:27+00:00",
+ "latency_s": 108.86,
+ "attempts": 1,
+ "prompt_tokens": 3975,
+ "completion_tokens": 3072,
+ "structured_mode": "json_object",
+ "result": {
+  "change_interpretations": [
+   {
+    "requirement_id": "VCU-DR-01",
+    "nature": "relaxed",
+    "engineering_summary": "The allowed torque response time increased from 100\u202fms to 120\u202fms, giving more margin for the controller to issue the demanded torque. Verification must ensure the response still meets the new 120\u202fms limit."
+   }
+  ],
+  "assessments": [
+   {
+    "test_id": "TV-001",
+    "status": "directly_affected",
+    "confidence": "high",
+    "related_requirements": [
+     "VCU-DR-01"
+    ],
+    "reason": "The test procedure asserts a 100\u202fms deadline, but the requirement now permits 120\u202fms; the script threshold is outdated.",
+    "evidence": [
+     "procedure: \"... no later than 100 ms after pedal validation\"",
+     "comment: \"100 ms threshold in script\"",
+     "previous_result: \"PASS (94 ms)\"",
+     "spec change: limit from 100\u202fms to 120\u202fms"
+    ],
+    "recommended_action": "Update the test script to use a 120\u202fms deadline and re\u2011run the test."
+   },
+   {
+    "test_id": "TV-002",
+    "status": "possibly_affected",
+    "confidence": "medium",
+    "related_requirements": [
+     "VCU-DR-01"
+    ],
+    "reason": "The test references VCU-DR-01 but does not record torque response timing, so it may need timing verification after the limit change.",
+    "evidence": [
+     "requirement_reference_raw: \"VCU-DR-01; VCU-BRK-03\"",
+     "comment: \"Timing not reported in old evidence\""
+    ],
+    "recommended_action": "Add measurement of torque response time and verify it is \u2264\u202f120\u202fms."
+   },
+   {
+    "test_id": "TV-003",
+    "status": "needs_human_review",
+    "confidence": "low",
+    "related_requirements": [],
+    "reason": "No requirement link is provided; although the test records a 92\u202fms response, its relevance to the changed VCU-DR-01 cannot be confirmed.",
+    "evidence": [
+     "requirement_reference_raw: \"\" (missing)",
+     "extracted_values include \"92 ms (from result)\""
+    ],
+    "recommended_action": "Clarify which requirement this test validates and map it to VCU-DR-01 if applicable."
+   },
+   {
+    "test_id": "TV-004",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "The test validates brake override latency (VCU-BRK-03) and does not involve torque response timing.",
+    "evidence": [
+     "requirement_reference_raw: \"VCU-BRK-03\"",
+     "procedure: \"target brake command latency within 100 ms\""
+    ],
+    "recommended_action": "No change required."
+   },
+   {
+    "test_id": "TV-005",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "The test checks sensor failure handling (VCU-DGN-04), unrelated to the torque response time change.",
+    "evidence": [
+     "requirement_reference_raw: \"VCU-DGN-04\"",
+     "procedure: \"Unplug simulated wheel-speed sensor and confirm degraded mode\""
+    ],
+    "recommended_action": "No change required."
+   },
+   {
+    "test_id": "TV-006",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "The test verifies logging of mode changes (VCU-LOG-05) and does not address torque response timing.",
+    "evidence": [
+     "requirement_reference_raw: \"VCU-LOG-05\"",
+     "procedure: \"Change Comfort to Sport; log timestamp and build identifier\""
+    ],
+    "recommended_action": "No change required."
+   },
+   {
+    "test_id": "TV-007",
+    "status": "needs_human_review",
+    "confidence": "low",
+    "related_requirements": [],
+    "reason": "Requirement link is TBD, so traceability is broken and relevance to the changed requirement cannot be determined.",
+    "evidence": [
+     "requirement_reference_raw: \"TBD\"",
+     "parsed_links status: \"tbd\""
+    ],
+    "recommended_action": "Determine the correct requirement ID and assess whether the test covers torque response timing."
+   },
+   {
+    "test_id": "TV-008",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "The test replays an old diagnostic trace (unknown requirement) and does not involve torque response timing.",
+    "evidence": [
+     "requirement_reference_raw: \"VCU-OLD-88\"",
+     "parsed_links status: \"unknown_requirement\""
+    ],
+    "recommended_action": "No change required."
+   },
+   {
+    "test_id": "TV-009",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "The test compares torque ramp profiles (VCU-MOD-06) and contains no timing assertion related to VCU-DR-01.",
+    "evidence": [
+     "requirement_reference_raw: \"VCU-MOD-06\"",
+     "comment: \"No quantitative response-time assertion\""
+    ],
+    "recommended_action": "No change required."
+   },
+   {
+    "test_id": "TV-010",
+    "status": "needs_human_review",
+    "confidence": "low",
+    "related_requirements": [],
+    "reason": "No assessment was produced by the model for this test (added by post-check).",
+    "evidence": [],
+    "recommended_action": "Assess this test manually."
+   },
+   {
+    "test_id": "TV-011",
+    "status": "needs_human_review",
+    "confidence": "low",
+    "related_requirements": [],
+    "reason": "No assessment was produced by the model for this test (added by post-check).",
+    "evidence": [],
+    "recommended_action": "Assess this test manually."
+   },
+   {
+    "test_id": "TV-012",
+    "status": "needs_human_review",
+    "confidence": "low",
+    "related_requirements": [],
+    "reason": "No assessment was produced by the model for this test (added by post-check).",
+    "evidence": [],
+    "recommended_action": "Assess this test manually."
+   }
+  ]
+ },
+ "warnings": [
+  "json_schema not accepted (Error code: 400 - max completion tokens reached before generating a valid document: the output was truncated to fit max_completion_tokens and is missing require); fell back to json_object",
+  "LLM returned no assessment for TV-010; marked needs_human_review.",
+  "LLM returned no assessment for TV-011; marked needs_human_review.",
+  "LLM returned no assessment for TV-012; marked needs_human_review."
+ ],
+ "raw_text": "{\n  \"change_interpretations\": [\n    {\n      \"requirement_id\": \"VCU-DR-01\",\n      \"nature\": \"relaxed\",\n      \"engineering_summary\": \"The allowed torque response time increased from 100\u202fms to 120\u202fms, giving more margin for the controller to issue the demanded torque. Verification must ensure the response still meets the new 120\u202fms limit.\"\n    }\n  ],\n  \"assessments\": [\n    {\n      \"test_id\": \"TV-001\",\n      \"status\": \"directly_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [\"VCU-DR-01\"],\n      \"reason\": \"The test procedure asserts a 100\u202fms deadline, but the requirement now permits 120\u202fms; the script threshold is outdated.\",\n      \"evidence\": [\n        \"procedure: \\\"... no later than 100 ms after pedal validation\\\"\",\n        \"comment: \\\"100 ms threshold in script\\\"\",\n        \"previous_result: \\\"PASS (94 ms)\\\"\",\n        \"spec change: limit from 100\u202fms to 120\u202fms\"\n      ],\n      \"recommended_action\": \"Update the test script to use a 120\u202fms deadline and re\u2011run the test.\"\n    },\n    {\n      \"test_id\": \"TV-002\",\n      \"status\": \"possibly_affected\",\n      \"confidence\": \"medium\",\n      \"related_requirements\": [\"VCU-DR-01\"],\n      \"reason\": \"The test references VCU-DR-01 but does not record torque response timing, so it may need timing verification after the limit change.\",\n      \"evidence\": [\n        \"requirement_reference_raw: \\\"VCU-DR-01; VCU-BRK-03\\\"\",\n        \"comment: \\\"Timing not reported in old evidence\\\"\"\n      ],\n      \"recommended_action\": \"Add measurement of torque response time and verify it is \u2264\u202f120\u202fms.\"\n    },\n    {\n      \"test_id\": \"TV-003\",\n      \"status\": \"needs_human_review\",\n      \"confidence\": \"low\",\n      \"related_requirements\": [],\n      \"reason\": \"No requirement link is provided; although the test records a 92\u202fms response, its relevance to the changed VCU-DR-01 cannot be confirmed.\",\n      \"evidence\": [\n        \"requirement_reference_raw: \\\"\\\" (missing)\",\n        \"extracted_values include \\\"92 ms (from result)\\\"\"\n      ],\n      \"recommended_action\": \"Clarify which requirement this test validates and map it to VCU-DR-01 if applicable.\"\n    },\n    {\n      \"test_id\": \"TV-004\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"reason\": \"The test validates brake override latency (VCU-BRK-03) and does not involve torque response timing.\",\n      \"evidence\": [\n        \"requirement_reference_raw: \\\"VCU-BRK-03\\\"\",\n        \"procedure: \\\"target brake command latency within 100 ms\\\"\"\n      ],\n      \"recommended_action\": \"No change required.\"\n    },\n    {\n      \"test_id\": \"TV-005\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"reason\": \"The test checks sensor failure handling (VCU-DGN-04), unrelated to the torque response time change.\",\n      \"evidence\": [\n        \"requirement_reference_raw: \\\"VCU-DGN-04\\\"\",\n        \"procedure: \\\"Unplug simulated wheel-speed sensor and confirm degraded mode\\\"\"\n      ],\n      \"recommended_action\": \"No change required.\"\n    },\n    {\n      \"test_id\": \"TV-006\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"reason\": \"The test verifies logging of mode changes (VCU-LOG-05) and does not address torque response timing.\",\n      \"evidence\": [\n        \"requirement_reference_raw: \\\"VCU-LOG-05\\\"\",\n        \"procedure: \\\"Change Comfort to Sport; log timestamp and build identifier\\\"\"\n      ],\n      \"recommended_action\": \"No change required.\"\n    },\n    {\n      \"test_id\": \"TV-007\",\n      \"status\": \"needs_human_review\",\n      \"confidence\": \"low\",\n      \"related_requirements\": [],\n      \"reason\": \"Requirement link is TBD, so traceability is broken and relevance to the changed requirement cannot be determined.\",\n      \"evidence\": [\n        \"requirement_reference_raw: \\\"TBD\\\"\",\n        \"parsed_links status: \\\"tbd\\\"\"\n      ],\n      \"recommended_action\": \"Determine the correct requirement ID and assess whether the test covers torque response timing.\"\n    },\n    {\n      \"test_id\": \"TV-008\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"reason\": \"The test replays an old diagnostic trace (unknown requirement) and does not involve torque response timing.\",\n      \"evidence\": [\n        \"requirement_reference_raw: \\\"VCU-OLD-88\\\"\",\n        \"parsed_links status: \\\"unknown_requirement\\\"\"\n      ],\n      \"recommended_action\": \"No change required.\"\n    },\n    {\n      \"test_id\": \"TV-009\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"reason\": \"The test compares torque ramp profiles (VCU-MOD-06) and contains no timing assertion related to VCU-DR-01.\",\n      \"evidence\": [\n        \"requirement_reference_raw: \\\"VCU-MOD-06\\\"\",\n        \"comment: \\\"No quantitative response-time assertion\\\"\"\n      ],\n      \"recommended_action\": \"No change required.\"\n    }]}"
+}

@@ -1,0 +1,174 @@
+{
+ "ok": true,
+ "model_label": "groq:openai/gpt-oss-120b",
+ "prompt_version": "v1",
+ "created_at": "2026-11-16T15:15:18+00:00",
+ "latency_s": 64.61,
+ "attempts": 1,
+ "prompt_tokens": 3948,
+ "completion_tokens": 3072,
+ "structured_mode": "json_schema",
+ "result": {
+  "change_interpretations": [
+   {
+    "requirement_id": "VCU-DR-01",
+    "nature": "tightened",
+    "engineering_summary": "Response\u2011time requirement for positive torque after a >70\u202f% pedal demand was reduced from 100\u202fms to 80\u202fms, tightening the allowed latency by 20\u202fms; verification must ensure all relevant tests meet the new \u226480\u202fms limit."
+   }
+  ],
+  "assessments": [
+   {
+    "test_id": "TV-001",
+    "status": "directly_affected",
+    "confidence": "high",
+    "related_requirements": [
+     "VCU-DR-01"
+    ],
+    "reason": "The test verifies the driver torque response time against a 100\u202fms limit, but the requirement was tightened to 80\u202fms and the previous PASS value (94\u202fms) now exceeds the new limit.",
+    "evidence": [
+     "Procedure specifies 100\u202fms threshold",
+     "Previous result PASS (94\u202fms)",
+     "New requirement limit 80\u202fms"
+    ],
+    "recommended_action": "Update the test procedure to use an 80\u202fms limit and re\u2011run to obtain evidence."
+   },
+   {
+    "test_id": "TV-002",
+    "status": "possibly_affected",
+    "confidence": "medium",
+    "related_requirements": [
+     "VCU-DR-01"
+    ],
+    "reason": "The test includes VCU-DR-01 but does not record the torque response time, so it may no longer demonstrate compliance with the tightened 80\u202fms limit.",
+    "evidence": [
+     "Parsed links include VCU-DR-01",
+     "Comment notes timing not reported"
+    ],
+    "recommended_action": "Add measurement of torque response latency to the test and verify against 80\u202fms."
+   },
+   {
+    "test_id": "TV-003",
+    "status": "possibly_affected",
+    "confidence": "medium",
+    "related_requirements": [
+     "VCU-DR-01"
+    ],
+    "reason": "The test measures a maximum torque response of 92\u202fms, which exceeds the new 80\u202fms limit, but it has no explicit requirement link, making its relevance uncertain.",
+    "evidence": [
+     "Extracted value 92\u202fms (from result)",
+     "No requirement reference"
+    ],
+    "recommended_action": "Confirm whether this test is intended for VCU-DR-01 and adjust the acceptance criterion to \u226480\u202fms."
+   },
+   {
+    "test_id": "TV-004",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "The test validates brake actuator latency (100\u202fms) and is linked only to VCU-BRK-03; it does not assess driver torque response time.",
+    "evidence": [
+     "Requirement link VCU-BRK-03 only",
+     "Procedure targets brake command latency"
+    ],
+    "recommended_action": "No change required."
+   },
+   {
+    "test_id": "TV-005",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "The test checks sensor failure handling per VCU-DGN-04 and does not involve torque response timing.",
+    "evidence": [
+     "Requirement link VCU-DGN-04",
+     "Procedure description"
+    ],
+    "recommended_action": "No change required."
+   },
+   {
+    "test_id": "TV-006",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "The test audits logging per VCU-LOG-05 and is unrelated to torque response timing.",
+    "evidence": [
+     "Requirement link VCU-LOG-05",
+     "Procedure description"
+    ],
+    "recommended_action": "No change required."
+   },
+   {
+    "test_id": "TV-007",
+    "status": "needs_human_review",
+    "confidence": "low",
+    "related_requirements": [],
+    "reason": "The test has a TBD requirement link, so its relevance to the tightened torque response time cannot be determined.",
+    "evidence": [
+     "Requirement_reference_raw is 'TBD'",
+     "Parsed link status tbd"
+    ],
+    "recommended_action": "Clarify the requirement association before assessing impact."
+   },
+   {
+    "test_id": "TV-008",
+    "status": "needs_human_review",
+    "confidence": "low",
+    "related_requirements": [],
+    "reason": "The test references an unknown requirement VCU-OLD-88, which is not part of the changed set, making impact unclear.",
+    "evidence": [
+     "Requirement_reference_raw VCU-OLD-88",
+     "Parsed link status unknown_requirement"
+    ],
+    "recommended_action": "Identify the current requirement mapping for this test."
+   },
+   {
+    "test_id": "TV-009",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "The test compares torque ramps between modes per VCU-MOD-06 and contains no quantitative response\u2011time check.",
+    "evidence": [
+     "Requirement link VCU-MOD-06",
+     "Comment notes no quantitative response\u2011time assertion"
+    ],
+    "recommended_action": "No change required."
+   },
+   {
+    "test_id": "TV-010",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "The test validates spike filtering per VCU-DR-02 and does not measure torque response latency.",
+    "evidence": [
+     "Requirement link VCU-DR-02",
+     "Procedure focuses on 7\u202fms pulse"
+    ],
+    "recommended_action": "No change required."
+   },
+   {
+    "test_id": "TV-011",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "The test verifies brake override priority per VCU-BRK-03 and does not involve the driver torque response time.",
+    "evidence": [
+     "Requirement link VCU-BRK-03",
+     "Procedure description"
+    ],
+    "recommended_action": "No change required."
+   },
+   {
+    "test_id": "TV-012",
+    "status": "needs_human_review",
+    "confidence": "low",
+    "related_requirements": [],
+    "reason": "No assessment was produced by the model for this test (added by post-check).",
+    "evidence": [],
+    "recommended_action": "Assess this test manually."
+   }
+  ]
+ },
+ "warnings": [
+  "LLM returned no assessment for TV-012; marked needs_human_review."
+ ],
+ "raw_text": "{\"change_interpretations\":[{\"requirement_id\":\"VCU-DR-01\",\"nature\":\"tightened\",\"engineering_summary\":\"Response\u2011time requirement for positive torque after a >70\u202f% pedal demand was reduced from 100\u202fms to 80\u202fms, tightening the allowed latency by 20\u202fms; verification must ensure all relevant tests meet the new \u226480\u202fms limit.\"}],\"assessments\":[{\"test_id\":\"TV-001\",\"status\":\"directly_affected\",\"confidence\":\"high\",\"related_requirements\":[\"VCU-DR-01\"],\"reason\":\"The test verifies the driver torque response time against a 100\u202fms limit, but the requirement was tightened to 80\u202fms and the previous PASS value (94\u202fms) now exceeds the new limit.\",\"evidence\":[\"Procedure specifies 100\u202fms threshold\",\"Previous result PASS (94\u202fms)\",\"New requirement limit 80\u202fms\"],\"recommended_action\":\"Update the test procedure to use an 80\u202fms limit and re\u2011run to obtain evidence.\"},{\"test_id\":\"TV-002\",\"status\":\"possibly_affected\",\"confidence\":\"medium\",\"related_requirements\":[\"VCU-DR-01\"],\"reason\":\"The test includes VCU-DR-01 but does not record the torque response time, so it may no longer demonstrate compliance with the tightened 80\u202fms limit.\",\"evidence\":[\"Parsed links include VCU-DR-01\",\"Comment notes timing not reported\"],\"recommended_action\":\"Add measurement of torque response latency to the test and verify against 80\u202fms.\"},{\"test_id\":\"TV-003\",\"status\":\"possibly_affected\",\"confidence\":\"medium\",\"related_requirements\":[\"VCU-DR-01\"],\"reason\":\"The test measures a maximum torque response of 92\u202fms, which exceeds the new 80\u202fms limit, but it has no explicit requirement link, making its relevance uncertain.\",\"evidence\":[\"Extracted value 92\u202fms (from result)\",\"No requirement reference\"],\"recommended_action\":\"Confirm whether this test is intended for VCU-DR-01 and adjust the acceptance criterion to \u226480\u202fms.\"},{\"test_id\":\"TV-004\",\"status\":\"not_affected\",\"confidence\":\"high\",\"related_requirements\":[],\"reason\":\"The test validates brake actuator latency (100\u202fms) and is linked only to VCU-BRK-03; it does not assess driver torque response time.\",\"evidence\":[\"Requirement link VCU-BRK-03 only\",\"Procedure targets brake command latency\"],\"recommended_action\":\"No change required.\"},{\"test_id\":\"TV-005\",\"status\":\"not_affected\",\"confidence\":\"high\",\"related_requirements\":[],\"reason\":\"The test checks sensor failure handling per VCU-DGN-04 and does not involve torque response timing.\",\"evidence\":[\"Requirement link VCU-DGN-04\",\"Procedure description\"],\"recommended_action\":\"No change required.\"},{\"test_id\":\"TV-006\",\"status\":\"not_affected\",\"confidence\":\"high\",\"related_requirements\":[],\"reason\":\"The test audits logging per VCU-LOG-05 and is unrelated to torque response timing.\",\"evidence\":[\"Requirement link VCU-LOG-05\",\"Procedure description\"],\"recommended_action\":\"No change required.\"},{\"test_id\":\"TV-007\",\"status\":\"needs_human_review\",\"confidence\":\"low\",\"related_requirements\":[],\"reason\":\"The test has a TBD requirement link, so its relevance to the tightened torque response time cannot be determined.\",\"evidence\":[\"Requirement_reference_raw is 'TBD'\",\"Parsed link status tbd\"],\"recommended_action\":\"Clarify the requirement association before assessing impact.\"},{\"test_id\":\"TV-008\",\"status\":\"needs_human_review\",\"confidence\":\"low\",\"related_requirements\":[],\"reason\":\"The test references an unknown requirement VCU-OLD-88, which is not part of the changed set, making impact unclear.\",\"evidence\":[\"Requirement_reference_raw VCU-OLD-88\",\"Parsed link status unknown_requirement\"],\"recommended_action\":\"Identify the current requirement mapping for this test.\"},{\"test_id\":\"TV-009\",\"status\":\"not_affected\",\"confidence\":\"high\",\"related_requirements\":[],\"reason\":\"The test compares torque ramps between modes per VCU-MOD-06 and contains no quantitative response\u2011time check.\",\"evidence\":[\"Requirement link VCU-MOD-06\",\"Comment notes no quantitative response\u2011time assertion\"],\"recommended_action\":\"No change required.\"},{\"test_id\":\"TV-010\",\"status\":\"not_affected\",\"confidence\":\"high\",\"related_requirements\":[],\"reason\":\"The test validates spike filtering per VCU-DR-02 and does not measure torque response latency.\",\"evidence\":[\"Requirement link VCU-DR-02\",\"Procedure focuses on 7\u202fms pulse\"],\"recommended_action\":\"No change required.\"},{\"test_id\":\"TV-011\",\"status\":\"not_affected\",\"confidence\":\"high\",\"related_requirements\":[],\"reason\":\"The test verifies brake override priority per VCU-BRK-03 and does not involve the driver torque response time.\",\"evidence\":[\"Requirement link VCU-BRK-03\",\"Procedure description\"],\"recommended_action\":\"No change required.\"}]}"
+}

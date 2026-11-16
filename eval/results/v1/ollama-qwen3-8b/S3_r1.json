@@ -1,0 +1,170 @@
+{
+ "ok": true,
+ "model_label": "ollama:qwen3:8b",
+ "prompt_version": "v1",
+ "created_at": "2026-11-16T16:11:47+00:00",
+ "latency_s": 729.32,
+ "attempts": 1,
+ "prompt_tokens": 3647,
+ "completion_tokens": 3914,
+ "structured_mode": "ollama_format_schema",
+ "result": {
+  "change_interpretations": [
+   {
+    "requirement_id": "VCU-DR-02",
+    "nature": "tightened",
+    "engineering_summary": "The controller must now ignore transient pedal spikes shorter than 5 ms instead of 10 ms. This reduces the tolerance for signal noise, requiring stricter validation of pedal input filtering."
+   }
+  ],
+  "assessments": [
+   {
+    "test_id": "TV-001",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "The test verifies torque response time (100 ms threshold) under pedal demand, not the filtering of transient spikes. The change in VCU-DR-02 does not alter the 100 ms requirement for torque response.",
+    "evidence": [
+     "Procedure: 'Step validated accelerator demand to 75%; confirm requested positive torque no later than 100 ms after pedal validation.'",
+     "Requirement link: VCU-DR-01 (unchanged)"
+    ],
+    "recommended_action": "No action needed; test remains valid for torque response time."
+   },
+   {
+    "test_id": "TV-002",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "The test verifies brake-pedal arbitration priority, not signal filtering. The change in VCU-DR-02 does not affect brake command priority.",
+    "evidence": [
+     "Procedure: 'Apply 85% pedal with emergency-brake input; inspect torque and pressure command priorities.'",
+     "Requirement link: VCU-BRK-03 (unchanged)"
+    ],
+    "recommended_action": "No action needed; test remains valid for arbitration priority."
+   },
+   {
+    "test_id": "TV-003",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "The test measures torque response time (92 ms) under load, not signal filtering. The change in VCU-DR-02 does not alter the 100 ms threshold for torque response.",
+    "evidence": [
+     "Procedure: 'Sweep demand 75\u201395% at nominal and high-load cases; recorded maximum 92 ms.'",
+     "Requirement link: None (unrelated)"
+    ],
+    "recommended_action": "No action needed; test remains valid for torque response time."
+   },
+   {
+    "test_id": "TV-004",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "The test verifies brake command latency (88 ms), not pedal signal filtering. The change in VCU-DR-02 does not affect brake command timing.",
+    "evidence": [
+     "Procedure: 'Trigger emergency brake alone; target brake command latency within 100 ms.'",
+     "Requirement link: VCU-BRK-03 (unchanged)"
+    ],
+    "recommended_action": "No action needed; test remains valid for brake command latency."
+   },
+   {
+    "test_id": "TV-005",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "The test verifies sensor failure handling (wheel speed), unrelated to pedal signal filtering. The change in VCU-DR-02 does not affect sensor degradation logic.",
+    "evidence": [
+     "Procedure: 'Unplug simulated wheel-speed sensor and confirm degraded mode + fault log.'",
+     "Requirement link: VCU-DGN-04 (unchanged)"
+    ],
+    "recommended_action": "No action needed; test remains valid for sensor failure detection."
+   },
+   {
+    "test_id": "TV-006",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "The test verifies mode change logging, unrelated to pedal signal filtering. The change in VCU-DR-02 does not affect mode audit trail requirements.",
+    "evidence": [
+     "Procedure: 'Change Comfort to Sport; log timestamp and build identifier.'",
+     "Requirement link: VCU-LOG-05 (unchanged)"
+    ],
+    "recommended_action": "No action needed; test remains valid for mode logging."
+   },
+   {
+    "test_id": "TV-007",
+    "status": "needs_human_review",
+    "confidence": "low",
+    "related_requirements": [],
+    "reason": "The requirement link is TBD, making traceability broken. The test's procedure involves pedal demand (80%) but lacks clear connection to signal filtering. Further review is needed to determine relevance.",
+    "evidence": [
+     "Requirement link: TBD",
+     "Procedure: 'At 80% pedal and elevated load, check torque delivery consistency.'"
+    ],
+    "recommended_action": "Clarify requirement link and assess if pedal signal filtering impacts thermal load validation."
+   },
+   {
+    "test_id": "TV-008",
+    "status": "needs_human_review",
+    "confidence": "low",
+    "related_requirements": [],
+    "reason": "The requirement link (VCU-OLD-88) is unknown, making traceability broken. The test's procedure involves re-running old diagnostics, which may not relate to the current change. Further review is needed to determine relevance.",
+    "evidence": [
+     "Requirement link: Unknown requirement",
+     "Procedure: 'Re-run old diagnostic trace; verify expected non-blocking status.'"
+    ],
+    "recommended_action": "Verify if the legacy diagnostic trace relates to pedal signal filtering or other affected requirements."
+   },
+   {
+    "test_id": "TV-009",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "The test verifies torque ramp profiles under different modes, unrelated to pedal signal filtering. The change in VCU-DR-02 does not affect mode-specific torque behavior.",
+    "evidence": [
+     "Procedure: 'Compare accelerator response under Sport vs Comfort during ramp and release.'",
+     "Requirement link: VCU-MOD-06 (unchanged)"
+    ],
+    "recommended_action": "No action needed; test remains valid for mode-specific torque profiles."
+   },
+   {
+    "test_id": "TV-010",
+    "status": "directly_affected",
+    "confidence": "high",
+    "related_requirements": [
+     "VCU-DR-02"
+    ],
+    "reason": "The test verifies pedal signal spike filtering (7 ms pulse) against the requirement to ignore spikes shorter than 10 ms. The tightened threshold to 5 ms invalidates previous PASS evidence (7 ms) and requires updating the test procedure.",
+    "evidence": [
+     "Procedure: 'Inject 7 ms false pedal pulse and verify no propagated torque request.'",
+     "Requirement link: VCU-DR-02 (modified from 10 ms to 5 ms)"
+    ],
+    "recommended_action": "Update test procedure to inject 5 ms pulse and re-validate filtering logic."
+   },
+   {
+    "test_id": "TV-011",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "The test verifies brake priority over propulsion torque, unrelated to pedal signal filtering. The change in VCU-DR-02 does not affect brake override logic.",
+    "evidence": [
+     "Procedure: 'While demand is high, request emergency braking and verify positive torque drops according to brake priority.'",
+     "Requirement link: VCU-BRK-03 (unchanged)"
+    ],
+    "recommended_action": "No action needed; test remains valid for brake override priority."
+   },
+   {
+    "test_id": "TV-012",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "reason": "The test verifies ECU wake-up timing (500 ms), unrelated to pedal signal filtering. The change in VCU-DR-02 does not affect system startup timing.",
+    "evidence": [
+     "Procedure: 'Power cycle the ECU; verify readiness within 500 ms.'",
+     "Requirement link: None (unrelated)"
+    ],
+    "recommended_action": "No action needed; test remains valid for wake-up timing."
+   }
+  ]
+ },
+ "warnings": [],
+ "raw_text": "{\n\n  \"change_interpretations\": [\n    {\n      \"requirement_id\": \"VCU-DR-02\",\n      \"nature\": \"tightened\",\n      \"engineering_summary\": \"The controller must now ignore transient pedal spikes shorter than 5 ms instead of 10 ms. This reduces the tolerance for signal noise, requiring stricter validation of pedal input filtering.\"\n    }\n  ],\n  \"assessments\": [\n    {\n      \"test_id\": \"TV-001\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"reason\": \"The test verifies torque response time (100 ms threshold) under pedal demand, not the filtering of transient spikes. The change in VCU-DR-02 does not alter the 100 ms requirement for torque response.\",\n      \"evidence\": [\n        \"Procedure: 'Step validated accelerator demand to 75%; confirm requested positive torque no later than 100 ms after pedal validation.'\",\n        \"Requirement link: VCU-DR-01 (unchanged)\"\n      ],\n      \"recommended_action\": \"No action needed; test remains valid for torque response time.\"\n    },\n    {\n      \"test_id\": \"TV-002\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"reason\": \"The test verifies brake-pedal arbitration priority, not signal filtering. The change in VCU-DR-02 does not affect brake command priority.\",\n      \"evidence\": [\n        \"Procedure: 'Apply 85% pedal with emergency-brake input; inspect torque and pressure command priorities.'\",\n        \"Requirement link: VCU-BRK-03 (unchanged)\"\n      ],\n      \"recommended_action\": \"No action needed; test remains valid for arbitration priority.\"\n    },\n    {\n      \"test_id\": \"TV-003\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"reason\": \"The test measures torque response time (92 ms) under load, not signal filtering. The change in VCU-DR-02 does not alter the 100 ms threshold for torque response.\",\n      \"evidence\": [\n        \"Procedure: 'Sweep demand 75\u201395% at nominal and high-load cases; recorded maximum 92 ms.'\",\n        \"Requirement link: None (unrelated)\"\n      ],\n      \"recommended_action\": \"No action needed; test remains valid for torque response time.\"\n    },\n    {\n      \"test_id\": \"TV-004\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"reason\": \"The test verifies brake command latency (88 ms), not pedal signal filtering. The change in VCU-DR-02 does not affect brake command timing.\",\n      \"evidence\": [\n        \"Procedure: 'Trigger emergency brake alone; target brake command latency within 100 ms.'\",\n        \"Requirement link: VCU-BRK-03 (unchanged)\"\n      ],\n      \"recommended_action\": \"No action needed; test remains valid for brake command latency.\"\n    },\n    {\n      \"test_id\": \"TV-005\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"reason\": \"The test verifies sensor failure handling (wheel speed), unrelated to pedal signal filtering. The change in VCU-DR-02 does not affect sensor degradation logic.\",\n      \"evidence\": [\n        \"Procedure: 'Unplug simulated wheel-speed sensor and confirm degraded mode + fault log.'\",\n        \"Requirement link: VCU-DGN-04 (unchanged)\"\n      ],\n      \"recommended_action\": \"No action needed; test remains valid for sensor failure detection.\"\n    },\n    {\n      \"test_id\": \"TV-006\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"reason\": \"The test verifies mode change logging, unrelated to pedal signal filtering. The change in VCU-DR-02 does not affect mode audit trail requirements.\",\n      \"evidence\": [\n        \"Procedure: 'Change Comfort to Sport; log timestamp and build identifier.'\",\n        \"Requirement link: VCU-LOG-05 (unchanged)\"\n      ],\n      \"recommended_action\": \"No action needed; test remains valid for mode logging.\"\n    },\n    {\n      \"test_id\": \"TV-007\",\n      \"status\": \"needs_human_review\",\n      \"confidence\": \"low\",\n      \"related_requirements\": [],\n      \"reason\": \"The requirement link is TBD, making traceability broken. The test's procedure involves pedal demand (80%) but lacks clear connection to signal filtering. Further review is needed to determine relevance.\",\n      \"evidence\": [\n        \"Requirement link: TBD\",\n        \"Procedure: 'At 80% pedal and elevated load, check torque delivery consistency.'\"\n      ],\n      \"recommended_action\": \"Clarify requirement link and assess if pedal signal filtering impacts thermal load validation.\"\n    },\n    {\n      \"test_id\": \"TV-008\",\n      \"status\": \"needs_human_review\",\n      \"confidence\": \"low\",\n      \"related_requirements\": [],\n      \"reason\": \"The requirement link (VCU-OLD-88) is unknown, making traceability broken. The test's procedure involves re-running old diagnostics, which may not relate to the current change. Further review is needed to determine relevance.\",\n      \"evidence\": [\n        \"Requirement link: Unknown requirement\",\n        \"Procedure: 'Re-run old diagnostic trace; verify expected non-blocking status.'\"\n      ],\n      \"recommended_action\": \"Verify if the legacy diagnostic trace relates to pedal signal filtering or other affected requirements.\"\n    },\n    {\n      \"test_id\": \"TV-009\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"reason\": \"The test verifies torque ramp profiles under different modes, unrelated to pedal signal filtering. The change in VCU-DR-02 does not affect mode-specific torque behavior.\",\n      \"evidence\": [\n        \"Procedure: 'Compare accelerator response under Sport vs Comfort during ramp and release.'\",\n        \"Requirement link: VCU-MOD-06 (unchanged)\"\n      ],\n      \"recommended_action\": \"No action needed; test remains valid for mode-specific torque profiles.\"\n    },\n    {\n      \"test_id\": \"TV-010\",\n      \"status\": \"directly_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [\"VCU-DR-02\"],\n      \"reason\": \"The test verifies pedal signal spike filtering (7 ms pulse) against the requirement to ignore spikes shorter than 10 ms. The tightened threshold to 5 ms invalidates previous PASS evidence (7 ms) and requires updating the test procedure.\",\n      \"evidence\": [\n        \"Procedure: 'Inject 7 ms false pedal pulse and verify no propagated torque request.'\",\n        \"Requirement link: VCU-DR-02 (modified from 10 ms to 5 ms)\"\n      ],\n      \"recommended_action\": \"Update test procedure to inject 5 ms pulse and re-validate filtering logic.\"\n    },\n    {\n      \"test_id\": \"TV-011\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"reason\": \"The test verifies brake priority over propulsion torque, unrelated to pedal signal filtering. The change in VCU-DR-02 does not affect brake override logic.\",\n      \"evidence\": [\n        \"Procedure: 'While demand is high, request emergency braking and verify positive torque drops according to brake priority.'\",\n        \"Requirement link: VCU-BRK-03 (unchanged)\"\n      ],\n      \"recommended_action\": \"No action needed; test remains valid for brake override priority.\"\n    },\n    {\n      \"test_id\": \"TV-012\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"reason\": \"The test verifies ECU wake-up timing (500 ms), unrelated to pedal signal filtering. The change in VCU-DR-02 does not affect system startup timing.\",\n      \"evidence\": [\n        \"Procedure: 'Power cycle the ECU; verify readiness within 500 ms.'\",\n        \"Requirement link: None (unrelated)\"\n      ],\n      \"recommended_action\": \"No action needed; test remains valid for wake-up timing.\"\n    }\n  ]\n}"
+}

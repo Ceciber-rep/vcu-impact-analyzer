@@ -1,0 +1,2 @@
+{"scenario": "S6", "rep": 1, "error": "BadRequestError: Error code: 400 - Failed to generate JSON. Please adjust your prompt. See 'failed_generation' for more details."}
+{"scenario": "S7", "rep": 1, "error": "BadRequestError: Error code: 400 - Failed to generate JSON. Please adjust your prompt. See 'failed_generation' for more details."}

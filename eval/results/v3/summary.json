@@ -1,0 +1,65 @@
+{
+ "groq-qwen3.8-27b": {
+  "provider": "groq",
+  "model": "qwen/qwen3.8-27b",
+  "action_total": 16,
+  "action_correct": 15,
+  "action_failures": [
+   "S1 TV-002: got ['owner_decision'], rule {'must': ['rerun']}"
+  ],
+  "review_noise": 5,
+  "runs": 9,
+  "failed_runs": 0,
+  "valid_first_attempt": 9,
+  "judgments": 84,
+  "lenient_correct": 83,
+  "strict_correct": 64,
+  "critical_total": 16,
+  "critical_correct": 15,
+  "missed_impacts": 0,
+  "over_flags": 1,
+  "omitted_tests": 0,
+  "approval_hits": 0,
+  "postcheck_warnings": 0,
+  "latencies": [
+   5.28,
+   5.17,
+   21.71,
+   41.81,
+   5.86,
+   5.13,
+   21.24,
+   5.88,
+   5.22
+  ],
+  "completion_tokens": [
+   1781,
+   1781,
+   1781,
+   1912,
+   1991,
+   1758,
+   1644,
+   1808,
+   2030
+  ],
+  "errors": [],
+  "per_scenario": {
+   "S1": "12/12",
+   "S2": "12/12",
+   "S3": "12/12",
+   "S4": "12/12",
+   "S5": "11/12",
+   "S6": "12/12",
+   "S7": "12/12"
+  },
+  "critical_failures": [
+   "S5 TV-005: got D, expected N/P"
+  ],
+  "consistency": "12/12 over 3 runs",
+  "structured_modes": [
+   "json_schema"
+  ],
+  "service_errors": 0
+ }
+}

@@ -1,0 +1,211 @@
+{
+ "ok": true,
+ "model_label": "groq:qwen/qwen3.8-27b",
+ "prompt_version": "v3",
+ "created_at": "2026-11-16T17:56:26+00:00",
+ "latency_s": 5.86,
+ "attempts": 1,
+ "prompt_tokens": 4288,
+ "completion_tokens": 1991,
+ "structured_mode": "json_schema",
+ "result": {
+  "change_interpretations": [
+   {
+    "requirement_id": "VCU-DR-02",
+    "nature": "tightened",
+    "engineering_summary": "The spike filtering threshold is tightened from 10 ms to 5 ms. This means shorter transient spikes (5-10 ms) that were previously ignored will now be processed as valid pedal inputs. Tests that inject spikes in this range must be updated and rerun."
+   }
+  ],
+  "assessments": [
+   {
+    "test_id": "TV-001",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test validates VCU-DR-01, which is unchanged. The change to VCU-DR-02 affects spike filtering, not the torque response timing measured here.",
+    "evidence": [
+     "Test verifies torque response time (94 ms) against VCU-DR-01 (100 ms limit).",
+     "VCU-DR-01 is unchanged; the change to VCU-DR-02 (spike filtering) does not alter the torque response timing requirement."
+    ],
+    "recommended_action": "No action required for this change."
+   },
+   {
+    "test_id": "TV-002",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test exercises brake override and torque response, both governed by unchanged requirements. The spike filtering change in VCU-DR-02 is not relevant to this arbitration scenario.",
+    "evidence": [
+     "Test verifies brake/pedal arbitration (VCU-BRK-03) and torque response (VCU-DR-01).",
+     "Neither VCU-BRK-03 nor VCU-DR-01 is changed. The change to VCU-DR-02 (spike filtering) is not exercised by this arbitration test."
+    ],
+    "recommended_action": "No action required for this change."
+   },
+   {
+    "test_id": "TV-003",
+    "status": "not_affected",
+    "confidence": "medium",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link"
+    ],
+    "reason": "The test content relates to torque response timing, which is governed by the unchanged VCU-DR-01. The missing link prevents definitive confirmation, but the test does not exercise spike filtering.",
+    "evidence": [
+     "Test sweeps pedal demand and records torque response time (92 ms).",
+     "No requirement link is provided (missing). The test content relates to torque response, which is governed by VCU-DR-01 (unchanged).",
+     "The change to VCU-DR-02 (spike filtering) is not directly exercised by a demand sweep."
+    ],
+    "recommended_action": "Reconcile the missing requirement link with the system engineer."
+   },
+   {
+    "test_id": "TV-004",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test validates brake command latency, which is governed by the unchanged VCU-BRK-03. The spike filtering change in VCU-DR-02 does not affect this test.",
+    "evidence": [
+     "Test verifies brake command latency (88 ms) against VCU-BRK-03.",
+     "VCU-BRK-03 is unchanged. The change to VCU-DR-02 (spike filtering) is unrelated to brake actuator response."
+    ],
+    "recommended_action": "No action required for this change."
+   },
+   {
+    "test_id": "TV-005",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test validates sensor degradation handling, which is governed by the unchanged VCU-DGN-04. The spike filtering change in VCU-DR-02 does not affect this test.",
+    "evidence": [
+     "Test verifies degraded mode and fault logging for wheel-speed sensor failure (VCU-DGN-04).",
+     "VCU-DGN-04 is unchanged. The change to VCU-DR-02 (spike filtering) is unrelated to sensor degradation."
+    ],
+    "recommended_action": "No action required for this change."
+   },
+   {
+    "test_id": "TV-006",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test validates audit trail logging, which is governed by the unchanged VCU-LOG-05. The spike filtering change in VCU-DR-02 does not affect this test.",
+    "evidence": [
+     "Test verifies mode change logging (VCU-LOG-05).",
+     "VCU-LOG-05 is unchanged. The change to VCU-DR-02 (spike filtering) is unrelated to logging."
+    ],
+    "recommended_action": "No action required for this change."
+   },
+   {
+    "test_id": "TV-007",
+    "status": "needs_human_review",
+    "confidence": "low",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link",
+     "owner_decision"
+    ],
+    "reason": "The test content relates to torque response, which is governed by the unchanged VCU-DR-01. The TBD link and missing ownership prevent definitive confirmation, but the test does not exercise spike filtering.",
+    "evidence": [
+     "Test checks torque delivery at 80% pedal under thermal load.",
+     "Requirement link is TBD. The test content relates to torque response, which is governed by VCU-DR-01 (unchanged).",
+     "The change to VCU-DR-02 (spike filtering) is not directly exercised by this thermal load test."
+    ],
+    "recommended_action": "Clarify ownership and source link for this test."
+   },
+   {
+    "test_id": "TV-008",
+    "status": "not_affected",
+    "confidence": "medium",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link"
+    ],
+    "reason": "The test is linked to an unknown requirement and its content (diagnostic replay) is unrelated to the spike filtering change in VCU-DR-02.",
+    "evidence": [
+     "Test re-runs an old diagnostic trace (VCU-OLD-88).",
+     "VCU-OLD-88 is an unknown requirement. The test content is unrelated to pedal spike filtering (VCU-DR-02)."
+    ],
+    "recommended_action": "No action required for this change."
+   },
+   {
+    "test_id": "TV-009",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test validates mode-specific torque ramp profiles, which are governed by the unchanged VCU-MOD-06. The spike filtering change in VCU-DR-02 does not affect this test.",
+    "evidence": [
+     "Test compares torque ramp profiles under Sport vs Comfort (VCU-MOD-06).",
+     "VCU-MOD-06 is unchanged. The change to VCU-DR-02 (spike filtering) is unrelated to mode-specific torque ramps."
+    ],
+    "recommended_action": "No action required for this change."
+   },
+   {
+    "test_id": "TV-010",
+    "status": "directly_affected",
+    "confidence": "high",
+    "related_requirements": [
+     "VCU-DR-02"
+    ],
+    "required_actions": [
+     "rerun",
+     "update_procedure"
+    ],
+    "reason": "The test directly exercises the spike filtering behavior of VCU-DR-02. The change from 10 ms to 5 ms means a 7 ms pulse is no longer filtered, so the previous PASS evidence is invalid.",
+    "evidence": [
+     "Test injects a 7 ms false pedal pulse and verifies no propagated torque request.",
+     "Linked to VCU-DR-02, which changed the spike threshold from 10 ms to 5 ms.",
+     "The 7 ms pulse is now longer than the new 5 ms threshold, so it should no longer be ignored."
+    ],
+    "recommended_action": "Update the test procedure to use a pulse shorter than 5 ms (e.g., 3 ms) and rerun."
+   },
+   {
+    "test_id": "TV-011",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test validates brake priority, which is governed by the unchanged VCU-BRK-03. The spike filtering change in VCU-DR-02 does not affect this test.",
+    "evidence": [
+     "Test verifies torque cancellation on emergency braking (VCU-BRK-03).",
+     "VCU-BRK-03 is unchanged. The change to VCU-DR-02 (spike filtering) is unrelated to brake priority."
+    ],
+    "recommended_action": "No action required for this change."
+   },
+   {
+    "test_id": "TV-012",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link"
+    ],
+    "reason": "The test validates platform startup timing, which is unrelated to the spike filtering change in VCU-DR-02.",
+    "evidence": [
+     "Test verifies ECU wake-up timing (433 ms) against a 500 ms limit.",
+     "No requirement link is provided. The test content is unrelated to pedal spike filtering (VCU-DR-02)."
+    ],
+    "recommended_action": "No action required for this change."
+   }
+  ]
+ },
+ "warnings": [],
+ "raw_text": "{\"assessments\": [{\"confidence\": \"high\", \"evidence\": [\"Test verifies torque response time (94 ms) against VCU-DR-01 (100 ms limit).\", \"VCU-DR-01 is unchanged; the change to VCU-DR-02 (spike filtering) does not alter the torque response timing requirement.\"], \"reason\": \"The test validates VCU-DR-01, which is unchanged. The change to VCU-DR-02 affects spike filtering, not the torque response timing measured here.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-001\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies brake/pedal arbitration (VCU-BRK-03) and torque response (VCU-DR-01).\", \"Neither VCU-BRK-03 nor VCU-DR-01 is changed. The change to VCU-DR-02 (spike filtering) is not exercised by this arbitration test.\"], \"reason\": \"The test exercises brake override and torque response, both governed by unchanged requirements. The spike filtering change in VCU-DR-02 is not relevant to this arbitration scenario.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-002\"}, {\"confidence\": \"medium\", \"evidence\": [\"Test sweeps pedal demand and records torque response time (92 ms).\", \"No requirement link is provided (missing). The test content relates to torque response, which is governed by VCU-DR-01 (unchanged).\", \"The change to VCU-DR-02 (spike filtering) is not directly exercised by a demand sweep.\"], \"reason\": \"The test content relates to torque response timing, which is governed by the unchanged VCU-DR-01. The missing link prevents definitive confirmation, but the test does not exercise spike filtering.\", \"recommended_action\": \"Reconcile the missing requirement link with the system engineer.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-003\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies brake command latency (88 ms) against VCU-BRK-03.\", \"VCU-BRK-03 is unchanged. The change to VCU-DR-02 (spike filtering) is unrelated to brake actuator response.\"], \"reason\": \"The test validates brake command latency, which is governed by the unchanged VCU-BRK-03. The spike filtering change in VCU-DR-02 does not affect this test.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-004\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies degraded mode and fault logging for wheel-speed sensor failure (VCU-DGN-04).\", \"VCU-DGN-04 is unchanged. The change to VCU-DR-02 (spike filtering) is unrelated to sensor degradation.\"], \"reason\": \"The test validates sensor degradation handling, which is governed by the unchanged VCU-DGN-04. The spike filtering change in VCU-DR-02 does not affect this test.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-005\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies mode change logging (VCU-LOG-05).\", \"VCU-LOG-05 is unchanged. The change to VCU-DR-02 (spike filtering) is unrelated to logging.\"], \"reason\": \"The test validates audit trail logging, which is governed by the unchanged VCU-LOG-05. The spike filtering change in VCU-DR-02 does not affect this test.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-006\"}, {\"confidence\": \"low\", \"evidence\": [\"Test checks torque delivery at 80% pedal under thermal load.\", \"Requirement link is TBD. The test content relates to torque response, which is governed by VCU-DR-01 (unchanged).\", \"The change to VCU-DR-02 (spike filtering) is not directly exercised by this thermal load test.\"], \"reason\": \"The test content relates to torque response, which is governed by the unchanged VCU-DR-01. The TBD link and missing ownership prevent definitive confirmation, but the test does not exercise spike filtering.\", \"recommended_action\": \"Clarify ownership and source link for this test.\", \"related_requirements\": [], \"required_actions\": [\"owner_decision\"], \"status\": \"needs_human_review\", \"test_id\": \"TV-007\"}, {\"confidence\": \"medium\", \"evidence\": [\"Test re-runs an old diagnostic trace (VCU-OLD-88).\", \"VCU-OLD-88 is an unknown requirement. The test content is unrelated to pedal spike filtering (VCU-DR-02).\"], \"reason\": \"The test is linked to an unknown requirement and its content (diagnostic replay) is unrelated to the spike filtering change in VCU-DR-02.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-008\"}, {\"confidence\": \"high\", \"evidence\": [\"Test compares torque ramp profiles under Sport vs Comfort (VCU-MOD-06).\", \"VCU-MOD-06 is unchanged. The change to VCU-DR-02 (spike filtering) is unrelated to mode-specific torque ramps.\"], \"reason\": \"The test validates mode-specific torque ramp profiles, which are governed by the unchanged VCU-MOD-06. The spike filtering change in VCU-DR-02 does not affect this test.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-009\"}, {\"confidence\": \"high\", \"evidence\": [\"Test injects a 7 ms false pedal pulse and verifies no propagated torque request.\", \"Linked to VCU-DR-02, which changed the spike threshold from 10 ms to 5 ms.\", \"The 7 ms pulse is now longer than the new 5 ms threshold, so it should no longer be ignored.\"], \"reason\": \"The test directly exercises the spike filtering behavior of VCU-DR-02. The change from 10 ms to 5 ms means a 7 ms pulse is no longer filtered, so the previous PASS evidence is invalid.\", \"recommended_action\": \"Update the test procedure to use a pulse shorter than 5 ms (e.g., 3 ms) and rerun.\", \"related_requirements\": [\"VCU-DR-02\"], \"required_actions\": [\"update_procedure\", \"rerun\"], \"status\": \"directly_affected\", \"test_id\": \"TV-010\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies torque cancellation on emergency braking (VCU-BRK-03).\", \"VCU-BRK-03 is unchanged. The change to VCU-DR-02 (spike filtering) is unrelated to brake priority.\"], \"reason\": \"The test validates brake priority, which is governed by the unchanged VCU-BRK-03. The spike filtering change in VCU-DR-02 does not affect this test.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-011\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies ECU wake-up timing (433 ms) against a 500 ms limit.\", \"No requirement link is provided. The test content is unrelated to pedal spike filtering (VCU-DR-02).\"], \"reason\": \"The test validates platform startup timing, which is unrelated to the spike filtering change in VCU-DR-02.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-012\"}], \"change_interpretations\": [{\"engineering_summary\": \"The spike filtering threshold is tightened from 10 ms to 5 ms. This means shorter transient spikes (5-10 ms) that were previously ignored will now be processed as valid pedal inputs. Tests that inject spikes in this range must be updated and rerun.\", \"nature\": \"tightened\", \"requirement_id\": \"VCU-DR-02\"}]}"
+}
