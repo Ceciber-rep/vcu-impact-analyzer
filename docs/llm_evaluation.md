@@ -432,6 +432,12 @@ disagreement an engineer should see. Applied to the stored outputs it fires for 
 and stays silent for v1, where the status was correct. It makes the problem visible; it
 does not fix the model's answer, and the S5 TV-005 score is unchanged.
 
+### Decision
+
+Prompt **v3** with Groq `qwen/qwen3.8-27b` is the configuration used by the application,
+decided by the project owner after reviewing the labels. The open S5 TV-005 failure and
+the other limitations are tracked in [known_issues.md](known_issues.md).
+
 ### Caveats
 
 - **v3 is not an independent test.** Its wording was written after reading v2's failures
