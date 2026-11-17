@@ -21,3 +21,6 @@ build/
 Thumbs.db
 .idea/
 .vscode/
+
+# Local cache of live LLM analyses
+.cache/

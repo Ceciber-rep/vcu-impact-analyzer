@@ -54,20 +54,22 @@ class LLMConfig:
     ollama_think: bool | None = None  # None = model default
 
     @classmethod
-    def from_env(cls, provider: str | None = None, model: str | None = None) -> LLMConfig:
-        """Build the config from LLM_* variables; provider-specific key variables are a fallback."""
-        provider = (provider or os.getenv("LLM_PROVIDER") or "").strip().lower()
+    def from_env(cls, provider: str | None = None, model: str | None = None, prefix: str = "LLM_") -> LLMConfig:
+        """Build the config from ``<prefix>*`` variables (LLM_ for the primary model,
+        LLM_FALLBACK_ for the fallback). The provider-specific key variable
+        (e.g. GROQ_API_KEY) is used when ``<prefix>API_KEY`` is empty."""
+        provider = (provider or os.getenv(f"{prefix}PROVIDER") or "").strip().lower()
         if provider not in PROVIDERS:
-            raise LLMError(f"Unknown or missing LLM_PROVIDER {provider!r}; expected one of {sorted(PROVIDERS)}")
+            raise LLMError(f"Unknown or missing {prefix}PROVIDER {provider!r}; expected one of {sorted(PROVIDERS)}")
         preset = PROVIDERS[provider]
         key_env = preset["key_env"]
-        api_key = os.getenv("LLM_API_KEY") or (os.getenv(key_env) if key_env else None)
-        model = model or os.getenv("LLM_MODEL")
+        api_key = os.getenv(f"{prefix}API_KEY") or (os.getenv(key_env) if key_env else None)
+        model = model or os.getenv(f"{prefix}MODEL")
         if not model:
-            raise LLMError("LLM_MODEL is not set")
-        base_url = os.getenv("LLM_BASE_URL") or preset["base_url"]
+            raise LLMError(f"{prefix}MODEL is not set")
+        base_url = os.getenv(f"{prefix}BASE_URL") or preset["base_url"]
         if provider != "ollama" and not api_key:
-            raise LLMError(f"No API key: set LLM_API_KEY or {key_env}")
+            raise LLMError(f"No API key: set {prefix}API_KEY or {key_env}")
         return cls(
             provider=provider,
             model=model,
@@ -118,7 +120,8 @@ def strict_schema(model: type[BaseModel]) -> dict[str, Any]:
 _THINK_RE = re.compile(r"<think>.*?</think>", re.DOTALL)
 
 
-def _extract_json(text: str) -> str:
+def extract_json(text: str) -> str:
+    """The JSON object in a model reply (drops <think> blocks and code fences)."""
     text = _THINK_RE.sub("", text or "").strip()
     fence = re.search(r"```(?:json)?\s*(.*?)```", text, re.DOTALL)
     if fence:
@@ -171,7 +174,7 @@ class LLMClient:
             prompt_tokens += usage[0] or 0
             completion_tokens += usage[1] or 0
             try:
-                parsed = schema_model.model_validate_json(_extract_json(text))
+                parsed = schema_model.model_validate_json(extract_json(text))
                 return LLMCallResult(
                     parsed=parsed,
                     raw_text=text,

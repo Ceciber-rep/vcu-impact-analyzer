@@ -1,0 +1,210 @@
+{
+ "key": "74127f7989a8be14d0517d3aeb10e6f12772b186705692ca61c37e6b8ce0f3ef",
+ "prompt_version": "v3",
+ "label": "evaluation scenario S5: DGN-04 reworded, same meaning",
+ "run": {
+  "model_label": "groq:qwen/qwen3.8-27b",
+  "prompt_version": "v3",
+  "created_at": "2026-11-16T17:58:06+00:00",
+  "latency_s": 21.24,
+  "attempts": 1,
+  "prompt_tokens": 4255,
+  "completion_tokens": 1644,
+  "structured_mode": "json_schema",
+  "result": {
+   "change_interpretations": [
+    {
+     "requirement_id": "VCU-DGN-04",
+     "nature": "reworded_same_meaning",
+     "engineering_summary": "The change is an editorial rewording of VCU-DGN-04 with the same meaning. No behavioral change is implied, so no verification actions are required beyond confirming the test still covers the requirement."
+    }
+   ],
+   "assessments": [
+    {
+     "test_id": "TV-001",
+     "status": "not_affected",
+     "confidence": "high",
+     "related_requirements": [],
+     "required_actions": [
+      "none"
+     ],
+     "reason": "The test verifies driver torque response (VCU-DR-01), which is unchanged. The specification change to VCU-DGN-04 is an editorial rewording with the same meaning and does not alter the behavior tested here.",
+     "evidence": [
+      "Test verifies VCU-DR-01 (unchanged).",
+      "Change is to VCU-DGN-04 (editorial)."
+     ],
+     "recommended_action": "No action required."
+    },
+    {
+     "test_id": "TV-002",
+     "status": "not_affected",
+     "confidence": "high",
+     "related_requirements": [],
+     "required_actions": [
+      "none"
+     ],
+     "reason": "The test verifies brake/pedal arbitration (VCU-BRK-03) and driver torque (VCU-DR-01), neither of which is changed. The change to VCU-DGN-04 is editorial and does not affect this behavior.",
+     "evidence": [
+      "Test verifies VCU-DR-01 and VCU-BRK-03 (both unchanged).",
+      "Change is to VCU-DGN-04 (editorial)."
+     ],
+     "recommended_action": "No action required."
+    },
+    {
+     "test_id": "TV-003",
+     "status": "not_affected",
+     "confidence": "high",
+     "related_requirements": [],
+     "required_actions": [
+      "fix_link"
+     ],
+     "reason": "The test verifies high-load torque transients, which relates to driver torque response (VCU-DR-01, unchanged). The change to VCU-DGN-04 is editorial and does not affect this behavior.",
+     "evidence": [
+      "Test verifies torque transient response (likely VCU-DR-01).",
+      "Change is to VCU-DGN-04 (editorial)."
+     ],
+     "recommended_action": "No action required."
+    },
+    {
+     "test_id": "TV-004",
+     "status": "not_affected",
+     "confidence": "high",
+     "related_requirements": [],
+     "required_actions": [
+      "none"
+     ],
+     "reason": "The test verifies brake actuator response (VCU-BRK-03), which is unchanged. The change to VCU-DGN-04 is editorial and does not affect this behavior.",
+     "evidence": [
+      "Test verifies VCU-BRK-03 (unchanged).",
+      "Change is to VCU-DGN-04 (editorial)."
+     ],
+     "recommended_action": "No action required."
+    },
+    {
+     "test_id": "TV-005",
+     "status": "directly_affected",
+     "confidence": "high",
+     "related_requirements": [
+      "VCU-DGN-04"
+     ],
+     "required_actions": [
+      "none"
+     ],
+     "reason": "The test directly verifies VCU-DGN-04. The change is an editorial rewording ('unavailable' to 'lost', 'enter' to 'switch', 'log' to 'record') with the same meaning, so the behavior is unchanged and previous evidence remains valid.",
+     "evidence": [
+      "Test verifies VCU-DGN-04.",
+      "Change is editorial rewording with same meaning."
+     ],
+     "recommended_action": "No action required."
+    },
+    {
+     "test_id": "TV-006",
+     "status": "not_affected",
+     "confidence": "high",
+     "related_requirements": [],
+     "required_actions": [
+      "none"
+     ],
+     "reason": "The test verifies mode event audit trail (VCU-LOG-05), which is unchanged. The change to VCU-DGN-04 is editorial and does not affect this behavior.",
+     "evidence": [
+      "Test verifies VCU-LOG-05 (unchanged).",
+      "Change is to VCU-DGN-04 (editorial)."
+     ],
+     "recommended_action": "No action required."
+    },
+    {
+     "test_id": "TV-007",
+     "status": "not_affected",
+     "confidence": "high",
+     "related_requirements": [],
+     "required_actions": [
+      "fix_link"
+     ],
+     "reason": "The test verifies acceleration at thermal load, which relates to driver torque response (VCU-DR-01, unchanged). The change to VCU-DGN-04 is editorial and does not affect this behavior.",
+     "evidence": [
+      "Test verifies acceleration at thermal load (likely VCU-DR-01).",
+      "Change is to VCU-DGN-04 (editorial)."
+     ],
+     "recommended_action": "No action required."
+    },
+    {
+     "test_id": "TV-008",
+     "status": "not_affected",
+     "confidence": "high",
+     "related_requirements": [],
+     "required_actions": [
+      "fix_link"
+     ],
+     "reason": "The test verifies a legacy diagnostic replay linked to VCU-OLD-88, which is not in the current requirement set. The change to VCU-DGN-04 is editorial and does not affect this behavior.",
+     "evidence": [
+      "Test verifies VCU-OLD-88 (unknown/removed).",
+      "Change is to VCU-DGN-04 (editorial)."
+     ],
+     "recommended_action": "No action required for this change."
+    },
+    {
+     "test_id": "TV-009",
+     "status": "not_affected",
+     "confidence": "high",
+     "related_requirements": [],
+     "required_actions": [
+      "none"
+     ],
+     "reason": "The test verifies sport profile torque ramp (VCU-MOD-06), which is unchanged. The change to VCU-DGN-04 is editorial and does not affect this behavior.",
+     "evidence": [
+      "Test verifies VCU-MOD-06 (unchanged).",
+      "Change is to VCU-DGN-04 (editorial)."
+     ],
+     "recommended_action": "No action required."
+    },
+    {
+     "test_id": "TV-010",
+     "status": "not_affected",
+     "confidence": "high",
+     "related_requirements": [],
+     "required_actions": [
+      "none"
+     ],
+     "reason": "The test verifies pedal signal spike filtering (VCU-DR-02), which is unchanged. The change to VCU-DGN-04 is editorial and does not affect this behavior.",
+     "evidence": [
+      "Test verifies VCU-DR-02 (unchanged).",
+      "Change is to VCU-DGN-04 (editorial)."
+     ],
+     "recommended_action": "No action required."
+    },
+    {
+     "test_id": "TV-011",
+     "status": "not_affected",
+     "confidence": "high",
+     "related_requirements": [],
+     "required_actions": [
+      "none"
+     ],
+     "reason": "The test verifies torque cancellation on braking (VCU-BRK-03), which is unchanged. The change to VCU-DGN-04 is editorial and does not affect this behavior.",
+     "evidence": [
+      "Test verifies VCU-BRK-03 (unchanged).",
+      "Change is to VCU-DGN-04 (editorial)."
+     ],
+     "recommended_action": "No action required."
+    },
+    {
+     "test_id": "TV-012",
+     "status": "not_affected",
+     "confidence": "high",
+     "related_requirements": [],
+     "required_actions": [
+      "fix_link"
+     ],
+     "reason": "The test verifies wake-up timing, which is unrelated to sensor degradation (VCU-DGN-04). The change is editorial and does not affect this behavior.",
+     "evidence": [
+      "Test verifies wake-up timing (no requirement link).",
+      "Change is to VCU-DGN-04 (editorial)."
+     ],
+     "recommended_action": "No action required."
+    }
+   ]
+  },
+  "warnings": [],
+  "raw_text": "{\"assessments\": [{\"confidence\": \"high\", \"evidence\": [\"Test verifies VCU-DR-01 (unchanged).\", \"Change is to VCU-DGN-04 (editorial).\"], \"reason\": \"The test verifies driver torque response (VCU-DR-01), which is unchanged. The specification change to VCU-DGN-04 is an editorial rewording with the same meaning and does not alter the behavior tested here.\", \"recommended_action\": \"No action required.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-001\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies VCU-DR-01 and VCU-BRK-03 (both unchanged).\", \"Change is to VCU-DGN-04 (editorial).\"], \"reason\": \"The test verifies brake/pedal arbitration (VCU-BRK-03) and driver torque (VCU-DR-01), neither of which is changed. The change to VCU-DGN-04 is editorial and does not affect this behavior.\", \"recommended_action\": \"No action required.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-002\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies torque transient response (likely VCU-DR-01).\", \"Change is to VCU-DGN-04 (editorial).\"], \"reason\": \"The test verifies high-load torque transients, which relates to driver torque response (VCU-DR-01, unchanged). The change to VCU-DGN-04 is editorial and does not affect this behavior.\", \"recommended_action\": \"No action required.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-003\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies VCU-BRK-03 (unchanged).\", \"Change is to VCU-DGN-04 (editorial).\"], \"reason\": \"The test verifies brake actuator response (VCU-BRK-03), which is unchanged. The change to VCU-DGN-04 is editorial and does not affect this behavior.\", \"recommended_action\": \"No action required.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-004\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies VCU-DGN-04.\", \"Change is editorial rewording with same meaning.\"], \"reason\": \"The test directly verifies VCU-DGN-04. The change is an editorial rewording ('unavailable' to 'lost', 'enter' to 'switch', 'log' to 'record') with the same meaning, so the behavior is unchanged and previous evidence remains valid.\", \"recommended_action\": \"No action required.\", \"related_requirements\": [\"VCU-DGN-04\"], \"required_actions\": [\"none\"], \"status\": \"directly_affected\", \"test_id\": \"TV-005\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies VCU-LOG-05 (unchanged).\", \"Change is to VCU-DGN-04 (editorial).\"], \"reason\": \"The test verifies mode event audit trail (VCU-LOG-05), which is unchanged. The change to VCU-DGN-04 is editorial and does not affect this behavior.\", \"recommended_action\": \"No action required.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-006\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies acceleration at thermal load (likely VCU-DR-01).\", \"Change is to VCU-DGN-04 (editorial).\"], \"reason\": \"The test verifies acceleration at thermal load, which relates to driver torque response (VCU-DR-01, unchanged). The change to VCU-DGN-04 is editorial and does not affect this behavior.\", \"recommended_action\": \"No action required.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-007\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies VCU-OLD-88 (unknown/removed).\", \"Change is to VCU-DGN-04 (editorial).\"], \"reason\": \"The test verifies a legacy diagnostic replay linked to VCU-OLD-88, which is not in the current requirement set. The change to VCU-DGN-04 is editorial and does not affect this behavior.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-008\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies VCU-MOD-06 (unchanged).\", \"Change is to VCU-DGN-04 (editorial).\"], \"reason\": \"The test verifies sport profile torque ramp (VCU-MOD-06), which is unchanged. The change to VCU-DGN-04 is editorial and does not affect this behavior.\", \"recommended_action\": \"No action required.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-009\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies VCU-DR-02 (unchanged).\", \"Change is to VCU-DGN-04 (editorial).\"], \"reason\": \"The test verifies pedal signal spike filtering (VCU-DR-02), which is unchanged. The change to VCU-DGN-04 is editorial and does not affect this behavior.\", \"recommended_action\": \"No action required.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-010\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies VCU-BRK-03 (unchanged).\", \"Change is to VCU-DGN-04 (editorial).\"], \"reason\": \"The test verifies torque cancellation on braking (VCU-BRK-03), which is unchanged. The change to VCU-DGN-04 is editorial and does not affect this behavior.\", \"recommended_action\": \"No action required.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-011\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies wake-up timing (no requirement link).\", \"Change is to VCU-DGN-04 (editorial).\"], \"reason\": \"The test verifies wake-up timing, which is unrelated to sensor degradation (VCU-DGN-04). The change is editorial and does not affect this behavior.\", \"recommended_action\": \"No action required.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-012\"}], \"change_interpretations\": [{\"engineering_summary\": \"The change is an editorial rewording of VCU-DGN-04 with the same meaning. No behavioral change is implied, so no verification actions are required beyond confirming the test still covers the requirement.\", \"nature\": \"reworded_same_meaning\", \"requirement_id\": \"VCU-DGN-04\"}]}"
+ }
+}
