@@ -1,0 +1,20 @@
+# Secrets and local state never go into the image
+.env
+.env.*
+!.env.example
+*.key
+.cache/
+.venv/
+.git/
+
+# Not needed at runtime
+eval/
+tests/
+reports/
+docs/
+!docs/known_issues.md
+**/__pycache__/
+.pytest_cache/
+.ruff_cache/
+.vscode/
+.idea/
