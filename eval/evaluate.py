@@ -1,13 +1,19 @@
 """LLM evaluation harness.
 
-    uv run python eval/evaluate.py build              # generate scenario .docx files
+    uv run python eval/evaluate.py build [--force]    # generate scenario .docx/.xlsx files (skips existing)
     uv run python eval/evaluate.py list-models        # show models each configured provider offers
     uv run python eval/evaluate.py run [--only NAME]  # run all models x scenarios (resumable)
-    uv run python eval/evaluate.py score [--version v1]  # -> eval/results/<version>/summary.json + .md
+    uv run python eval/evaluate.py score [--version v3] [--labels v2]
+        # -> eval/results/<version>/summary_raw*.{json,md} and summary_postcheck*.{json,md}
+    uv run python eval/evaluate.py decide [--version v3]   # apply the pre-registered decision rule
 
 Every model receives the same system prompt, the same input and the same schema.
-Raw outputs are stored under eval/results/<model>/ so scores can be re-computed
-and individual answers inspected.
+Raw outputs are stored under eval/results/<version>/<model>/ so scores can be re-computed
+and individual answers inspected. Scoring has two views that are never mixed:
+  raw        the statuses exactly as the model returned them;
+  postcheck  the same stored output after the application's post-check (analysis.post_check).
+Held-out scenarios (`held_out: true` in dataset.yaml) are scored separately from the original cells.
+Existing summary files are never overwritten.
 """
 
 from __future__ import annotations
@@ -17,17 +23,22 @@ import json
 import re
 import sys
 import traceback
+from copy import copy
+from functools import cache
 from pathlib import Path
 
 import yaml
 from dotenv import load_dotenv
+from openpyxl import load_workbook
 
 from vcu_impact import spec_editor
-from vcu_impact.analysis import approval_language, run_analysis
+from vcu_impact.analysis import approval_language, post_check, run_analysis
 from vcu_impact.diff import diff_specs
 from vcu_impact.llm import PROVIDERS, LLMClient, LLMConfig, LLMError
+from vcu_impact.models import LLMImpactResult
+from vcu_impact.pipeline import InputFile, Inputs, Prepared, prepare
 from vcu_impact.prompt import PROMPT_VERSION
-from vcu_impact.register_parser import parse_register
+from vcu_impact.register_parser import _TEST_COLUMNS, _find_header, parse_register
 from vcu_impact.spec_parser import parse_spec
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -53,12 +64,27 @@ def load_dataset() -> dict:
                 "why": label.get("why", ""),
                 "accept_from_v2": [CODES[c] for c in label.get("accept_from_v2", [])],
                 "actions": label.get("actions", {}),
+                "related": label.get("related", {}),
             }
     return data
 
 
+def original_scenarios(data: dict) -> list[dict]:
+    return [sc for sc in data["scenarios"] if not sc.get("held_out")]
+
+
+def held_out_scenarios(data: dict) -> list[dict]:
+    return [sc for sc in data["scenarios"] if sc.get("held_out")]
+
+
 def scenario_path(sc: dict) -> Path:
+    """The revised specification of a scenario."""
     return INPUT / "VCU_Spec_Revised.docx" if sc.get("source") == "revised" else SCEN_DIR / f"{sc['id']}.docx"
+
+
+def register_path(sc: dict) -> Path:
+    """The test register of a scenario: the provided one unless the scenario edits it."""
+    return SCEN_DIR / f"{sc['id']}_register.xlsx" if sc.get("register_edits") else INPUT / "VCU_Test_Register.xlsx"
 
 
 # ---------------------------------------------------------------------------
@@ -66,13 +92,58 @@ def scenario_path(sc: dict) -> Path:
 # ---------------------------------------------------------------------------
 
 
-def cmd_build(_args) -> None:
+def build_register(sc: dict, out: Path) -> None:
+    """Apply a scenario's register edits to a copy of the provided register (harness only)."""
+    wb = load_workbook(INPUT / "VCU_Test_Register.xlsx")
+    ws = next(w for w in wb.worksheets if _find_header(w, _TEST_COLUMNS, ("test_id", "reference"))[0])
+    header, cols = _find_header(ws, _TEST_COLUMNS, ("test_id", "reference"))
+    id_col = cols["test_id"] + 1
+
+    def last_test_row() -> int:
+        return max(r for r in range(header + 1, ws.max_row + 1) if ws.cell(r, id_col).value)
+
+    for e in sc["register_edits"]:
+        if e["op"] == "set_link":
+            row = next(r for r in range(header + 1, ws.max_row + 1) if ws.cell(r, id_col).value == e["test"])
+            ws.cell(row, cols["reference"] + 1).value = e["value"]
+        elif e["op"] == "add_test":
+            prev, new = last_test_row(), last_test_row() + 1
+            values = {
+                "test_id": e["test_id"],
+                "name": e["name"],
+                "procedure": e["procedure"],
+                "reference": e["link"],
+                "result": e["result"],
+                "owner": e["owner"],
+                "last_run": e["last_run"],
+                "comment": e["comment"],
+            }
+            for key, col in cols.items():
+                cell = ws.cell(new, col + 1, values[key])
+                cell._style = copy(ws.cell(prev, col + 1)._style)
+        else:
+            raise ValueError(f"Unknown register edit {e['op']!r}")
+    wb.save(out)
+    wb.close()
+
+
+def cmd_build(args) -> None:
     SCEN_DIR.mkdir(exist_ok=True)
     baseline = INPUT / "VCU_Spec_Baseline.docx"
     for sc in load_dataset()["scenarios"]:
+        if sc.get("register_edits"):
+            out = register_path(sc)
+            if args.force or not out.exists():
+                build_register(sc, out)
+                reg = parse_register(out, parse_spec(scenario_path(sc)), parse_spec(baseline))
+                print(f"{sc['id']}: {out.relative_to(ROOT)} -> {len(reg.tests)} tests")
         if sc.get("source") == "revised":
             continue
-        doc = spec_editor.load(baseline)
+        out = scenario_path(sc)
+        if out.exists() and not args.force:
+            continue
+        base = INPUT / "VCU_Spec_Revised.docx" if sc.get("base") == "revised" else baseline
+        doc = spec_editor.load(base)
         for e in sc["edits"]:
             match e["op"]:
                 case "replace":
@@ -85,13 +156,13 @@ def cmd_build(_args) -> None:
                     spec_editor.add_requirement(doc, e["after"], e["req"], e["title"], e["text"])
         label = f"Revision {sc['id']} | evaluation scenario"
         spec_editor.replace_everywhere(doc, "Revision A | baseline", label)
+        spec_editor.replace_everywhere(doc, "Revision B | candidate change", label)
         spec_editor.replace_everywhere(
             doc,
             "Initial validation baseline for this exercise package. The team has completed an earlier "
             "bench campaign against this revision.",
             "Evaluation scenario: candidate change prepared for engineering assessment.",
         )
-        out = scenario_path(sc)
         out.write_bytes(spec_editor.to_bytes(doc))
         d = diff_specs(parse_spec(baseline), parse_spec(out))
         summary = ", ".join(f"{c.req_id} {c.change_type.value}" for c in d.requirement_changes)
@@ -153,7 +224,7 @@ def cmd_run(args) -> None:
         for sc in data["scenarios"]:
             revised = parse_spec(scenario_path(sc))
             diff = diff_specs(baseline, revised)
-            register = parse_register(INPUT / "VCU_Test_Register.xlsx", revised, baseline)
+            register = parse_register(register_path(sc), revised, baseline)
             reps = CONSISTENCY_REPS if sc["id"] == CONSISTENCY_SCENARIO else 1
             for rep in range(1, reps + 1):
                 path = out_dir / f"{sc['id']}_r{rep}.json"
@@ -214,12 +285,57 @@ def _log_availability(out_dir: Path, scenario: str, rep: int, error: str) -> Non
 # ---------------------------------------------------------------------------
 
 
-def score_model(model_dir: Path, data: dict, version: str = PROMPT_VERSION) -> dict:
-    """Score one model's runs. ``version`` selects which label revision applies."""
+@cache
+def _prepared_cached(spec: str, register: str) -> Prepared:
+    return prepare(
+        Inputs(
+            baseline=InputFile.from_path(INPUT / "VCU_Spec_Baseline.docx"),
+            revised=InputFile.from_path(spec),
+            register=InputFile.from_path(register),
+        )
+    )
+
+
+def _prepared(sc: dict) -> Prepared:
+    return _prepared_cached(str(scenario_path(sc)), str(register_path(sc)))
+
+
+def _assessments(run: dict, sc: dict, postcheck: bool) -> tuple[dict[str, dict], list[dict]]:
+    """Per-test assessments of one stored run, and the adjustments made, for the chosen view.
+
+    raw        the statuses exactly as stored (the model's own, plus any fill-in for omitted tests);
+    postcheck  the same stored output after analysis.post_check, as the application applies it now.
+    """
+    if not postcheck:
+        return {a["test_id"]: a for a in run["result"]["assessments"]}, []
+    result = json.loads(json.dumps(run["result"]))
+    for a in result["assessments"]:
+        a.setdefault("required_actions", ["none"])  # prompt v1 had no such field
+    prep = _prepared(sc)
+    checked = post_check(LLMImpactResult.model_validate(result), prep.diff, prep.register)
+    return (
+        {a.test_id: a.model_dump(mode="json") for a in checked.result.assessments},
+        [x.model_dump(mode="json") for x in checked.adjustments],
+    )
+
+
+def _check_constraint(constraint: dict, got: set[str]) -> bool:
+    return set(constraint.get("must", [])) <= got and not (set(constraint.get("must_not", [])) & got)
+
+
+def score_model(model_dir: Path, scenarios: list[dict], version: str = PROMPT_VERSION, postcheck: bool = False) -> dict:
+    """Score one model's stored runs on ``scenarios``.
+
+    ``version`` selects the label revision (v1 = original labels; later versions also accept
+    the ``accept_from_v2`` statuses). ``postcheck`` selects the view, see ``_assessments``.
+    """
     s = {
         "action_total": 0,
         "action_correct": 0,
         "action_failures": [],
+        "related_total": 0,
+        "related_correct": 0,
+        "related_failures": [],
         "review_noise": 0,
         "runs": 0,
         "failed_runs": 0,
@@ -227,13 +343,15 @@ def score_model(model_dir: Path, data: dict, version: str = PROMPT_VERSION) -> d
         "judgments": 0,
         "lenient_correct": 0,
         "strict_correct": 0,
+        "critical_cells": sum(c["critical"] for sc in scenarios for c in sc["tests"].values()),
         "critical_total": 0,
         "critical_correct": 0,
         "missed_impacts": 0,
+        "missed_impact_cells": [],
         "over_flags": 0,
         "omitted_tests": 0,
         "approval_hits": 0,
-        "postcheck_warnings": 0,
+        "adjustments": [],
         "latencies": [],
         "completion_tokens": [],
         "errors": [],
@@ -241,9 +359,10 @@ def score_model(model_dir: Path, data: dict, version: str = PROMPT_VERSION) -> d
         "critical_failures": [],
         "consistency": None,
         "structured_modes": set(),
+        "valid_scenarios": [],
     }
     s1_statuses = []
-    for sc in data["scenarios"]:
+    for sc in scenarios:
         reps = CONSISTENCY_REPS if sc["id"] == CONSISTENCY_SCENARIO else 1
         for rep in range(1, reps + 1):
             f = model_dir / f"{sc['id']}_r{rep}.json"
@@ -264,16 +383,15 @@ def score_model(model_dir: Path, data: dict, version: str = PROMPT_VERSION) -> d
                 s["completion_tokens"].append(run["completion_tokens"])
             s["structured_modes"].add(run.get("structured_mode", ""))
             s["omitted_tests"] += sum("returned no assessment" in w for w in run["warnings"])
-            s["postcheck_warnings"] += sum(
-                "approval-like" not in w for w in run["warnings"] if not w.startswith("attempt")
-            )
-            pred = {a["test_id"]: a for a in run["result"]["assessments"]}
+            pred, adjustments = _assessments(run, sc, postcheck)
             text = " ".join(a["reason"] + " " + a["recommended_action"] for a in pred.values())
             s["approval_hits"] += len(approval_language(text))
             if sc["id"] == CONSISTENCY_SCENARIO:
                 s1_statuses.append({t: pred[t]["status"] for t in pred})
             if rep != 1:
                 continue  # accuracy uses the first repetition only
+            s["valid_scenarios"].append(sc["id"])
+            s["adjustments"] += [f"{sc['id']} {x['test_id']}" for x in adjustments]
             ok_count = 0
             for tid, label in sc["tests"].items():
                 got = pred.get(tid, {}).get("status")
@@ -285,6 +403,7 @@ def score_model(model_dir: Path, data: dict, version: str = PROMPT_VERSION) -> d
                 s["strict_correct"] += got == label["preferred"]
                 if "not_affected" not in accept and got == "not_affected":
                     s["missed_impacts"] += 1
+                    s["missed_impact_cells"].append(f"{sc['id']} {tid}")
                 if "directly_affected" not in accept and got == "directly_affected":
                     s["over_flags"] += 1
                 if label["critical"]:
@@ -300,13 +419,22 @@ def score_model(model_dir: Path, data: dict, version: str = PROMPT_VERSION) -> d
                 ):
                     s["review_noise"] += 1
                 if version != "v1" and label["actions"]:
-                    acts = set(pred.get(tid, {}).get("required_actions", []))
-                    must, must_not = set(label["actions"].get("must", [])), set(label["actions"].get("must_not", []))
-                    ok = must <= acts and not (must_not & acts)
+                    ok = _check_constraint(label["actions"], set(pred_actions))
                     s["action_total"] += 1
                     s["action_correct"] += ok
                     if not ok:
-                        s["action_failures"].append(f"{sc['id']} {tid}: got {sorted(acts)}, rule {label['actions']}")
+                        s["action_failures"].append(
+                            f"{sc['id']} {tid}: got {sorted(pred_actions)}, rule {label['actions']}"
+                        )
+                if label["related"]:
+                    got_related = set(pred.get(tid, {}).get("related_requirements", []))
+                    ok = _check_constraint(label["related"], got_related)
+                    s["related_total"] += 1
+                    s["related_correct"] += ok
+                    if not ok:
+                        s["related_failures"].append(
+                            f"{sc['id']} {tid}: got {sorted(got_related)}, rule {label['related']}"
+                        )
             s["per_scenario"][sc["id"]] = f"{ok_count}/{len(sc['tests'])}"
     log = model_dir / "availability_log.jsonl"
     s["service_errors"] = s["failed_runs"] + (len(log.read_text().splitlines()) if log.exists() else 0)
@@ -315,43 +443,84 @@ def score_model(model_dir: Path, data: dict, version: str = PROMPT_VERSION) -> d
         stable = sum(all(r.get(t) == s1_statuses[0][t] for r in s1_statuses) for t in tests)
         s["consistency"] = f"{stable}/{len(tests)} over {len(s1_statuses)} runs"
     s["structured_modes"] = sorted(s["structured_modes"] - {""})
+    s["complete"] = {sc["id"] for sc in scenarios} <= set(s["valid_scenarios"])
     return s
+
+
+def _model_dirs(version: str):
+    models = yaml.safe_load((EVAL / "models.yaml").read_text())["models"]
+    for m in models:
+        d = RESULTS / version / _safe(m["name"])
+        if d.exists():
+            yield m, d
 
 
 def cmd_score(args) -> None:
     data = load_dataset()
-    models = yaml.safe_load((EVAL / "models.yaml").read_text())["models"]
     base = RESULTS / args.version
     labels = args.labels or args.version  # label revision: v1 labels, or v2+ with the relabelled cells
     suffix = "" if labels == args.version else f"_labels-{labels}"
-    summary = {}
-    for m in models:
-        d = base / _safe(m["name"])
-        if d.exists():
-            summary[m["name"]] = {"provider": m["provider"], "model": m["model"], **score_model(d, data, labels)}
-    (base / f"summary{suffix}.json").write_text(json.dumps(summary, indent=1))
-    md = render_markdown(summary, data)
-    (base / f"summary{suffix}.md").write_text(md)
-    print(md)
+    sets = [("original", original_scenarios(data)), ("held_out", held_out_scenarios(data))]
+    for view in ("raw", "postcheck"):
+        summaries: dict[str, dict] = {}
+        for kind, scenarios in sets:
+            if not scenarios:
+                continue
+            summ = {
+                m["name"]: {
+                    "provider": m["provider"],
+                    "model": m["model"],
+                    **score_model(d, scenarios, labels, view == "postcheck"),
+                }
+                for m, d in _model_dirs(args.version)
+            }
+            if kind == "held_out" and not any(x["runs"] for x in summ.values()):
+                continue  # nothing run on the held-out scenarios yet
+            summaries[kind] = summ
+        (base / f"summary_{view}{suffix}.json").write_text(json.dumps(summaries, indent=1))
+        md = render_view(view, summaries, data, args.version, labels)
+        (base / f"summary_{view}{suffix}.md").write_text(md)
+        print(md)
 
 
 def _pct(a, b):
     return f"{100 * a / b:.0f}% ({a}/{b})" if b else "n/a"
 
 
-def render_markdown(summary: dict, data: dict) -> str:
-    lines = [
+VIEW_TITLE = {
+    "raw": "Raw model statuses (exactly as the model returned them)",
+    "postcheck": "After the application's post-check (same stored outputs, rewording safety net applied)",
+}
+
+
+def render_view(view: str, summaries: dict, data: dict, version: str, labels: str) -> str:
+    lines = [f"# {VIEW_TITLE[view]}", "", f"Prompt version {version}, labels {labels}.", ""]
+    if "original" in summaries:
+        lines += ["## Original scenarios (S1 to S7)", ""]
+        lines += render_markdown(summaries["original"], original_scenarios(data), view == "postcheck")
+    if "held_out" in summaries:
+        n = sum(len(sc["tests"]) for sc in held_out_scenarios(data))
+        lines += ["", f"## Held-out scenarios ({n} cells, scored separately)", ""]
+        lines += render_markdown(summaries["held_out"], held_out_scenarios(data), view == "postcheck")
+    return "\n".join(lines) + "\n"
+
+
+def render_markdown(summary: dict, scenarios: list[dict], postcheck: bool) -> list[str]:
+    head = (
         "| Model | Runs ok | Valid 1st try | Lenient acc. | Strict acc. | Critical cases | Missed impacts "
         "| Over-flags (D) | Unneeded review flags | Omitted tests | Approval wording | S1 consistency "
-        "| Median latency | Median output tokens "
-        "| Service errors |",
-        "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|",
-    ]
+        "| Median latency | Median output tokens | Service errors |"
+    )
+    cols = 15
+    if postcheck:
+        head += " Post-check adjustments |"
+        cols += 1
+    lines = [head, "|" + "---|" * cols]
     for name, s in summary.items():
         ok = s["runs"] - s["failed_runs"]
         lat = sorted(s["latencies"])
         tok = sorted(s["completion_tokens"])
-        lines.append(
+        row = (
             f"| {name} | {ok}/{s['runs']} | {_pct(s['valid_first_attempt'], ok)} | "
             f"{_pct(s['lenient_correct'], s['judgments'])} | {_pct(s['strict_correct'], s['judgments'])} | "
             f"{_pct(s['critical_correct'], s['critical_total'])} | {s['missed_impacts']} | {s['over_flags']} | "
@@ -360,15 +529,18 @@ def render_markdown(summary: dict, data: dict) -> str:
             f"{f'{lat[len(lat) // 2]:.0f} s' if lat else 'n/a'} | {tok[len(tok) // 2] if tok else 'n/a'} | "
             f"{s['service_errors']} |"
         )
+        if postcheck:
+            row += f" {len(s['adjustments'])} |"
+        lines.append(row)
     lines += [
         "",
         "Per-scenario lenient score (first repetition):",
         "",
-        "| Model | " + " | ".join(sc["id"] for sc in data["scenarios"]) + " |",
-        "|---|" + "---|" * len(data["scenarios"]),
+        "| Model | " + " | ".join(sc["id"] for sc in scenarios) + " |",
+        "|---|" + "---|" * len(scenarios),
     ]
     for name, s in summary.items():
-        cells = " | ".join(s["per_scenario"].get(sc["id"], "-") for sc in data["scenarios"])
+        cells = " | ".join(s["per_scenario"].get(sc["id"], "-") for sc in scenarios)
         lines.append(f"| {name} | {cells} |")
     if any(s.get("action_total") for s in summary.values()):
         lines += ["", "Required actions (labelled cases, first repetition):", ""]
@@ -377,19 +549,115 @@ def render_markdown(summary: dict, data: dict) -> str:
                 f"- **{name}**: {_pct(s['action_correct'], s['action_total'])}; failures: "
                 + ("; ".join(s["action_failures"]) or "none")
             )
+    if any(s.get("related_total") for s in summary.values()):
+        lines += ["", "Related requirements (labelled cases, first repetition):", ""]
+        for name, s in summary.items():
+            lines.append(
+                f"- **{name}**: {_pct(s['related_correct'], s['related_total'])}; failures: "
+                + ("; ".join(s["related_failures"]) or "none")
+            )
+    if postcheck:
+        lines += ["", "Statuses changed by the post-check:", ""]
+        for name, s in summary.items():
+            lines.append(f"- **{name}**: " + (", ".join(s["adjustments"]) or "none"))
+    lines += ["", "Missed impacts (not_affected where the label does not allow it):", ""]
+    for name, s in summary.items():
+        lines.append(f"- **{name}**: " + (", ".join(s["missed_impact_cells"]) or "none"))
     lines += ["", "Critical-case failures:", ""]
     for name, s in summary.items():
         lines.append(f"- **{name}**: " + ("; ".join(s["critical_failures"]) or "none"))
         for e in s["errors"]:
             lines.append(f"  - run error: {e}")
-    return "\n".join(lines) + "\n"
+    return lines
+
+
+# ---------------------------------------------------------------------------
+# decide: the pre-registered decision rule (docs/llm_evaluation.md, section 8.1)
+# ---------------------------------------------------------------------------
+
+PRIMARY = "groq-qwen3.8-27b"
+
+
+def decision_rows(data: dict, version: str) -> dict[str, dict]:
+    """Critical failures and missed impacts over original + held-out cells, post-check applied."""
+    scenarios = data["scenarios"]
+    critical_cells = sum(c["critical"] for sc in scenarios for c in sc["tests"].values())
+    out = {}
+    for m, d in _model_dirs(version):
+        o = score_model(d, original_scenarios(data), version, postcheck=True)
+        h = score_model(d, held_out_scenarios(data), version, postcheck=True)
+        out[m["name"]] = {
+            "critical_failures": critical_cells - (o["critical_correct"] + h["critical_correct"]),
+            "critical_cells": critical_cells,
+            "missed_impacts": o["missed_impacts"] + h["missed_impacts"],
+            "missing_scenarios": sorted(
+                {sc["id"] for sc in scenarios} - set(o["valid_scenarios"]) - set(h["valid_scenarios"])
+            ),
+            "failed_cells": o["critical_failures"] + h["critical_failures"],
+            "missed_cells": o["missed_impact_cells"] + h["missed_impact_cells"],
+        }
+    return out
+
+
+def cmd_decide(args) -> None:
+    data = load_dataset()
+    rows = decision_rows(data, args.version)
+    if PRIMARY not in rows:
+        sys.exit(f"No results for the primary model {PRIMARY!r} under {args.version}.")
+    prim = rows[PRIMARY]
+    lines = [
+        "# Decision rule outcome",
+        "",
+        f"Prompt version {args.version}; post-check applied; original + held-out cells "
+        f"({prim['critical_cells']} critical cells).",
+        "",
+        "Rule: the primary model stays unless a challenger has strictly fewer critical failures AND zero missed "
+        "impacts. Ties go to the primary. A scenario without a valid run counts all its critical cells as failures.",
+        "",
+        "| Model | Critical failures | Missed impacts | Missing scenarios | Replaces the primary? |",
+        "|---|---|---|---|---|",
+    ]
+    winners = []
+    for name, r in rows.items():
+        if name == PRIMARY:
+            verdict = "(primary)"
+        elif r["missing_scenarios"]:
+            verdict = f"no: missing valid runs for {', '.join(r['missing_scenarios'])}"
+        elif r["critical_failures"] < prim["critical_failures"] and r["missed_impacts"] == 0:
+            verdict = "yes"
+            winners.append(name)
+        else:
+            why = []
+            if r["critical_failures"] >= prim["critical_failures"]:
+                why.append("not strictly fewer critical failures")
+            if r["missed_impacts"]:
+                why.append(f"{r['missed_impacts']} missed impact(s)")
+            verdict = "no: " + "; ".join(why)
+        lines.append(
+            f"| {name} | {r['critical_failures']} | {r['missed_impacts']} | "
+            f"{', '.join(r['missing_scenarios']) or '-'} | {verdict} |"
+        )
+    lines += ["", "Cells behind the numbers:", ""]
+    for name, r in rows.items():
+        lines.append(f"- **{name}** critical failures: {'; '.join(r['failed_cells']) or 'none'}")
+        lines.append(f"  - missed impacts: {', '.join(r['missed_cells']) or 'none'}")
+    lines += [
+        "",
+        f"**Outcome: {winners[0] + ' replaces ' + PRIMARY if len(winners) == 1 else PRIMARY + ' stays primary'}.**"
+        if len(winners) <= 1
+        else f"**Outcome: several challengers qualify ({', '.join(winners)}); the rule does not choose between them.**",
+    ]
+    md = "\n".join(lines) + "\n"
+    (RESULTS / args.version / "decision.md").write_text(md)
+    print(md)
 
 
 def main() -> None:
     load_dotenv(ROOT / ".env")
     p = argparse.ArgumentParser()
     sub = p.add_subparsers(dest="cmd", required=True)
-    sub.add_parser("build")
+    b = sub.add_parser("build")
+    b.add_argument("--force", action="store_true", help="regenerate scenario files that already exist")
     sub.add_parser("list-models")
     r = sub.add_parser("run")
     r.add_argument("--only")
@@ -398,8 +666,12 @@ def main() -> None:
     sc = sub.add_parser("score")
     sc.add_argument("--version", default=PROMPT_VERSION, help="prompt version whose results to score")
     sc.add_argument("--labels", help="label revision to apply (default: same as --version; v1 = original labels)")
+    d = sub.add_parser("decide")
+    d.add_argument("--version", default=PROMPT_VERSION)
     args = p.parse_args()
-    {"build": cmd_build, "list-models": cmd_list_models, "run": cmd_run, "score": cmd_score}[args.cmd](args)
+    {"build": cmd_build, "list-models": cmd_list_models, "run": cmd_run, "score": cmd_score, "decide": cmd_decide}[
+        args.cmd
+    ](args)
 
 
 if __name__ == "__main__":

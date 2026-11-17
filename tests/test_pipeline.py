@@ -73,6 +73,8 @@ def test_default_inputs_replay_real_recording():
 
 def test_every_scenario_has_a_committed_recording():
     for sc in load_dataset()["scenarios"]:
+        if sc.get("held_out"):
+            continue  # held-out scenarios are an evaluation instrument, not an app demo
         d = default_inputs()
         prep = prepare(Inputs(d.baseline, InputFile.from_path(scenario_path(sc)), d.register))
         found = cache.find(prep.key)

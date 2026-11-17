@@ -34,6 +34,8 @@ def main() -> None:
         sys.exit(f"Recordings must match the current prompt ({PROMPT_VERSION}); got {args.version}.")
 
     for sc in load_dataset()["scenarios"]:
+        if sc.get("held_out"):
+            continue  # held-out scenarios are not part of the app's replay set
         run_file = ROOT / "eval" / "results" / args.version / args.model / f"{sc['id']}_r1.json"
         data = json.loads(run_file.read_text())
         if not data.get("ok"):
