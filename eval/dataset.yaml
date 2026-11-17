@@ -15,6 +15,10 @@
 #   actions   : (added for prompt v2) constraints on required_actions decided by the
 #               LLM: `must` = actions that must be present, `must_not` = forbidden.
 #               fix_link is not scored here: the application sets it from the links.
+#   related   : (held-out scenarios) constraints on related_requirements:
+#               `must` = IDs that must be listed, `must_not` = IDs that must not be.
+#   held_out  : (scenario level) written and committed BEFORE any model ran on it; scored and
+#               reported separately from the 84 original cells (S1 to S7).
 #   accept_from_v2 : statuses also accepted from prompt v2 on. Prompt v2 redefines
 #               directly_affected as "verifies the changed behaviour" and moves
 #               "re-run vs update text only" into required_actions. Only the two
@@ -194,3 +198,103 @@ scenarios:
       TV-010: unrelated
       TV-011: unrelated
       TV-012: broken_link_unrelated
+
+  # ---------------------------------------------------------------------------
+  # Held-out scenarios S8 to S10: labels written from the documents before any model saw them.
+  # ---------------------------------------------------------------------------
+
+  - id: S8
+    held_out: true
+    title: "DR-01 trigger raised from 70% to 90% pedal demand (time limit unchanged)"
+    edits:
+      - {op: replace, req: VCU-DR-01, old: "rises above 70%", new: "rises above 90%"}
+    tests:
+      TV-001: {accept: [D, P], preferred: D, critical: true,
+               actions: {must: [update_procedure]}, related: {must: [VCU-DR-01]},
+               why: "Steps demand to 75%, which is below the new 90% trigger: the test no longer exercises the response-time requirement, and its old 94 ms at 75% says nothing about demands above 90%. The stimulus must change. N would be a missed impact."}
+      TV-002: {accept: [N, P], preferred: N, critical: true,
+               why: "Applies 85% pedal, now below the 90% trigger, and checks brake priority without any timing assertion (comment: timing not reported). The DR-01 time limit did not change, so nothing in its evidence breaks; at most the DR-01 link is now stale. D would be an over-flag."}
+      TV-003: {accept: [P, N, R], preferred: P,
+               why: "Sweeps 75-95% with a recorded maximum of 92 ms, no link. Only the part above 90% is still in scope, and 92 ms still meets the unchanged 100 ms limit, so the evidence holds; partial overlap makes P the best answer. Accepting N and R because the link is missing and the evidence is intact."}
+      TV-004: {accept: [N], preferred: N,
+               why: "Brake command latency 88 ms under BRK-03, on a different clock; BRK-03 and the time limit did not change, and its 88 ms must not be compared with the new 90% trigger."}
+      TV-005: {accept: [N], preferred: N, why: "Wheel-speed sensor degradation under DGN-04, unrelated to pedal demand."}
+      TV-006: {accept: [N], preferred: N, why: "Mode-change audit trail under LOG-05, unrelated to pedal demand."}
+      TV-007: {accept: [R, P, N], preferred: R,
+               why: "TBD link and NOT RUN; 80% pedal at elevated load is below the new 90% trigger and its intent is unclear. 80% is a pedal level, not a time. R is the safest; P and N are defensible."}
+      TV-008: {accept: [R, N], preferred: R, why: "Orphaned link VCU-OLD-88 and a legacy diagnostic replay; unrelated to the trigger change, but its traceability is broken."}
+      TV-009: {accept: [N, P], preferred: N,
+               why: "Sport versus Comfort ramp under MOD-06 with no quantitative assertion; the trigger change does not touch the ramp profile."}
+      TV-010: {accept: [N], preferred: N, why: "7 ms pedal spike filtering under DR-02, unchanged."}
+      TV-011: {accept: [N], preferred: N, why: "Torque cancellation on emergency braking under BRK-03, unchanged; 'demand is high' is not tied to the DR-01 trigger."}
+      TV-012: {accept: [N, R], preferred: N, why: "ECU wake-up within 500 ms (433 ms recorded), platform start-up only; no link, unrelated to pedal demand."}
+
+  - id: S9
+    held_out: true
+    title: "Real revision (DR-01 100 -> 80 ms) plus an 80 ms brake command limit on BRK-03"
+    base: revised
+    edits:
+      - {op: replace, req: VCU-BRK-03,
+         old: "regardless of pedal position or requested driving mode.",
+         new: "regardless of pedal position or requested driving mode. The brake command shall be issued within 80 milliseconds of the emergency brake input."}
+    tests:
+      TV-001: {accept: [D], preferred: D, critical: true,
+               actions: {must: [rerun, update_procedure]}, related: {must: [VCU-DR-01], must_not: [VCU-BRK-03]},
+               why: "Torque response 94 ms against the new 80 ms DR-01 limit; script still at 100 ms. It is a torque measurement, so it is tied to DR-01 and not to BRK-03."}
+      TV-002: {accept: [D, P], preferred: P, critical: true,
+               actions: {must: [rerun]}, related: {must: [VCU-DR-01, VCU-BRK-03]},
+               why: "Linked to both changed requirements and its old evidence reports no timing for either, so it cannot show 80 ms compliance on either clock."}
+      TV-003: {accept: [D, P, R], preferred: D, critical: true,
+               related: {must: [VCU-DR-01], must_not: [VCU-BRK-03]},
+               why: "No link, but a 75-95% torque transient with a recorded maximum of 92 ms, above the new 80 ms torque limit; the lost-link note in the workshop sheet points at it. It is torque timing, not brake timing."}
+      TV-004: {accept: [D], preferred: D, critical: true,
+               actions: {must: [rerun, update_procedure]}, related: {must: [VCU-BRK-03], must_not: [VCU-DR-01]},
+               why: "Brake command latency 88 ms is above the new 80 ms brake limit and its 100 ms target must change. It is on the brake clock, so it must not be tied to the torque requirement DR-01."}
+      TV-005: {accept: [N], preferred: N, why: "Wheel-speed sensor degradation under DGN-04, unchanged."}
+      TV-006: {accept: [N], preferred: N, why: "Mode-change audit trail under LOG-05, unchanged."}
+      TV-007: {accept: [P, R], preferred: R, critical: true,
+               why: "TBD link, NOT RUN, torque delivery at 80% pedal and elevated load (above the 70% trigger). With two 80 ms limits in play, 80% pedal is a trap: it is a pedal level, not a time."}
+      TV-008: {accept: [R, N], preferred: R, why: "Orphaned link VCU-OLD-88 and a legacy diagnostic replay; unrelated to both changes."}
+      TV-009: {accept: [P, N], preferred: P,
+               why: "Accelerator response under Sport and Comfort with no quantitative response-time assertion; plausibly touched by the torque-response change but no evidence of a time check."}
+      TV-010: {accept: [N], preferred: N, why: "7 ms pedal spike filtering under DR-02, unchanged."}
+      TV-011: {accept: [D, P], preferred: P, critical: true,
+               related: {must: [VCU-BRK-03], must_not: [VCU-DR-01]},
+               why: "Torque cancellation on emergency braking under BRK-03, which now has an 80 ms brake command limit; its evidence has no timing. It exercises the brake requirement, not the DR-01 torque limit."}
+      TV-012: {accept: [N, R], preferred: N, critical: true,
+               why: "ECU wake-up within 500 ms (433 ms recorded) is platform start-up only. Timing trap: two 80 ms limits are in play, but this test is on neither."}
+
+  - id: S10
+    held_out: true
+    title: "Real revision; register edited: TV-003 linked to DR-01, new TV-013 below the 70% trigger"
+    source: revised
+    register_edits:
+      - {op: set_link, test: TV-003, value: VCU-DR-01}
+      - {op: add_test, test_id: TV-013, name: "Pedal step response, low demand",
+         procedure: "Step validated accelerator demand to 60%; record the time to the first commanded torque response and confirm a smooth torque ramp.",
+         link: VCU-DR-01, result: "PASS (86 ms)", owner: "M.", last_run: "2026-10-09",
+         comment: "Low-demand variant of the step script"}
+    tests:
+      TV-001: {accept: [D], preferred: D, critical: true, actions: {must: [rerun, update_procedure]},
+               why: "Same as in the real revision: 94 ms against the new 80 ms limit, script at 100 ms."}
+      TV-002: {accept: [D, P], preferred: P, critical: true,
+               why: "Same as in the real revision: linked to DR-01 but its old evidence has no timing."}
+      TV-003: {accept: [D, P], preferred: D, critical: true, actions: {must: [rerun, update_procedure]},
+               related: {must: [VCU-DR-01]},
+               why: "Its link is now a valid VCU-DR-01. A 75-95% torque transient with a recorded maximum of 92 ms is above the new 80 ms limit, and the legacy 95 ms tolerance is also too loose. With the link repaired the answer is firm."}
+      TV-004: {accept: [N], preferred: N, critical: true,
+               why: "Brake command latency 88 ms on a different clock under BRK-03, which did not change."}
+      TV-005: {accept: [N], preferred: N, why: "Wheel-speed sensor degradation under DGN-04, unchanged."}
+      TV-006: {accept: [N], preferred: N, why: "Mode-change audit trail under LOG-05, unchanged."}
+      TV-007: {accept: [P, R], preferred: R, critical: true,
+               why: "Same as in the real revision: TBD link, NOT RUN, 80% pedal is a pedal level and not 80 ms."}
+      TV-008: {accept: [R, N], preferred: R, why: "Orphaned link VCU-OLD-88 and a legacy diagnostic replay; unrelated to the change."}
+      TV-009: {accept: [P, N], preferred: P,
+               why: "Accelerator response under Sport and Comfort with no quantitative assertion, as in the real revision."}
+      TV-010: {accept: [N], preferred: N, why: "7 ms pedal spike filtering under DR-02, unchanged."}
+      TV-011: {accept: [N], preferred: N, why: "Torque cancellation on emergency braking under BRK-03, unchanged."}
+      TV-012: {accept: [N, R], preferred: N, critical: true,
+               why: "ECU wake-up within 500 ms (433 ms recorded) is platform start-up only; unrelated to torque response."}
+      TV-013: {accept: [N, P], preferred: N, critical: true,
+               actions: {must_not: [rerun, update_procedure]},
+               why: "Linked to VCU-DR-01 and PASS (86 ms), which is above the new 80 ms, but it steps demand to 60%, below the 70% trigger, so DR-01 does not govern it: its 86 ms is not evidence against the limit. D would be an over-flag from a valid link plus a number; P (check the link) is acceptable."}
