@@ -4,10 +4,16 @@ from pathlib import Path
 
 import pytest
 
-from vcu_impact import spec_editor
-from vcu_impact.analysis import approval_language, normalize_actions, post_check
+from vcu_impact import models, spec_editor
+from vcu_impact.analysis import AnalysisRun, approval_language, normalize_actions, post_check
 from vcu_impact.diff import diff_specs, numeric_changes, word_diff
-from vcu_impact.models import ChangeType, ImpactStatus, LinkStatus, LLMImpactResult, RequiredAction
+from vcu_impact.models import (
+    ChangeType,
+    ImpactStatus,
+    LinkStatus,
+    LLMImpactResult,
+    RequiredAction,
+)
 from vcu_impact.register_parser import classify_links, parse_register
 from vcu_impact.spec_parser import parse_spec
 
@@ -158,7 +164,7 @@ def test_post_check_fills_missing_and_strips_invented_ids(baseline, revised):
             ],
         }
     )
-    cleaned, warnings = post_check(raw, d, reg)
+    cleaned, warnings, _ = post_check(raw, d, reg)
     assert [a.test_id for a in cleaned.assessments] == [t.test_id for t in reg.tests]
     assert cleaned.assessments[0].related_requirements == ["VCU-DR-01"]
     assert cleaned.assessments[1].status == "needs_human_review"
@@ -193,34 +199,127 @@ def test_normalize_actions_rules():
     assert len(w) == 1 and "not_affected" in w[0]
 
 
-def test_post_check_flags_rewording_contradiction(baseline):
-    def assessment(test_id, status):
-        return {
-            "test_id": test_id,
-            "status": status,
-            "confidence": "high",
-            "related_requirements": ["VCU-DGN-04"],
-            "required_actions": ["none"],
-            "reason": "r",
-            "evidence": [],
-            "recommended_action": "x",
-        }
+# -- rewording safety net (analysis.post_check) ---------------------------------------
 
-    revised = parse_spec(_edited(lambda d: spec_editor.set_requirement(d, "VCU-DGN-04", text="Signal lost: degrade.")))
-    reg = parse_register(REGISTER, revised, baseline)
-    raw = LLMImpactResult.model_validate(
-        {
-            "change_interpretations": [
-                {"requirement_id": "VCU-DGN-04", "nature": "reworded_same_meaning", "engineering_summary": "s"}
-            ],
-            "assessments": [assessment("TV-005", "directly_affected"), assessment("TV-006", "not_affected")],
-        }
+
+def _assessment(test_id, status, related, actions=("none",)):
+    return {
+        "test_id": test_id,
+        "status": status,
+        "confidence": "high",
+        "related_requirements": list(related),
+        "required_actions": list(actions),
+        "reason": "the model's reason",
+        "evidence": [],
+        "recommended_action": "x",
+    }
+
+
+def _interp(req_id, nature):
+    return {"requirement_id": req_id, "nature": nature, "engineering_summary": "s"}
+
+
+@pytest.fixture(scope="module")
+def reworded_and_tightened(baseline):
+    """DGN-04 reworded (same meaning) and DR-01 changed to 90 ms: two changed requirements."""
+
+    def edit(doc):
+        spec_editor.set_requirement(doc, "VCU-DGN-04", text="Signal lost: degrade and log.")
+        spec_editor.set_requirement(doc, "VCU-DR-01", text="Torque within 90 milliseconds.")
+
+    revised = parse_spec(_edited(edit))
+    return diff_specs(baseline, revised), parse_register(REGISTER, revised, baseline)
+
+
+def _check(fixture, interpretations, assessments):
+    diff, reg = fixture
+    raw = LLMImpactResult.model_validate({"change_interpretations": interpretations, "assessments": assessments})
+    return post_check(raw, diff, reg)
+
+
+def _status(checked, test_id):
+    return next(a for a in checked.result.assessments if a.test_id == test_id).status
+
+
+REWORDED = [_interp("VCU-DGN-04", "reworded_same_meaning"), _interp("VCU-DR-01", "tightened")]
+
+
+def test_rewording_adjustment_is_applied(reworded_and_tightened):
+    checked = _check(reworded_and_tightened, REWORDED, [_assessment("TV-005", "directly_affected", ["VCU-DGN-04"])])
+    tv005 = next(a for a in checked.result.assessments if a.test_id == "TV-005")
+    assert tv005.status == "not_affected"
+    assert tv005.reason == "the model's reason"  # only the status is corrected
+    assert tv005.confidence == "high"
+
+
+def test_rewording_adjustment_is_recorded_outside_the_llm_schema(reworded_and_tightened):
+    checked = _check(reworded_and_tightened, REWORDED, [_assessment("TV-005", "directly_affected", ["VCU-DGN-04"])])
+    [adj] = checked.adjustments
+    assert (adj.test_id, adj.rule) == ("TV-005", "rewording_contradiction")
+    assert (adj.original_status, adj.new_status) == ("directly_affected", "not_affected")
+    assert "VCU-DGN-04" in adj.reason
+    assert any("TV-005" in w and "changed from directly_affected to not_affected" in w for w in checked.warnings)
+    # The record is run-level information, never part of the schema sent to the model.
+    assert "adjustments" not in LLMImpactResult.model_fields and "adjustments" not in models.TestAssessment.model_fields
+    assert "adjustments" in AnalysisRun.model_fields
+
+
+def test_mixed_related_requirements_are_untouched(reworded_and_tightened):
+    checked = _check(
+        reworded_and_tightened,
+        REWORDED,
+        [_assessment("TV-001", "directly_affected", ["VCU-DGN-04", "VCU-DR-01"])],
     )
-    cleaned, warnings = post_check(raw, diff_specs(baseline, revised), reg)
-    flagged = [w for w in warnings if "Contradiction" in w]
-    assert len(flagged) == 1 and flagged[0].startswith("TV-005")
-    # The status is not changed silently.
-    assert next(a for a in cleaned.assessments if a.test_id == "TV-005").status == "directly_affected"
+    assert _status(checked, "TV-001") == "directly_affected"
+    assert checked.adjustments == [] and not any("TV-001" in w for w in checked.warnings)
+
+
+def test_empty_related_requirements_are_untouched_and_warn_only_for_pure_rewordings(baseline):
+    revised = parse_spec(_edited(lambda d: spec_editor.set_requirement(d, "VCU-DGN-04", text="Signal lost: degrade.")))
+    only_rewording = (diff_specs(baseline, revised), parse_register(REGISTER, revised, baseline))
+    assessments = [_assessment("TV-005", "directly_affected", [])]
+    checked = _check(only_rewording, [_interp("VCU-DGN-04", "reworded_same_meaning")], assessments)
+    assert _status(checked, "TV-005") == "directly_affected" and checked.adjustments == []
+    assert any("TV-005" in w and "without naming a changed requirement" in w for w in checked.warnings)
+    # With a real change in the same run the empty list is not suspicious: no warning.
+    other = _check(only_rewording, [_interp("VCU-DGN-04", "tightened")], assessments)
+    assert _status(other, "TV-005") == "directly_affected"
+    assert not any("without naming" in w for w in other.warnings)
+
+
+@pytest.mark.parametrize("nature", ["tightened", "relaxed", "scope_changed", "other"])
+def test_non_rewording_changes_are_untouched(reworded_and_tightened, nature):
+    interpretations = [_interp("VCU-DGN-04", nature), _interp("VCU-DR-01", "tightened")]
+    checked = _check(
+        reworded_and_tightened, interpretations, [_assessment("TV-005", "directly_affected", ["VCU-DGN-04"])]
+    )
+    assert _status(checked, "TV-005") == "directly_affected" and checked.adjustments == []
+
+
+def test_adjustment_only_concerns_directly_affected_tests_with_an_interpretation(reworded_and_tightened):
+    checked = _check(
+        reworded_and_tightened,
+        [_interp("VCU-DGN-04", "reworded_same_meaning")],  # no interpretation for VCU-DR-01
+        [
+            _assessment("TV-005", "possibly_affected", ["VCU-DGN-04"]),
+            _assessment("TV-006", "not_affected", ["VCU-DGN-04"]),
+            _assessment("TV-001", "directly_affected", ["VCU-DR-01"]),  # related requirement not interpreted
+        ],
+    )
+    assert _status(checked, "TV-005") == "possibly_affected"
+    assert _status(checked, "TV-006") == "not_affected"
+    assert _status(checked, "TV-001") == "directly_affected"
+    assert checked.adjustments == []
+
+
+def test_adjusted_status_still_triggers_the_action_consistency_warning(reworded_and_tightened):
+    checked = _check(
+        reworded_and_tightened,
+        REWORDED,
+        [_assessment("TV-005", "directly_affected", ["VCU-DGN-04"], actions=("rerun",))],
+    )
+    assert _status(checked, "TV-005") == "not_affected"
+    assert any("TV-005" in w and "status not_affected but actions" in w for w in checked.warnings)
 
 
 def test_apply_edits_and_validation(baseline):

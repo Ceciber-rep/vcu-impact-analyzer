@@ -152,7 +152,7 @@ register.xlsx ─┘  (code)   (code)                   └─ none: facts only
 | Parse the register; classify each link as valid, missing, TBD, unknown or removed | Judge every test's relevance, **including tests with no valid link** |
 | Extract values from free-text results (e.g. `PASS (94 ms)` → 94 ms) | Compare evidence with the new requirement: same quantity, same clock (workshop notes) |
 | Set `fix_link` for every broken link | Decide re-run vs procedure update vs owner decision; write the reason and evidence |
-| Validate the output: all tests covered, no invented IDs, no approval wording, contradiction checks | |
+| Validate the output: all tests covered, no invented IDs, no approval wording; correct one known self-contradiction (below) | |
 
 The LLM output is a strict JSON schema validated with Pydantic, with one automatic
 repair retry. The UI and the report are built only from validated data.
@@ -190,10 +190,13 @@ repair retry. The UI and the report are built only from validated data.
 
 ## Known issues and limitations
 
-See [docs/known_issues.md](docs/known_issues.md). The most important one: a **pure
-rewording** of a requirement can be reported as *directly affected* although the model
-itself says the behaviour is unchanged. The application detects this contradiction and
-shows a warning next to the test; it does not override the model's status.
+See [docs/known_issues.md](docs/known_issues.md). The most important one: the model can
+mark a test *directly affected* for a **pure rewording** of a requirement although its own
+interpretation of the change says nothing changed. This is a safety net in the application,
+not an improvement of the model: the post-check changes that status to *not affected* and
+shows the change next to the test (the original model output is kept). It relies on the
+model's reading of the change, which is not evaluated and not stable, so it could in
+principle hide a real impact.
 
 The evaluation is small (84 judgments, one register, one annotator), and the prompt was
 refined on the same scenarios. Free-tier latency, rate limits and availability can change

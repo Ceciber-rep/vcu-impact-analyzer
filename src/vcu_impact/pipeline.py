@@ -16,7 +16,7 @@ from typing import Literal
 from pydantic import BaseModel
 
 from vcu_impact import cache
-from vcu_impact.analysis import AnalysisRun, post_check, run_analysis
+from vcu_impact.analysis import Adjustment, AnalysisRun, post_check, run_analysis
 from vcu_impact.diff import diff_specs
 from vcu_impact.llm import LLMClient, LLMConfig, LLMError, extract_json
 from vcu_impact.models import (
@@ -157,8 +157,10 @@ def _replay(prep: Prepared) -> AnalysisOutcome | None:
         raw = LLMImpactResult.model_validate_json(extract_json(run.raw_text))
     except ValueError:
         raw = run.result
-    result, warnings = post_check(raw, prep.diff, prep.register)
-    run = run.model_copy(update={"result": result, "warnings": warnings})
+    checked = post_check(raw, prep.diff, prep.register)
+    run = run.model_copy(
+        update={"result": checked.result, "warnings": checked.warnings, "adjustments": checked.adjustments}
+    )
     return AnalysisOutcome(mode="replay" if source == "recorded" else "cached", run=run, recording_label=entry.label)
 
 
@@ -209,11 +211,13 @@ class TestImpactRow(BaseModel):
     assessment: TestAssessment | None
     actions_from_code: list[RequiredAction]  # actions set deterministically, not by the model
     warnings: list[str]
+    adjustment: Adjustment | None = None  # set when the application changed the model's status
 
 
 def build_rows(prep: Prepared, outcome: AnalysisOutcome) -> list[TestImpactRow]:
     by_id = {a.test_id: a for a in outcome.run.result.assessments} if outcome.run else {}
     all_warnings = (outcome.run.warnings if outcome.run else []) + outcome.warnings
+    adjustments = {x.test_id: x for x in (outcome.run.adjustments if outcome.run else [])}
     rows = []
     for test in prep.register.tests:
         assessment = by_id.get(test.test_id)
@@ -227,6 +231,7 @@ def build_rows(prep: Prepared, outcome: AnalysisOutcome) -> list[TestImpactRow]:
                 assessment=assessment,
                 actions_from_code=from_code,
                 warnings=[w for w in all_warnings if pattern.search(w)],
+                adjustment=adjustments.get(test.test_id),
             )
         )
     return rows

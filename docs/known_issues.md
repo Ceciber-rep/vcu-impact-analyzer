@@ -4,34 +4,43 @@ Issues known in the current analysis configuration (prompt **v3**, Groq
 `qwen/qwen3.8-27b`). Evidence for each is in [llm_evaluation.md](llm_evaluation.md) and
 the raw outputs under `eval/results/v3/`.
 
-## 1. A pure rewording can be reported as "directly affected" (open)
+## 1. The model contradicts itself on a pure rewording (open in the model; corrected visibly by the application)
 
 **Where it fails.** Scenario S5: VCU-DGN-04 is reworded with the same meaning
 ("unavailable" becomes "lost", "enter" becomes "switch", "log" becomes "record"). The
 model correctly interprets the change as `reworded_same_meaning` and says in its own
 reason that "the behavior is unchanged" and the previous evidence remains valid. It still
-marks TV-005 as `directly_affected`, with required actions `["none"]`.
+marks TV-005 as `directly_affected`, with required actions `["none"]`. This is still true
+of the model: the prompt v3 wording meant to prevent it did not (prompt v1 got this case
+right).
 
-**Why.** Prompt v2 defined `directly_affected` as "the test verifies behaviour that the
-change alters". The model reads "the change" as "the changed requirement": TV-005
-verifies DGN-04, so it calls it directly affected. Prompt v3 added the sentence "if the
-change alters no behaviour (an editorial rewording with the same meaning), no test is
-directly affected by it". This did not change the answer. Prompt v1 (status only, without
-`required_actions`) answered `not_affected` correctly.
+**Probable cause (not tested).** Groq `qwen/qwen3.8-27b` writes the JSON keys in
+alphabetical order, so `assessments` is generated **before** `change_interpretations`
+(verified in the stored raw outputs of all qwen runs; the other three models follow the
+schema order and write the interpretations first). The model therefore cannot use its own
+reading of the change when it writes the statuses. Whether reordering the fields removes
+the contradiction has not been tested (see docs/llm_evaluation.md, section 8).
 
-**Impact.** The work is right: no re-run, no procedure change. The status is wrong and
-alarming. This matters for demos, because rewording a requirement is a likely
-"small change" to try.
+**Safety net in the application, not an improvement of the model.**
+`analysis.post_check` applies one rule: if a test is `directly_affected` and **all** of its
+`related_requirements` were interpreted as `reworded_same_meaning`, its status is changed to
+`not_affected`. The change is never silent:
+- an `Adjustment` (test, rule, original status, new status, reason) is recorded on the run,
+  outside the LLM schema, and exposed on each result row as `adjustment`;
+- a warning naming the test is added to the run;
+- the model's own output is kept unchanged in the run's `raw_text`.
 
-**Mitigation in place.** A deterministic post-check (`analysis.post_check`) warns when a
-test is `directly_affected` and every requirement it relates to was interpreted as
-`reworded_same_meaning`. The status is **not** overridden, so a disagreement stays
-visible instead of being hidden. The warning must be shown next to the test in the UI
-and in the report.
+Tests with mixed related requirements (a rewording and a real change) are not touched. A
+`directly_affected` test with no related requirement is only warned about, and only when every
+change in the run was read as a rewording.
 
-**Not done, and why.** Further prompt wording was not tried. v3 was already tuned on the
-same seven scenarios it is scored on, and another iteration would fit the dataset even
-more.
+**Risk of the safety net.** It trusts the model's `nature` field, which is **not scored** in
+the evaluation and is not stable: for S3 qwen answered `tightened` (prompt v1), `relaxed`
+(v2) and `tightened` (v3), and the local qwen3:8b read the relaxation in S4 (100 → 120 ms) as
+`tightened`. If a model ever reads a real change as `reworded_same_meaning` and marks an
+affected test `directly_affected`, the rule would downgrade a true impact to `not_affected`.
+The visible warning and adjustment record are what protect against that, so the UI and the
+report must show them next to the test.
 
 ## 2. Other limitations of the v3 configuration
 

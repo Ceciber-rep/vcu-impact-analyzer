@@ -40,11 +40,13 @@ def test_report_has_required_content():
     assert "~~100~~**80**" in md
 
 
-def test_report_shows_known_contradiction_warning():
+def test_report_shows_the_status_adjustment():
     sc = next(s for s in load_dataset()["scenarios"] if s["id"] == "S5")
     d = default_inputs()
     html, md = _reports(Inputs(d.baseline, InputFile.from_path(scenario_path(sc)), d.register))
-    assert "Contradiction in the model output" in html and "Contradiction in the model output" in md
+    for doc in (html, md):
+        assert "changed from directly_affected to not_affected" in doc  # shown next to TV-005
+        assert "post-check, not by the model" in doc
 
 
 def test_report_without_analysis_and_with_edits():

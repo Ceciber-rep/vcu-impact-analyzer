@@ -8,7 +8,7 @@ import pytest
 from vcu_impact import cache, pipeline, spec_editor
 from vcu_impact.analysis import AnalysisRun
 from vcu_impact.cli import main as cli_main
-from vcu_impact.llm import LLMConfig
+from vcu_impact.llm import LLMConfig, extract_json
 from vcu_impact.models import LLMImpactResult
 from vcu_impact.pipeline import InputFile, Inputs, analyze, build_rows, default_inputs, prepare
 
@@ -79,13 +79,23 @@ def test_every_scenario_has_a_committed_recording():
         assert found and found[1] == "recorded", sc["id"]
 
 
-def test_replay_reapplies_post_checks():
+def test_replay_reapplies_post_checks_and_corrects_the_s5_status():
     sc = next(s for s in load_dataset()["scenarios"] if s["id"] == "S5")
     d = default_inputs()
     prep = prepare(Inputs(d.baseline, InputFile.from_path(scenario_path(sc)), d.register))
-    rows = build_rows(prep, analyze(prep, mode="replay"))
-    tv005 = next(r for r in rows if r.test.test_id == "TV-005")
-    assert any("Contradiction" in w for w in tv005.warnings)  # known issue, see docs/known_issues.md
+    out = analyze(prep, mode="replay")
+    # The recorded raw output says directly_affected; the post-check corrects it visibly.
+    recorded_raw = next(
+        a
+        for a in LLMImpactResult.model_validate_json(extract_json(out.run.raw_text)).assessments
+        if a.test_id == "TV-005"
+    )
+    assert recorded_raw.status == "directly_affected"
+    tv005 = next(r for r in build_rows(prep, out) if r.test.test_id == "TV-005")
+    assert tv005.assessment.status == "not_affected"
+    assert tv005.adjustment and tv005.adjustment.original_status == "directly_affected"
+    assert any("changed from directly_affected to not_affected" in w for w in tv005.warnings)
+    assert [a.test_id for a in out.run.adjustments] == ["TV-005"]  # nothing else is adjusted
 
 
 def test_key_is_stable_and_changes_with_any_edit():

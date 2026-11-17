@@ -1,6 +1,6 @@
 # Engineering impact summary
 
-VCU-42 | Driver demand and safety controls · generated 2026-11-17 15:26 UTC
+VCU-42 | Driver demand and safety controls · generated 2026-11-17 17:40 UTC
 
 > **Recommendations only.** This report gives recommendations for engineering review. The test register is treated as evidence from earlier campaigns, not as approval. Nothing in this report approves a requirement, a test or a result: final approval belongs to the authorized owner.
 
@@ -155,5 +155,5 @@ Specifications are parsed and compared by code (requirement IDs, word-level diff
 
 - Statuses, reasons and model-set actions are LLM judgments and can be wrong; check them before acting.
 - 'Fix requirement link' is set by the application from the register links, not by the model.
-- A pure rewording of a requirement can be reported as 'directly affected' although the model itself says the behaviour is unchanged; the application flags this contradiction as a warning (docs/known_issues.md, issue 1).
+- The model can mark a test 'directly affected' although it read the change as a rewording with the same meaning. The application then changes the status to 'not affected' and says so next to the test (a safety net, not a better model); it relies on the model's reading of the change, which is not evaluated (docs/known_issues.md, issue 1).
 - The analysis was evaluated on 7 change scenarios of this register (84 judgments); see docs/llm_evaluation.md.

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import re
 from datetime import UTC, datetime
+from typing import NamedTuple
 
 from pydantic import BaseModel, Field
 
@@ -30,6 +31,23 @@ _NEGATED_RE = re.compile(
 )
 
 
+REWORDING_RULE = "rewording_contradiction"
+
+
+class Adjustment(BaseModel):
+    """A correction the application made to a model answer.
+
+    It is kept outside the LLM schema on purpose: it records what the application did,
+    not what the model said, so the UI and the report can show both side by side.
+    """
+
+    test_id: str
+    rule: str
+    original_status: ImpactStatus
+    new_status: ImpactStatus
+    reason: str
+
+
 class AnalysisRun(BaseModel):
     """An LLM assessment plus provenance and post-check findings."""
 
@@ -43,6 +61,7 @@ class AnalysisRun(BaseModel):
     structured_mode: str = ""
     result: LLMImpactResult
     warnings: list[str] = Field(default_factory=list)
+    adjustments: list[Adjustment] = Field(default_factory=list)  # empty for older recordings
     raw_text: str = ""
 
 
@@ -78,12 +97,65 @@ def normalize_actions(
     return [a for a in _ACTION_ORDER if a in acts]
 
 
-def post_check(result: LLMImpactResult, diff: SpecDiff, register: TestRegister) -> tuple[LLMImpactResult, list[str]]:
-    """Enforce coverage, ID integrity and action consistency; never silently invent an assessment."""
+class PostCheck(NamedTuple):
+    result: LLMImpactResult
+    warnings: list[str]
+    adjustments: list[Adjustment]
+
+
+def _reconcile_with_interpretation(
+    a: TestAssessment, nature: dict[str, ChangeNature], warnings: list[str]
+) -> tuple[TestAssessment, Adjustment | None]:
+    """Safety net for one known inconsistency in the model output.
+
+    A test is not directly affected by a change that the model itself read as a rewording
+    with the same meaning. This does not make the model better: it still contradicts itself,
+    and the application corrects the status visibly (an Adjustment plus a warning).
+
+    - all related requirements are pure rewordings: status becomes not_affected;
+    - mixed related requirements: untouched;
+    - no related requirement named while every change is a rewording: warning only.
+    """
+    if a.status != ImpactStatus.DIRECTLY_AFFECTED:
+        return a, None
+    reworded = ChangeNature.REWORDED_SAME_MEANING
+    related = a.related_requirements
+    if related and all(nature.get(r) == reworded for r in related):
+        reason = (
+            f"The model read the change to {', '.join(related)} as a rewording with the same meaning, "
+            "so a test related only to it cannot be directly affected."
+        )
+        warnings.append(
+            f"{a.test_id}: status changed from directly_affected to not_affected by the application's "
+            f"post-check, not by the model. {reason} The model's answer was inconsistent; review manually."
+        )
+        adjustment = Adjustment(
+            test_id=a.test_id,
+            rule=REWORDING_RULE,
+            original_status=ImpactStatus.DIRECTLY_AFFECTED,
+            new_status=ImpactStatus.NOT_AFFECTED,
+            reason=reason,
+        )
+        return a.model_copy(update={"status": ImpactStatus.NOT_AFFECTED}), adjustment
+    if not related and nature and all(n == reworded for n in nature.values()):
+        warnings.append(
+            f"{a.test_id}: marked directly_affected without naming a changed requirement, while every change "
+            "was read as a rewording with the same meaning. Not adjusted; review manually."
+        )
+    return a, None
+
+
+def post_check(result: LLMImpactResult, diff: SpecDiff, register: TestRegister) -> PostCheck:
+    """Enforce coverage, ID integrity and consistency; never silently invent an assessment.
+
+    Returns the cleaned result, the warnings, and the adjustments made to model statuses.
+    """
     warnings: list[str] = []
+    adjustments: list[Adjustment] = []
     expected = [t.test_id for t in register.tests]
     changed = {c.req_id for c in diff.requirement_changes}
     broken = {t.test_id: any(link.status in _BROKEN_LINKS for link in t.links) for t in register.tests}
+    nature = {i.requirement_id: i.nature for i in result.change_interpretations}
     by_id: dict[str, TestAssessment] = {}
     for a in result.assessments:
         if a.test_id not in expected:
@@ -98,6 +170,9 @@ def post_check(result: LLMImpactResult, diff: SpecDiff, register: TestRegister) 
             a = a.model_copy(update={"related_requirements": [r for r in a.related_requirements if r in changed]})
         for hit in approval_language(" ".join([a.reason, a.recommended_action, *a.evidence])):
             warnings.append(f"{a.test_id}: approval-like wording in LLM output: '{hit}'")
+        a, adjustment = _reconcile_with_interpretation(a, nature, warnings)
+        if adjustment:
+            adjustments.append(adjustment)
         actions = normalize_actions(a.test_id, a.status, a.required_actions, broken[a.test_id], warnings)
         by_id[a.test_id] = a.model_copy(update={"required_actions": actions})
 
@@ -121,33 +196,16 @@ def post_check(result: LLMImpactResult, diff: SpecDiff, register: TestRegister) 
                 recommended_action="Assess this test manually.",
             )
 
-    # Consistency between the model's own change interpretation and its test statuses:
-    # if every requirement a test relates to was judged an editorial rewording, the test
-    # cannot be directly affected. The status is left as the model gave it; the
-    # contradiction is surfaced so a human looks at it.
-    nature = {i.requirement_id: i.nature for i in result.change_interpretations}
-    for a in by_id.values():
-        related = a.related_requirements
-        if (
-            a.status == ImpactStatus.DIRECTLY_AFFECTED
-            and related
-            and all(nature.get(r) == ChangeNature.REWORDED_SAME_MEANING for r in related)
-        ):
-            warnings.append(
-                f"{a.test_id}: marked directly_affected, but the change to {', '.join(related)} was interpreted "
-                "as a rewording with the same meaning. Contradiction in the model output; review manually."
-            )
-
-    interp_ids = {i.requirement_id for i in result.change_interpretations}
-    for missing in changed - interp_ids:
+    interp_ids = set(nature)
+    for missing in sorted(changed - interp_ids):
         warnings.append(f"LLM gave no interpretation for changed requirement {missing}.")
     cleaned = result.model_copy(update={"assessments": [by_id[t] for t in expected]})
-    return cleaned, warnings
+    return PostCheck(cleaned, warnings, adjustments)
 
 
 def run_analysis(client: LLMClient, diff: SpecDiff, revised: SpecDocument, register: TestRegister) -> AnalysisRun:
     call = client.structured(SYSTEM_PROMPT, build_user_prompt(diff, revised, register), LLMImpactResult)
-    result, warnings = post_check(call.parsed, diff, register)
+    checked = post_check(call.parsed, diff, register)
     return AnalysisRun(
         model_label=client.config.label,
         latency_s=round(call.latency_s, 2),
@@ -155,7 +213,8 @@ def run_analysis(client: LLMClient, diff: SpecDiff, revised: SpecDocument, regis
         prompt_tokens=call.prompt_tokens,
         completion_tokens=call.completion_tokens,
         structured_mode=call.structured_mode,
-        result=result,
-        warnings=call.notes + warnings,
+        result=checked.result,
+        warnings=call.notes + checked.warnings,
+        adjustments=checked.adjustments,
         raw_text=call.raw_text,
     )

@@ -37,9 +37,10 @@ DISCLAIMER = (
 LIMITATIONS = [
     "Statuses, reasons and model-set actions are LLM judgments and can be wrong; check them before acting.",
     "'Fix requirement link' is set by the application from the register links, not by the model.",
-    "A pure rewording of a requirement can be reported as 'directly affected' although the model itself says "
-    "the behaviour is unchanged; the application flags this contradiction as a warning "
-    "(docs/known_issues.md, issue 1).",
+    "The model can mark a test 'directly affected' although it read the change as a rewording with the same "
+    "meaning. The application then changes the status to 'not affected' and says so next to the test (a "
+    "safety net, not a better model); it relies on the model's reading of the change, which is not "
+    "evaluated (docs/known_issues.md, issue 1).",
     "The analysis was evaluated on 7 change scenarios of this register (84 judgments); see docs/llm_evaluation.md.",
 ]
 
