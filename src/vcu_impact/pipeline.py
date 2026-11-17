@@ -191,7 +191,7 @@ def analyze(prep: Prepared, mode: Literal["auto", "replay", "live"] = "auto") ->
         if found or mode == "replay":
             return found or AnalysisOutcome(
                 mode="not_analysed",
-                reason="no recorded analysis exists for these inputs. Configure a model and run the analysis.",
+                reason="no recorded analysis exists for these inputs. Run the analysis with a configured model.",
             )
     configs, problems = configured_llms()
     if not configs:

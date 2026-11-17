@@ -221,3 +221,21 @@ def test_post_check_flags_rewording_contradiction(baseline):
     assert len(flagged) == 1 and flagged[0].startswith("TV-005")
     # The status is not changed silently.
     assert next(a for a in cleaned.assessments if a.test_id == "TV-005").status == "directly_affected"
+
+
+def test_apply_edits_and_validation(baseline):
+    from vcu_impact.spec_editor import SpecEdit, apply_edits, validate_new_id
+
+    edits = [
+        SpecEdit(op="set", req_id="VCU-DR-01", text="Torque within 90 milliseconds."),
+        SpecEdit(op="add", req_id="VCU-THM-07", title="Thermal", text="Derate.", after="VCU-MOD-06"),
+        SpecEdit(op="remove", req_id="VCU-LOG-05"),
+    ]
+    revised = parse_spec(apply_edits(BASELINE.read_bytes(), edits))
+    assert revised.requirement("VCU-DR-01").text == "Torque within 90 milliseconds."
+    assert revised.requirement_ids[-1] == "VCU-THM-07" and "VCU-LOG-05" not in revised.requirement_ids
+    with pytest.raises(ValueError, match="Edit 2"):
+        apply_edits(BASELINE.read_bytes(), [edits[2], SpecEdit(op="set", req_id="VCU-LOG-05", text="x")])
+    assert validate_new_id("VCU-THM-07", ALL_IDS) is None
+    assert "already exists" in validate_new_id("VCU-DR-01", ALL_IDS)
+    assert validate_new_id("thermal 7", ALL_IDS)

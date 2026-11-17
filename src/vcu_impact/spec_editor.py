@@ -8,14 +8,17 @@ exactly the same path as an uploaded file.
 from __future__ import annotations
 
 import copy
+import re
 from io import BytesIO
 from pathlib import Path
+from typing import Literal
 
 from docx import Document
 from docx.document import Document as DocxDocument
 from docx.text.paragraph import Paragraph
+from pydantic import BaseModel
 
-from vcu_impact.spec_parser import _HEADING_RE, _MAX_HEADING_LEN, _is_section_heading
+from vcu_impact.spec_parser import _HEADING_RE, _MAX_HEADING_LEN, REQ_ID_PATTERN, _is_section_heading
 
 
 def _set_text(p: Paragraph, text: str) -> None:
@@ -106,3 +109,50 @@ def replace_everywhere(doc: DocxDocument, old: str, new: str) -> int:
             _set_text(p, p.text.replace(old, new))
             count += 1
     return count
+
+
+# ---------------------------------------------------------------------------
+# Edit lists (used by the UI)
+# ---------------------------------------------------------------------------
+
+
+class SpecEdit(BaseModel):
+    """One user edit to the revised specification."""
+
+    op: Literal["set", "add", "remove"]
+    req_id: str
+    title: str | None = None
+    text: str | None = None
+    after: str | None = None  # for "add": insert after this requirement
+
+    def describe(self) -> str:
+        if self.op == "remove":
+            return f"Removed {self.req_id}"
+        if self.op == "add":
+            return f"Added {self.req_id} ({self.title}) after {self.after}"
+        return f"Edited {self.req_id}"
+
+
+def validate_new_id(req_id: str, existing: list[str]) -> str | None:
+    """Return an error message, or None if the ID can be used for a new requirement."""
+    if not re.fullmatch(REQ_ID_PATTERN, req_id or ""):
+        return "Use an ID like VCU-THM-07 (upper-case parts separated by '-', ending in a number)."
+    if req_id in existing:
+        return f"{req_id} already exists."
+    return None
+
+
+def apply_edits(data: bytes, edits: list[SpecEdit]) -> bytes:
+    """Apply edits in order to a .docx; raises ValueError naming the edit that failed."""
+    doc = load(data)
+    for n, e in enumerate(edits, 1):
+        try:
+            if e.op == "set":
+                set_requirement(doc, e.req_id, text=e.text, title=e.title)
+            elif e.op == "remove":
+                remove_requirement(doc, e.req_id)
+            else:
+                add_requirement(doc, e.after, e.req_id, e.title or "", e.text or "")
+        except (KeyError, ValueError) as exc:
+            raise ValueError(f"Edit {n} ({e.describe()}) cannot be applied: {exc}") from exc
+    return to_bytes(doc)
