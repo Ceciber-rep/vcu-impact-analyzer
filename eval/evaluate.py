@@ -269,8 +269,19 @@ def _with_rate_limit_wait(fn, *args, waits=(65, 130, 260)):
 
 
 def _is_rate_limit(err: str) -> bool:
-    """Rate limits and temporary unavailability: wait and retry rather than fail."""
-    return bool(re.search(r"429|rate.?limit|quota|RESOURCE_EXHAUSTED|\b503\b|UNAVAILABLE|overloaded", err, re.I))
+    """Rate limits and temporary unavailability: wait and retry rather than fail.
+
+    Groq reports an exhausted per-minute token budget as HTTP 413 ("Request too large ...
+    on tokens per minute (TPM)") when one analysis alone uses about the whole 8000-token
+    budget of gpt-oss-120b, so that wording counts as a rate limit too.
+    """
+    return bool(
+        re.search(
+            r"429|rate.?limit|quota|RESOURCE_EXHAUSTED|\b503\b|UNAVAILABLE|overloaded|tokens per minute|\bTPM\b",
+            err,
+            re.I,
+        )
+    )
 
 
 def _log_availability(out_dir: Path, scenario: str, rep: int, error: str) -> None:

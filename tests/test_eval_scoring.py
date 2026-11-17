@@ -7,6 +7,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "eval"))
 from evaluate import (  # noqa: E402
     RESULTS,
+    _is_rate_limit,
     held_out_scenarios,
     load_dataset,
     original_scenarios,
@@ -55,3 +56,13 @@ def test_held_out_scenarios_are_separate_from_the_original_cells():
     original, held = original_scenarios(data), held_out_scenarios(data)
     assert sum(len(sc["tests"]) for sc in original) == 84
     assert {sc["id"] for sc in original}.isdisjoint({sc["id"] for sc in held})
+
+
+def test_groq_tpm_413_is_treated_as_a_rate_limit():
+    tpm = (
+        "APIStatusError: Error code: 413 - Request too large for model `openai/gpt-oss-120b` on tokens per "
+        "minute (TPM): Limit 8000, Requested 8231, please reduce your message size and try again."
+    )
+    assert _is_rate_limit(tpm)
+    assert _is_rate_limit("InternalServerError: Error code: 503 - UNAVAILABLE")
+    assert not _is_rate_limit("ValidationError: 1 validation error for LLMImpactResult")
