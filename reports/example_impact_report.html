@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Engineering impact summary · VCU-42 | Driver demand and safety controls</title>
+<style>
+  body { font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; color: #1f2328; max-width: 1100px;
+         margin: 2rem auto; padding: 0 1.5rem; line-height: 1.5; }
+  h1 { margin-bottom: .2rem; } h2 { border-bottom: 1px solid #d0d7de; padding-bottom: .3rem; margin-top: 2rem; }
+  .meta { color: #59636e; font-size: .92rem; }
+  .notice { border-left: 4px solid #9a6700; background: #fff8c5; padding: .6rem .9rem; margin: 1rem 0; }
+  .source { border-left: 4px solid #0969da; background: #ddf4ff; padding: .6rem .9rem; margin: 1rem 0; }
+  table { border-collapse: collapse; width: 100%; margin: .6rem 0; font-size: .93rem; }
+  th, td { border: 1px solid #d0d7de; padding: .4rem .55rem; text-align: left; vertical-align: top; }
+  th { background: #f6f8fa; }
+  del { background: #ffd7d5; color: #82071e; } ins { background: #ccffd8; color: #055d20; text-decoration: none; font-weight: 600; }
+  .badge { display: inline-block; padding: .05rem .5rem; border-radius: 10px; font-size: .85rem; font-weight: 600; white-space: nowrap; }
+  .directly_affected { background: #ffebe9; color: #a40e26; } .possibly_affected { background: #fff1e5; color: #953800; }
+  .needs_human_review { background: #ddf4ff; color: #0550ae; } .not_affected { background: #dafbe1; color: #116329; }
+  .not_analysed { background: #eaeef2; color: #424a53; }
+  .card { border: 1px solid #d0d7de; border-radius: 6px; padding: .7rem 1rem; margin: .7rem 0; }
+  .warn { color: #9a6700; } .small { font-size: .88rem; color: #59636e; }
+  @media print { body { margin: 0; max-width: none; } .card, tr { break-inside: avoid; } }
+</style>
+</head>
+<body>
+<h1>Engineering impact summary</h1>
+<div class="meta">VCU-42 | Driver demand and safety controls · generated 2026-11-17 15:26 UTC</div>
+
+<div class="notice"><strong>Recommendations only.</strong> This report gives recommendations for engineering review. The test register is treated as evidence from earlier campaigns, not as approval. Nothing in this report approves a requirement, a test or a result: final approval belongs to the authorized owner.</div>
+<div class="source"><strong>Source of the assessment:</strong> Replayed: real output of groq:qwen/qwen3.8-27b recorded at 2026-11-16T17:42:44+00:00 (evaluation scenario S1: DR-01 response time tightened 100 -&gt; 80 ms (real revision B)). No model was called now. Prompt version v3.</div>
+
+<h2>Inputs</h2>
+<table>
+  <tr><th>Role</th><th>File</th><th>Revision / content</th><th>SHA-256 (first 12)</th></tr>
+<tr><td>Baseline specification</td><td>VCU_Spec_Baseline.docx</td><td>Revision A | baseline</td><td><code>98d375702420</code></td></tr><tr><td>Revised specification</td><td>VCU_Spec_Revised.docx</td><td>Revision B | candidate change</td><td><code>e65386c79cd3</code></td></tr><tr><td>Test register</td><td>VCU_Test_Register.xlsx</td><td>12 tests</td><td><code>2d18e397ffe2</code></td></tr></table>
+
+<h2>1. What changed</h2>
+<div class="card">
+  <strong>VCU-DR-01 · Driver torque response</strong> <span class="badge not_analysed">modified</span>
+  <p>When accelerator pedal demand rises above 70% while drive is enabled, the torque controller shall issue the demanded positive torque within <del>100</del><ins>80</ins> milliseconds, measured from validated pedal input to the first commanded torque response.</p>
+<div class="small">Numeric changes: 100 milliseconds → 80 milliseconds</div><div><strong>LLM interpretation:</strong> tightened: The customer has requested a tighter response-time objective for the driver torque response, reducing the maximum allowed time from 100 ms to 80 ms. This requires updating test procedures and scripts that use the 100 ms threshold and rerunning tests to generate new evidence that meets the stricter limit.</div></div>
+<p class="small">Other document changes (not requirements):</p>
+<ul class="small"><li><strong>Front matter:</strong> VCU-42 | Driver demand and safety controls
+Engineering specification · Revision <del>A</del><ins>B</ins> | <del>baseline</del><ins>candidate change</ins> · Supplier demonstration only</li><li><strong>Document record:</strong> Record | Value
+System | VCU-42 (fictional simulation)
+Document owner | Vehicle Controls Engineering
+Document state | Revision <del>A</del><ins>B</ins> | <del>baseline</del><ins>candidate change</ins>
+Note | This document is intended for engineering review, not production use.</li><li><strong>4 Revision notes:</strong> <span class="small">Before:</span> <del>Initial validation baseline for this exercise package. The team has completed an earlier bench campaign against this revision.</del><br><span class="small">After:</span> <ins>The customer has requested a tighter response-time objective for the driver torque response. The document has been updated for engineering assessment; test procedures and evidence have not yet been reapproved.</ins></li></ul><p class="small">Unchanged requirements: VCU-DR-02, VCU-BRK-03, VCU-DGN-04, VCU-LOG-05, VCU-MOD-06</p>
+<h2>2. Impact summary</h2>
+<table>
+  <tr><th>Directly affected</th><th>Possibly affected</th><th>Needs human review</th><th>Not affected</th></tr>
+  <tr><td>1</td><td>2</td><td>1</td><td>8</td></tr>
+</table>
+<h3>Work list</h3>
+<table>
+  <tr><th>Required action</th><th>Tests</th></tr>
+<tr><td>Re-run test</td><td>TV-001 Pedal step response; TV-003 High load torque transient</td></tr><tr><td>Update procedure</td><td>TV-001 Pedal step response; TV-003 High load torque transient</td></tr><tr><td>Fix requirement link</td><td>TV-003 High load torque transient; TV-007 Acceleration at thermal load; TV-008 Legacy diagnostic replay; TV-012 Wake-up timing</td></tr><tr><td>Owner decision</td><td>TV-002 Brake / pedal arbitration; TV-003 High load torque transient; TV-007 Acceleration at thermal load</td></tr></table>
+<p class="small">"Fix requirement link" is derived by the application from the register (missing, TBD, unknown or removed requirement links), not by the model.</p>
+
+<h2>3. Assessment per test</h2>
+<p class="small">All tests in the register are listed, including those judged not affected. * = action set from the register links.</p>
+<div class="card">
+  <strong>TV-001 · Pedal step response</strong>
+  <span class="badge directly_affected">Directly affected</span> <span class="small">confidence high</span><p><strong>Why:</strong> The test directly verifies the driver torque response time limit, which was tightened from 100 ms to 80 ms. The previous result of 94 ms no longer meets the new 80 ms requirement, and the test script still uses the old 100 ms threshold.</p><div class="small"><strong>Evidence cited:</strong><ul><li>Procedure explicitly checks torque response within 100 ms</li><li>Previous result recorded 94 ms</li><li>Comment notes 100 ms threshold in script</li></ul></div><div><strong>Required actions:</strong> Re-run test, Update procedure</div><div><strong>Recommended next step:</strong> Update the test script threshold to 80 ms and rerun the test to generate new evidence.</div>  <div class="small">Requirement link: VCU-DR-01 (valid) · Previous result: PASS (94 ms)</div>
+</div>
+<div class="card">
+  <strong>TV-002 · Brake / pedal arbitration</strong>
+  <span class="badge possibly_affected">Possibly affected</span> <span class="small">confidence medium</span><p><strong>Why:</strong> The test is linked to the changed requirement VCU-DR-01 and involves high pedal demand, but the previous evidence does not report timing data. It is unclear if the test procedure includes a timing assertion for torque response, making it impossible to determine if the old evidence is valid for the new 80 ms limit.</p><div class="small"><strong>Evidence cited:</strong><ul><li>Linked to VCU-DR-01</li><li>Comment states &#39;Timing not reported in old evidence&#39;</li><li>Procedure involves 85% pedal demand</li></ul></div><div><strong>Required actions:</strong> Owner decision</div><div><strong>Recommended next step:</strong> Review the test procedure to determine if torque response timing is measured; if so, update the limit to 80 ms and rerun.</div>  <div class="small">Requirement link: VCU-DR-01 (valid); VCU-BRK-03 (valid) · Previous result: PASS</div>
+</div>
+<div class="card">
+  <strong>TV-003 · High load torque transient</strong>
+  <span class="badge possibly_affected">Possibly affected</span> <span class="small">confidence medium</span><p><strong>Why:</strong> The test measures torque response time (92 ms) under high load, which is directly related to the VCU-DR-01 change. The previous result of 92 ms exceeds the new 80 ms limit, and the legacy script uses a 95 ms tolerance. The missing link prevents definitive confirmation, but the content strongly suggests relevance.</p><div class="small"><strong>Evidence cited:</strong><ul><li>Procedure sweeps demand 75-95% and records 92 ms</li><li>Comment notes &#39;Legacy suite still checks 95 ms tolerance&#39;</li><li>Missing requirement link</li></ul></div><div><strong>Required actions:</strong> Re-run test, Update procedure, Fix requirement link *, Owner decision</div><div><strong>Recommended next step:</strong> Clarify the requirement link, update the tolerance to 80 ms, and rerun the test.</div>  <div class="small">Requirement link: (empty) (missing) · Previous result: PASS (92 ms)</div>
+</div>
+<div class="card">
+  <strong>TV-007 · Acceleration at thermal load</strong>
+  <span class="badge needs_human_review">Needs human review</span> <span class="small">confidence low</span><p><strong>Why:</strong> The test involves torque delivery at high pedal demand, which may relate to VCU-DR-01, but the requirement link is TBD and ownership is unclear. The available information is insufficient to determine if the test is affected by the change.</p><div class="small"><strong>Evidence cited:</strong><ul><li>Requirement link is TBD</li><li>Comment notes &#39;Ownership and source link to be clarified&#39;</li><li>Procedure involves 80% pedal and torque delivery</li></ul></div><div><strong>Required actions:</strong> Fix requirement link *, Owner decision</div><div><strong>Recommended next step:</strong> Clarify the requirement link and ownership with the system engineer.</div>  <div class="small">Requirement link: TBD (tbd) · Previous result: NOT RUN</div>
+</div>
+<div class="card">
+  <strong>TV-004 · Brake actuator response</strong>
+  <span class="badge not_affected">Not affected</span> <span class="small">confidence high</span><p><strong>Why:</strong> The test verifies brake command latency, which is measured by a different clock than the positive torque response time in VCU-DR-01. The change to VCU-DR-01 does not affect the brake override requirement or its measurement method.</p><div class="small"><strong>Evidence cited:</strong><ul><li>Linked to VCU-BRK-03</li><li>Comment notes &#39;Different measurement clock&#39;</li><li>Workshop notes state brake and torque latencies use different clocks</li></ul></div><div><strong>Required actions:</strong> None</div><div><strong>Recommended next step:</strong> No action required for this change.</div>  <div class="small">Requirement link: VCU-BRK-03 (valid) · Previous result: PASS (88 ms)</div>
+</div>
+<div class="card">
+  <strong>TV-005 · Sensor failure: wheel speed</strong>
+  <span class="badge not_affected">Not affected</span> <span class="small">confidence high</span><p><strong>Why:</strong> The test verifies sensor degradation behavior, which is unrelated to the driver torque response time change in VCU-DR-01.</p><div class="small"><strong>Evidence cited:</strong><ul><li>Linked to VCU-DGN-04</li><li>Procedure tests wheel-speed sensor failure</li></ul></div><div><strong>Required actions:</strong> None</div><div><strong>Recommended next step:</strong> No action required for this change.</div>  <div class="small">Requirement link: VCU-DGN-04 (valid) · Previous result: PASS</div>
+</div>
+<div class="card">
+  <strong>TV-006 · Mode event audit trail</strong>
+  <span class="badge not_affected">Not affected</span> <span class="small">confidence high</span><p><strong>Why:</strong> The test verifies trace and evidence logging for mode changes, which is unrelated to the driver torque response time change in VCU-DR-01.</p><div class="small"><strong>Evidence cited:</strong><ul><li>Linked to VCU-LOG-05</li><li>Procedure tests mode change logging</li></ul></div><div><strong>Required actions:</strong> None</div><div><strong>Recommended next step:</strong> No action required for this change.</div>  <div class="small">Requirement link: VCU-LOG-05 (valid) · Previous result: PASS</div>
+</div>
+<div class="card">
+  <strong>TV-008 · Legacy diagnostic replay</strong>
+  <span class="badge not_affected">Not affected</span> <span class="small">confidence high</span><p><strong>Why:</strong> The test is linked to an unknown requirement and involves diagnostic replay, which is unrelated to the driver torque response time change in VCU-DR-01. The broken link alone is not a reason for needs_human_review, and the content is clearly unrelated.</p><div class="small"><strong>Evidence cited:</strong><ul><li>Linked to VCU-OLD-88 (unknown requirement)</li><li>Comment notes &#39;Imported row; requirements catalog changed&#39;</li></ul></div><div><strong>Required actions:</strong> Fix requirement link *</div><div><strong>Recommended next step:</strong> No action required for this change.</div>  <div class="small">Requirement link: VCU-OLD-88 (unknown_requirement) · Previous result: PASS</div>
+</div>
+<div class="card">
+  <strong>TV-009 · Sport profile torque ramp</strong>
+  <span class="badge not_affected">Not affected</span> <span class="small">confidence medium</span><p><strong>Why:</strong> The test verifies torque ramp profiles under different modes, which is related to VCU-MOD-06, not VCU-DR-01. The comment explicitly states there is no quantitative response-time assertion, so the change to the 80 ms limit in VCU-DR-01 does not directly affect this test.</p><div class="small"><strong>Evidence cited:</strong><ul><li>Linked to VCU-MOD-06</li><li>Comment notes &#39;No quantitative response-time assertion&#39;</li><li>Procedure compares Sport vs Comfort torque ramp</li></ul></div><div><strong>Required actions:</strong> None</div><div><strong>Recommended next step:</strong> No action required for this change.</div>  <div class="small">Requirement link: VCU-MOD-06 (valid) · Previous result: PASS (trend)</div>
+</div>
+<div class="card">
+  <strong>TV-010 · Pedal signal spike</strong>
+  <span class="badge not_affected">Not affected</span> <span class="small">confidence high</span><p><strong>Why:</strong> The test verifies pedal signal filtering for transient spikes, which is unrelated to the driver torque response time change in VCU-DR-01.</p><div class="small"><strong>Evidence cited:</strong><ul><li>Linked to VCU-DR-02</li><li>Procedure tests 7 ms pedal spike filtering</li></ul></div><div><strong>Required actions:</strong> None</div><div><strong>Recommended next step:</strong> No action required for this change.</div>  <div class="small">Requirement link: VCU-DR-02 (valid) · Previous result: PASS</div>
+</div>
+<div class="card">
+  <strong>TV-011 · Torque cancellation on braking</strong>
+  <span class="badge not_affected">Not affected</span> <span class="small">confidence high</span><p><strong>Why:</strong> The test verifies brake priority over positive torque, which is unrelated to the driver torque response time change in VCU-DR-01.</p><div class="small"><strong>Evidence cited:</strong><ul><li>Linked to VCU-BRK-03</li><li>Procedure tests torque cancellation on braking</li></ul></div><div><strong>Required actions:</strong> None</div><div><strong>Recommended next step:</strong> No action required for this change.</div>  <div class="small">Requirement link: VCU-BRK-03 (valid) · Previous result: PASS</div>
+</div>
+<div class="card">
+  <strong>TV-012 · Wake-up timing</strong>
+  <span class="badge not_affected">Not affected</span> <span class="small">confidence high</span><p><strong>Why:</strong> The test verifies ECU wake-up timing, which is unrelated to the driver torque response time change in VCU-DR-01. The missing link does not change the fact that the test content is clearly unrelated.</p><div class="small"><strong>Evidence cited:</strong><ul><li>Missing requirement link</li><li>Comment notes &#39;Platform startup only&#39;</li><li>Procedure tests ECU wake-up timing</li></ul></div><div><strong>Required actions:</strong> Fix requirement link *</div><div><strong>Recommended next step:</strong> No action required for this change.</div>  <div class="small">Requirement link: (empty) (missing) · Previous result: PASS (433 ms)</div>
+</div>
+
+<h2>4. Method and limitations</h2>
+<p>Specifications are parsed and compared by code (requirement IDs, word-level diff, numeric changes). The register is parsed by code
+(link validity, values in free-text results). An LLM then judges every test against the changes, returning a validated JSON
+structure; code checks it for coverage, invented IDs, approval wording and internal contradictions.</p>
+<ul><li>Statuses, reasons and model-set actions are LLM judgments and can be wrong; check them before acting.</li><li>&#39;Fix requirement link&#39; is set by the application from the register links, not by the model.</li><li>A pure rewording of a requirement can be reported as &#39;directly affected&#39; although the model itself says the behaviour is unchanged; the application flags this contradiction as a warning (docs/known_issues.md, issue 1).</li><li>The analysis was evaluated on 7 change scenarios of this register (84 judgments); see docs/llm_evaluation.md.</li></ul>
+</body>
+</html>

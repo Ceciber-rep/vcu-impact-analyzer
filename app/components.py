@@ -7,7 +7,7 @@ import html
 import pandas as pd
 import streamlit as st
 
-from vcu_impact.diff import word_diff
+from vcu_impact.diff import is_rewrite, word_diff
 from vcu_impact.models import (
     ChangeInterpretation,
     ChangeType,
@@ -59,8 +59,14 @@ def inject_css() -> None:
 
 
 def diff_html(old: str, new: str) -> str:
+    segments = word_diff(old, new)
+    if old and new and is_rewrite(segments):
+        return (
+            f'<div class="diff"><span class="src">Before:</span> <del>{html.escape(old)}</del><br>'
+            f'<span class="src">After:</span> <ins>{html.escape(new)}</ins></div>'
+        )
     parts = []
-    for op, text in word_diff(old, new):
+    for op, text in segments:
         t = html.escape(text)
         parts.append(f"<del>{t}</del>" if op == "delete" else f"<ins>{t}</ins>" if op == "insert" else t)
     return f'<div class="diff">{"".join(parts)}</div>'

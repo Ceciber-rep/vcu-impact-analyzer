@@ -29,7 +29,12 @@ def _run() -> AppTest:
 def test_app_loads_default_inputs_in_replay_mode():
     at = _run()
     assert any("Replayed" in i.value for i in at.info)
-    assert [t.label for t in at.tabs] == ["1 · What changed", "2 · Affected tests", "3 · Edit and re-analyse"]
+    assert [t.label for t in at.tabs] == [
+        "1 · What changed",
+        "2 · Affected tests",
+        "3 · Edit and re-analyse",
+        "4 · Report",
+    ]
     df = at.dataframe[0].value
     assert len(df) == 12
     assert df.loc[df["Test"] == "TV-001", "Status"].item().endswith("Directly affected")

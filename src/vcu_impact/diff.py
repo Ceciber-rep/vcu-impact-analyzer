@@ -88,18 +88,44 @@ def numeric_changes(old: str, new: str) -> list[NumericChange]:
 
 
 def word_diff(old: str, new: str) -> list[tuple[str, str]]:
-    """Word-level diff as a list of (op, text) with op in {'equal', 'delete', 'insert'}."""
+    """Word-level diff as a list of (op, text) with op in {'equal', 'delete', 'insert'}.
+
+    Neighbouring changes separated only by whitespace are merged, so a replaced phrase
+    reads as one deleted and one inserted block instead of alternating words.
+    """
     a, b = re.findall(r"\S+|\s+", old or ""), re.findall(r"\S+|\s+", new or "")
-    segments: list[tuple[str, str]] = []
+    raw: list[tuple[str, str, str]] = []  # (tag, old_text, new_text)
     for tag, i1, i2, j1, j2 in difflib.SequenceMatcher(None, a, b, autojunk=False).get_opcodes():
-        if tag == "equal":
-            segments.append(("equal", "".join(a[i1:i2])))
+        raw.append((tag, "".join(a[i1:i2]), "".join(b[j1:j2])))
+
+    merged: list[list[str]] = []  # [tag, old, new]
+    for k, (tag, o, n) in enumerate(raw):
+        between_changes = 0 < k < len(raw) - 1 and raw[k - 1][0] != "equal" and raw[k + 1][0] != "equal"
+        if tag == "equal" and not (o.isspace() and between_changes):
+            merged.append(["equal", o, n])
+        elif merged and merged[-1][0] == "change":
+            merged[-1][1] += o
+            merged[-1][2] += n
         else:
-            if i2 > i1:
-                segments.append(("delete", "".join(a[i1:i2])))
-            if j2 > j1:
-                segments.append(("insert", "".join(b[j1:j2])))
+            merged.append(["change", o, n])
+
+    segments: list[tuple[str, str]] = []
+    for tag, o, n in merged:
+        if tag == "equal":
+            segments.append(("equal", o))
+            continue
+        if o:
+            segments.append(("delete", o))
+        if n:
+            segments.append(("insert", n))
     return segments
+
+
+def is_rewrite(segments: list[tuple[str, str]], threshold: float = 0.5) -> bool:
+    """True when less than ``threshold`` of the text is unchanged: show old and new separately."""
+    equal = sum(len(t) for op, t in segments if op == "equal" and t.strip())
+    total = equal + sum(len(t) for op, t in segments if op != "equal")
+    return total > 0 and equal / total < threshold
 
 
 def diff_specs(baseline: SpecDocument, revised: SpecDocument) -> SpecDiff:

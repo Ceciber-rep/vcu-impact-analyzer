@@ -51,6 +51,16 @@ def cmd_analyze(args) -> int:
     print("\n  * set by the application from the register links, not by the model")
     print("  Recommendations only: final approval belongs to the authorized owner.")
 
+    if args.report:
+        from vcu_impact.report import build_report, render_html, render_markdown
+
+        data = build_report(prep, outcome, build_rows(prep, outcome))
+        path = Path(args.report)
+        text = render_markdown(data) if path.suffix.lower() == ".md" else render_html(data)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text, encoding="utf-8")
+        print(f"\nWrote report {path}")
+
     if args.json:
         payload = {
             "inputs": {k: {"name": f.name, "sha256": f.sha256} for k, f in vars(prep.inputs).items()},
@@ -80,6 +90,7 @@ def main(argv: list[str] | None = None) -> int:
         default="auto",
         help="auto: recording if available, else the configured model (default)",
     )
+    a.add_argument("--report", help="write the impact report to this file (.html or .md)")
     a.add_argument("--json", help="also write the full result to this JSON file")
     args = p.parse_args(argv)
     return {"analyze": cmd_analyze}[args.cmd](args)

@@ -1,0 +1,130 @@
+# Engineering impact summary
+
+{{ r.system }} · generated {{ r.generated_at }}
+
+> **Recommendations only.** {{ r.disclaimer }}
+
+**Source of the assessment:** {{ r.source }}{% if r.prompt_version %} Prompt version {{ r.prompt_version }}.{% endif %}
+
+
+## Inputs
+
+| Role | File | Revision / content | SHA-256 (first 12) |
+|---|---|---|---|
+{% for role, name, rev, h in r.inputs %}
+| {{ role }} | {{ name | cell }} | {{ rev | cell }} | `{{ h }}` |
+{% endfor %}
+{% if r.edits %}
+
+Edits applied in the application to the revised specification:
+
+{% for e in r.edits %}
+{{ loop.index }}. {{ e }}
+{% endfor %}
+{% endif %}
+
+## 1. What changed
+
+{% if not r.changes %}
+No requirement was added, removed or modified.
+{% endif %}
+{% for c in r.changes %}
+### {{ c.req_id }} · {{ c.title }} ({{ c.change_type }})
+
+{% if c.rewrite %}
+- Before: ~~{{ c.old_text }}~~
+- After: **{{ c.new_text }}**
+{% else %}
+{{ c.segments | mddiff }}
+{% endif %}
+
+{% if c.numeric %}
+Numeric changes: {{ c.numeric | join(", ") }}
+
+{% endif %}
+{% if c.interpretation %}
+**LLM interpretation:** {{ c.interpretation }}
+
+{% endif %}
+{% endfor %}
+{% if r.other_changes %}
+Other document changes (not requirements):
+
+{% for c in r.other_changes %}
+{% if c.rewrite %}
+- **{{ c.title }}:** before: ~~{{ c.old_text | cell }}~~; after: **{{ c.new_text | cell }}**
+{% else %}
+- **{{ c.title }}:** {{ c.segments | mddiff }}
+{% endif %}
+{% endfor %}
+
+{% endif %}
+{% if r.unchanged %}
+Unchanged requirements: {{ r.unchanged | join(", ") }}
+
+{% endif %}
+## 2. Impact summary
+
+{% if r.mode == "not_analysed" %}
+No LLM assessment is available for these inputs; the tables below show parsed register facts only.
+
+{% endif %}
+| {% for label, n in r.status_counts %}{{ label }} | {% endfor %}
+
+|{% for _ in r.status_counts %}---|{% endfor %}
+
+| {% for label, n in r.status_counts %}{{ n }} | {% endfor %}
+
+
+### Work list
+
+| Required action | Tests |
+|---|---|
+{% for action, items in r.work_list %}
+| {{ action }} | {{ (items | join("; ") if items else "—") | cell }} |
+{% endfor %}
+
+"Fix requirement link" is derived by the application from the register (missing, TBD, unknown or removed requirement links), not by the model.
+{% if r.global_warnings %}
+
+### Analysis warnings
+
+{% for w in r.global_warnings %}
+- {{ w }}
+{% endfor %}
+{% endif %}
+
+## 3. Assessment per test
+
+All tests in the register are listed, including those judged not affected. \* = action set from the register links.
+
+| Test | Name | Status | Confidence | Required actions | Why |
+|---|---|---|---|---|---|
+{% for t in r.tests %}
+| {{ t.test_id }} | {{ t.name | cell }} | {{ t.status }} | {{ t.confidence }} | {{ t.actions | join(", ") | cell }} | {{ t.reason | cell }}{% for w in t.warnings %} ⚠ {{ w | cell }}{% endfor %} |
+{% endfor %}
+
+### Details
+
+{% for t in r.tests %}
+**{{ t.test_id }} · {{ t.name }}**: {{ t.status }}{% if t.confidence %} (confidence {{ t.confidence }}){% endif %}
+
+{% for w in t.warnings %}
+- ⚠ {{ w }}
+{% endfor %}
+{% if t.recommended_action %}
+- Recommended next step: {{ t.recommended_action }}
+{% endif %}
+{% for e in t.evidence %}
+- Evidence: {{ e }}
+{% endfor %}
+- Requirement link: {{ t.link }} · Previous result: {{ t.previous_result or "(empty)" }}
+
+{% endfor %}
+## 4. Method and limitations
+
+Specifications are parsed and compared by code (requirement IDs, word-level diff, numeric changes). The register is parsed by code (link validity, values in free-text results). An LLM then judges every test against the changes, returning a validated JSON structure; code checks it for coverage, invented IDs, approval wording and internal contradictions.
+
+{% for l in r.limitations %}
+- {{ l }}
+{% endfor %}

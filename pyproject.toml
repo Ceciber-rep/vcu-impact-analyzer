@@ -5,6 +5,7 @@ description = "LLM-assisted change impact analysis for the fictional VCU-42 spec
 requires-python = ">=3.12"
 dependencies = [
     "httpx>=0.28.1",
+    "jinja2>=3.1.6",
     "openai>=3.51.0",
     "openpyxl>=3.1.5",
     "pydantic>=2.14.3",

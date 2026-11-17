@@ -9,6 +9,7 @@ import sys
 from pathlib import Path
 
 import streamlit as st
+import streamlit.components.v1 as st_components
 from dotenv import load_dotenv
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -27,6 +28,7 @@ from vcu_impact.pipeline import (  # noqa: E402
     prepare,
 )
 from vcu_impact.register_parser import parse_register  # noqa: E402
+from vcu_impact.report import build_report, render_html, render_markdown  # noqa: E402
 from vcu_impact.spec_editor import SpecEdit, apply_edits, validate_new_id  # noqa: E402
 from vcu_impact.spec_parser import parse_spec  # noqa: E402
 
@@ -265,6 +267,36 @@ def edit_tab(prep: Prepared) -> None:
 
 
 # ---------------------------------------------------------------------------
+# Report tab
+# ---------------------------------------------------------------------------
+
+
+def report_tab(prep: Prepared, outcome: AnalysisOutcome, rows) -> None:
+    data = build_report(prep, outcome, rows, [e.describe() for e in st.session_state.edits])
+    html_doc, md_doc = render_html(data), render_markdown(data)
+    stem = Path(prep.inputs.revised.name).stem
+    st.markdown(
+        "The report contains the inputs and their hashes, the source of the assessment (live or replayed), the "
+        "changes, the work list and every test with its reason. HTML prints cleanly to PDF from the browser."
+    )
+    c1, c2 = st.columns(2)
+    c1.download_button(
+        "Download HTML report",
+        html_doc,
+        file_name=f"impact_report_{stem}.html",
+        mime="text/html",
+        type="primary",
+        width="stretch",
+    )
+    c2.download_button(
+        "Download Markdown report", md_doc, file_name=f"impact_report_{stem}.md", mime="text/markdown", width="stretch"
+    )
+    if outcome.mode == "not_analysed":
+        st.warning("No LLM assessment for these inputs: the report will contain the changes and register facts only.")
+    st_components.html(html_doc, height=900, scrolling=True)
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 
@@ -298,7 +330,9 @@ def main() -> None:
     )
 
     rows = build_rows(prep, outcome)
-    tab_changes, tab_impact, tab_edit = st.tabs(["1 · What changed", "2 · Affected tests", "3 · Edit and re-analyse"])
+    tab_changes, tab_impact, tab_edit, tab_report = st.tabs(
+        ["1 · What changed", "2 · Affected tests", "3 · Edit and re-analyse", "4 · Report"]
+    )
     with tab_changes:
         ui.changes_tab(prep.diff, outcome)
     with tab_impact:
@@ -312,6 +346,8 @@ def main() -> None:
             ui.detail_panel(selected)
     with tab_edit:
         edit_tab(prep)
+    with tab_report:
+        report_tab(prep, outcome, rows)
 
 
 main()

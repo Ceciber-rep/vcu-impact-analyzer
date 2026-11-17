@@ -1550,6 +1550,7 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "httpx" },
+    { name = "jinja2" },
     { name = "openai" },
     { name = "openpyxl" },
     { name = "pydantic" },
@@ -1568,6 +1569,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "httpx", specifier = ">=0.28.1" },
+    { name = "jinja2", specifier = ">=3.1.6" },
     { name = "openai", specifier = ">=3.51.0" },
     { name = "openpyxl", specifier = ">=3.1.5" },
     { name = "pydantic", specifier = ">=2.14.3" },
