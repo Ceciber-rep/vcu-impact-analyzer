@@ -64,9 +64,10 @@ docker run --rm -p 8501:8501 --env-file .env vcu-impact    # with a live model
 Then open http://localhost:8501. `make docker-build` and `make docker-run` do the same.
 The image never contains `.env` (excluded by `.dockerignore`); keys are passed at run time.
 
-<!-- TODO: update once the image has been built and run. -->
-> **Docker status:** the Dockerfile has not been built and run yet. This line will be
-> updated once it has been verified.
+> **Docker status (verified on Ubuntu 24.04 / WSL2, Docker 29.10):** the image builds; the container
+> starts, reports healthy, runs as a non-root user and contains no `.env`; replay mode works
+> without any key; a live analysis works with `--env-file .env`. **Not verified:** Docker
+> Desktop on native Windows or macOS.
 
 ## Model configuration (safe)
 

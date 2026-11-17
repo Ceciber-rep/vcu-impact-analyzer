@@ -9,7 +9,6 @@ import sys
 from pathlib import Path
 
 import streamlit as st
-import streamlit.components.v1 as st_components
 from dotenv import load_dotenv
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -293,7 +292,10 @@ def report_tab(prep: Prepared, outcome: AnalysisOutcome, rows) -> None:
     )
     if outcome.mode == "not_analysed":
         st.warning("No LLM assessment for these inputs: the report will contain the changes and register facts only.")
-    st_components.html(html_doc, height=900, scrolling=True)
+    # st.iframe runs the HTML with scripts enabled, and the report contains text from uploaded files
+    # and from the LLM. This is safe only because the template escapes all of it
+    # (tests/test_report.py::test_html_escapes_document_text guards this).
+    st.iframe(html_doc, height=900)
 
 
 # ---------------------------------------------------------------------------
