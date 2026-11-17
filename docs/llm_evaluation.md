@@ -447,3 +447,45 @@ the other limitations are tracked in [known_issues.md](known_issues.md).
 - The action labels (`must` and `must_not` lists in [`eval/dataset.yaml`](../eval/dataset.yaml))
   cover 16 judgments and were written before the v2 run. `fix_link` is not scored because
   the code sets it.
+
+## 8. Follow-up evaluation (after an independent review)
+
+An independent review of sections 1 to 7 found weaknesses in the evidence behind the model
+choice. This section documents the follow-up. Its protocol is written and committed
+**before** the new runs, so that the decision rule cannot be adapted to the results.
+
+### 8.1 Protocol, fixed before any new run
+
+**What will be run.** Prompt v3 (unchanged) on `gemini-3.5-flash` and `groq-gpt-oss-120b`
+(7 scenarios, S1 three times), and all three models on three new held-out scenarios
+(S8 to S10, written and committed before any model sees them). `gemini-3.5-flash-lite`
+is skipped because it was unavailable. Free-tier models only.
+
+**Two scoring views, never mixed in one column.**
+- *Raw*: the statuses exactly as the model returned them (as in sections 5 to 7).
+- *Post-check*: the same stored model output after the application's post-check, which
+  now also corrects one specific contradiction (section 8.2).
+
+**Decision rule.** Groq `qwen/qwen3.8-27b` stays the primary model unless a challenger has
+*strictly fewer critical failures* AND *zero missed impacts*. Both are counted over the
+original 84 cells plus all held-out cells, with the post-check applied. Ties go to qwen.
+Latency and free-tier friction are reported separately and weigh in the final human
+decision, not in this rule.
+
+Definitions used by the rule:
+- *Critical failure*: a cell marked `critical` in [`eval/dataset.yaml`](../eval/dataset.yaml)
+  whose status is not in the accepted set. The accepted sets are those used for the v3
+  scoring in section 7 (including the two `accept_from_v2` cells).
+- *Missed impact*: `not_affected` on a cell whose accepted set does not contain
+  `not_affected`, in any cell, critical or not.
+- *Cells*: the first repetition of each scenario (S1 is run three times, but only its first
+  run is scored for accuracy).
+- *Missing runs*: a scenario without a valid run (failed, or the provider stayed unavailable)
+  counts every critical cell in it as a critical failure, for qwen as well. A challenger
+  with a missing scenario cannot show zero missed impacts, so qwen stays.
+- The comparison is computed by `uv run python eval/evaluate.py decide`, not by hand.
+
+**What the rule is not.** It is a deliberately conservative tie-break that favours the
+incumbent, on an evaluation that is a smoke test and not a statistically reliable ranking
+(section 8.3). It was written after the qwen results on S1 to S7 (prompts v1 to v3) were
+known, and before any challenger result with prompt v3 and any held-out result.
