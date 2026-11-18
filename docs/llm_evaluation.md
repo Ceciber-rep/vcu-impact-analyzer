@@ -742,3 +742,19 @@ scenarios `48d30d9` (before any model ran on them), harness fix for Groq's token
 checked unchanged: `SYSTEM_PROMPT`, `build_user_prompt`, the LLM output models and their schema, `eval/prompts/*`, and every
 file that existed under `eval/results/v1`, `v2` and `v3`. The two gpt-oss-120b 413 failures that were retried are kept in
 `eval/results/v3/groq-gpt-oss-120b/availability_log.jsonl`.
+
+## 9. Final assessment of the application path (2026-11-18, partial)
+
+Full report: [assessment/04_llm_evaluation.md](assessment/04_llm_evaluation.md); tables: `assessment/results/phase4_tables.md`; raw runs:
+`eval/results/assessment/app-groq-gemini/` (a new folder; v1-v3 untouched). This section tests the **application as shipped** (Groq
+qwen3.8-27b with automatic Gemini fallback, prompt v3, current post-check), on S1-S10 and on six new held-out scenarios N1-N6 (labels in
+`eval/dataset_assessment.yaml`, written by the assistant, confirmed by the project owner before any model ran).
+
+**Incomplete:** 15 of 32 planned runs answered; both providers hit free-tier limits (Groq 200,000 tokens per day, Gemini bare 429). Missing: S2, S5, N1,
+most repeats and 7 of 8 perturbations. Results are indicative.
+
+On the 13 scenarios that ran (156 judgments): no missed impact; acceptable 95/97 (S) and 56/59 raw, 57/59 after the post-check (N); critical cells
+26/27 (S) and 5/7 raw, 6/7 post-check (N). The rule-only baseline reaches 22/32 and 6/9 critical cells. Five wrong cells (all over-flags), three of them
+with high confidence on critical cells; two are the same "reason says unchanged, status says directly affected" contradiction as in section 8
+(S5 earlier, N2 now), so the failure is systematic and the post-check still depends on the unscored `nature` field. Evidence strings: 0 of 238 checkable
+ones cite a number or ID that is not in the input. Change `nature`: 13/14 correct. This section is not a ranking of models.
