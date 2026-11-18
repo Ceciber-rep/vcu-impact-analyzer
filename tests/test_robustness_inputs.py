@@ -135,8 +135,6 @@ def test_numbers_inside_ids_are_not_numeric_changes():  # E-013
 
 
 # ---- Word documents --------------------------------------------------------------------------------
-    strict=True, reason="F-010: text inside tracked changes (w:ins / w:del) is ignored without a warning"
-)
 def test_tracked_change_in_a_requirement_is_seen():  # E-014
     tracked = with_tracked_change(BASE, "VCU-A-01", "100 ms", "80 ms")
     text = parse_spec(tracked).requirements[0].text
