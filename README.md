@@ -20,7 +20,7 @@ recommendations; final approval belongs to the authorized owner.
 > (also as [Markdown](reports/example_impact_report.md)), generated from the provided files.
 
 <!-- TODO(owner): add the screenshots, e.g. docs/screenshots/changes.png and impact.png -->
-**Screenshots:** _to be added in `docs/screenshots/`._
+**Screenshots:** _can be found in `docs/screenshots/`._
 
 ## Quick start
 
@@ -71,15 +71,9 @@ The image never contains `.env` (excluded by `.dockerignore`); keys are passed a
 > start the container with the second command. The same message appears for a local run when `.env` is missing or
 > `LLM_PROVIDER` is empty.
 
-> **Docker status (verified on Ubuntu 24.04 / WSL2, Docker 29.10):** the image builds; the container
-> starts, reports healthy, runs as a non-root user and contains no `.env`; replay mode works
-> without any key; a live analysis works with `--env-file .env`. **Not verified:** Docker
-> Desktop on native Windows or macOS.
-
 ## Model configuration (safe)
 
-Configuration is read from environment variables, loaded from a local `.env` file that is
-**git-ignored and never committed**. Only the template `.env.example` is in the
+Configuration is read from environment variables, loaded from a local `.env` file. Only the template `.env.example` is in the
 repository. Keys are never printed, logged or written to reports; the UI only shows
 whether a model is configured.
 
@@ -244,7 +238,6 @@ evaluation harness in [`eval/`](eval/), which needs keys.
 - **Shared chat (read-only):** https://claude.ai/share/619b1e7d-7a3a-4f80-99a5-8a31000c46a8
   This chat was used by the project owner as an **assistant to Claude Code**: to prepare the step-by-step prompts for
   Claude Code and to think through its proposals and decisions. It did not write the repository code.
-- **Claude Code** (Anthropic's coding agent, running in VS Code) is the assistant that **generated the code** in this
-  repository: the parsers, diff, LLM client, application, tests, evaluation harness and documentation. It worked step by
+- **Claude Code** (Anthropic's coding agent, running in VS Code) is the assistant that helped **generating the code**. It worked step by
   step, proposing and waiting for the project owner's decision at each step (model, UI framework, plan, evaluation
   follow-up); the commits carry its `Co-Authored-By` line. The Claude Code session is not part of the shared chat above.
