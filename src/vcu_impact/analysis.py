@@ -104,7 +104,7 @@ class PostCheck(NamedTuple):
 
 
 def _reconcile_with_interpretation(
-    a: TestAssessment, nature: dict[str, ChangeNature], warnings: list[str]
+    a: TestAssessment, nature: dict[str, ChangeNature], numeric_changed: set[str], warnings: list[str]
 ) -> tuple[TestAssessment, Adjustment | None]:
     """Safety net for one known inconsistency in the model output.
 
@@ -113,6 +113,9 @@ def _reconcile_with_interpretation(
     and the application corrects the status visibly (an Adjustment plus a warning).
 
     - all related requirements are pure rewordings: status becomes not_affected;
+    - guard: never when the deterministic diff found a changed number in one of them, because
+      the model's reading of the change (``nature``) is unscored and unstable, and a wrong
+      "rewording" there would turn a correctly flagged test into a missed impact;
     - mixed related requirements: untouched;
     - no related requirement named while every change is a rewording: warning only.
     """
@@ -121,6 +124,14 @@ def _reconcile_with_interpretation(
     reworded = ChangeNature.REWORDED_SAME_MEANING
     related = a.related_requirements
     if related and all(nature.get(r) == reworded for r in related):
+        with_numbers = [r for r in related if r in numeric_changed]
+        if with_numbers:
+            warnings.append(
+                f"{a.test_id}: marked directly_affected while the change to {', '.join(with_numbers)} was read as a "
+                "rewording with the same meaning, but the diff found a changed number there. Not adjusted: the "
+                "status stays as the model gave it; review manually."
+            )
+            return a, None
         reason = (
             f"The model read the change to {', '.join(related)} as a rewording with the same meaning, "
             "so a test related only to it cannot be directly affected."
@@ -156,6 +167,7 @@ def post_check(result: LLMImpactResult, diff: SpecDiff, register: TestRegister) 
     changed = {c.req_id for c in diff.requirement_changes}
     broken = {t.test_id: any(link.status in _BROKEN_LINKS for link in t.links) for t in register.tests}
     nature = {i.requirement_id: i.nature for i in result.change_interpretations}
+    numeric_changed = {c.req_id for c in diff.requirement_changes if c.numeric_changes}
     by_id: dict[str, TestAssessment] = {}
     for a in result.assessments:
         if a.test_id not in expected:
@@ -170,7 +182,7 @@ def post_check(result: LLMImpactResult, diff: SpecDiff, register: TestRegister) 
             a = a.model_copy(update={"related_requirements": [r for r in a.related_requirements if r in changed]})
         for hit in approval_language(" ".join([a.reason, a.recommended_action, *a.evidence])):
             warnings.append(f"{a.test_id}: approval-like wording in LLM output: '{hit}'")
-        a, adjustment = _reconcile_with_interpretation(a, nature, warnings)
+        a, adjustment = _reconcile_with_interpretation(a, nature, numeric_changed, warnings)
         if adjustment:
             adjustments.append(adjustment)
         actions = normalize_actions(a.test_id, a.status, a.required_actions, broken[a.test_id], warnings)

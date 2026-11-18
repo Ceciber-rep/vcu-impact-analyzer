@@ -296,6 +296,33 @@ def test_non_rewording_changes_are_untouched(reworded_and_tightened, nature):
     assert _status(checked, "TV-005") == "directly_affected" and checked.adjustments == []
 
 
+def test_no_downgrade_when_the_diff_found_a_changed_number(reworded_and_tightened):
+    """The model's `nature` is unscored and unstable: a wrong "rewording" must not hide a numeric change."""
+    wrong = [_interp("VCU-DGN-04", "reworded_same_meaning"), _interp("VCU-DR-01", "reworded_same_meaning")]
+    checked = _check(
+        reworded_and_tightened,
+        wrong,
+        [
+            _assessment("TV-001", "directly_affected", ["VCU-DR-01"]),  # 100 -> 90 ms in the diff
+            _assessment("TV-005", "directly_affected", ["VCU-DGN-04"]),  # pure rewording, no number
+        ],
+    )
+    assert _status(checked, "TV-001") == "directly_affected"  # guarded: the diff saw 100 -> 90 ms
+    assert any("TV-001" in w and "changed number" in w and "Not adjusted" in w for w in checked.warnings)
+    assert _status(checked, "TV-005") == "not_affected"  # the guard does not break the intended case
+    assert [a.test_id for a in checked.adjustments] == ["TV-005"]
+
+
+def test_guard_covers_a_requirement_among_several_related_ones(reworded_and_tightened):
+    wrong = [_interp("VCU-DGN-04", "reworded_same_meaning"), _interp("VCU-DR-01", "reworded_same_meaning")]
+    checked = _check(
+        reworded_and_tightened,
+        wrong,
+        [_assessment("TV-002", "directly_affected", ["VCU-DGN-04", "VCU-DR-01"])],
+    )
+    assert _status(checked, "TV-002") == "directly_affected" and checked.adjustments == []
+
+
 def test_adjustment_only_concerns_directly_affected_tests_with_an_interpretation(reworded_and_tightened):
     checked = _check(
         reworded_and_tightened,

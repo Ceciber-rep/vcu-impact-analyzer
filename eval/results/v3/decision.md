@@ -1,6 +1,6 @@
 # Decision rule outcome
 
-Prompt version v3; post-check applied; original + held-out cells (32 critical cells).
+Prompt version v3; post-check applied (as pre-registered); original + held-out cells (32 critical cells).
 
 Rule: the primary model stays unless a challenger has strictly fewer critical failures AND zero missed impacts. Ties go to the primary. A scenario without a valid run counts all its critical cells as failures.
 

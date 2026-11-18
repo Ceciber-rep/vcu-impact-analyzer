@@ -548,8 +548,13 @@ What the application now does, in `analysis.post_check`: if a test is `directly_
 `related_requirements` were interpreted as `reworded_same_meaning`, its status becomes `not_affected`. The change
 is recorded as an `Adjustment` on the run (outside the LLM schema; the schema sent to the model is byte-identical),
 as a warning, and as `adjustment` on each result row; the model's own output is kept in `raw_text`. Mixed related
-requirements are untouched, and an empty `related_requirements` only warns. Seven test functions (one of them
-parametrised) cover these cases.
+requirements are untouched, and an empty `related_requirements` only warns. After the review of this
+section a guard was added: the rule never fires when the deterministic diff found a changed number in one of the
+related requirements, because the model's `nature` is unscored and unstable and a wrong "rewording" would otherwise turn a
+correct flag into a missed impact. S5 has no numeric change, so every number in this section is unchanged by the guard
+(the summaries were regenerated and are byte-identical). It still does not cover a wrong "rewording" on a change without a
+changed number. Nine test functions (one of them
+parametrised) cover these cases, including the guard.
 **The model still contradicts itself; the application corrects it visibly.**
 
 Applying it to the stored outputs (original 84 cells; the v1 outputs are scored with the v2+ labels, the like-for-like

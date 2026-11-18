@@ -34,13 +34,25 @@ Tests with mixed related requirements (a rewording and a real change) are not to
 `directly_affected` test with no related requirement is only warned about, and only when every
 change in the run was read as a rewording.
 
-**Risk of the safety net.** It trusts the model's `nature` field, which is **not scored** in
-the evaluation and is not stable: for S3 qwen answered `tightened` (prompt v1), `relaxed`
-(v2) and `tightened` (v3), and the local qwen3:8b read the relaxation in S4 (100 → 120 ms) as
-`tightened`. If a model ever reads a real change as `reworded_same_meaning` and marks an
-affected test `directly_affected`, the rule would downgrade a true impact to `not_affected`.
-The visible warning and adjustment record are what protect against that, so the UI and the
-report must show them next to the test.
+**Guard against the main risk.** The rule trusts the model's `nature` field, which is **not
+scored** in the evaluation and is not stable: for S3 qwen answered `tightened` (prompt v1),
+`relaxed` (v2) and `tightened` (v3), and the local qwen3:8b read the relaxation in S4 (100 → 120 ms)
+as `tightened`. If a model read a real change as `reworded_same_meaning` and marked an affected
+test `directly_affected`, the rule would turn a correct flag into a missed impact, the worst error
+type. So the rule **never fires when the deterministic diff found a changed number in one of the
+related requirements** (`numeric_changes` from the diff, not from the model); it only warns that
+the model's reading and the diff disagree, and the status stays as the model gave it. S5 has no
+numeric change, so the intended case is unaffected (unit-tested, and the stored S5 results are
+unchanged).
+
+**What the guard does not cover.** A wrong "rewording" on a change *without* a changed number
+(a negation, a changed condition word, an added or removed requirement) is still trusted. The
+visible warning and the adjustment record are the only protection there, so the UI and the report
+must show them next to the test.
+
+**The rule is not validated.** It was written after the S5 failure was seen and tested on S5, so
+the 16/16 critical cases on the original cells are in-sample; on the held-out scenarios S8 to S10
+it never fired, which says nothing either way.
 
 ## 2. Other limitations of the v3 configuration
 

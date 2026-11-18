@@ -199,8 +199,10 @@ mark a test *directly affected* for a **pure rewording** of a requirement althou
 interpretation of the change says nothing changed. This is a safety net in the application,
 not an improvement of the model: the post-check changes that status to *not affected* and
 shows the change next to the test (the original model output is kept). It relies on the
-model's reading of the change, which is not evaluated and not stable, so it could in
-principle hide a real impact.
+model's reading of the change, which is not evaluated and not stable, so it never fires when
+the diff found a changed number in that requirement; a wrong "rewording" on a change without
+numbers could still hide a real impact. The rule is not validated (it was written after seeing
+the failure it fixes).
 
 The evaluation is small (84 judgments, one register, one annotator), and the prompt was
 refined on the same scenarios. Free-tier latency, rate limits and availability can change
