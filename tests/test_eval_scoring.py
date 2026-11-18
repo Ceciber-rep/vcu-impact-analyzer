@@ -7,7 +7,9 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "eval"))
 from evaluate import (  # noqa: E402
     RESULTS,
+    _assessments,
     _is_rate_limit,
+    _model_result,
     held_out_scenarios,
     load_dataset,
     original_scenarios,
@@ -66,3 +68,23 @@ def test_groq_tpm_413_is_treated_as_a_rate_limit():
     assert _is_rate_limit(tpm)
     assert _is_rate_limit("InternalServerError: Error code: 503 - UNAVAILABLE")
     assert not _is_rate_limit("ValidationError: 1 validation error for LLMImpactResult")
+
+
+def test_raw_view_undoes_recorded_corrections_and_postcheck_reapplies_them():
+    """Runs made after the safety net store the corrected result; the raw view must still be the model's."""
+    data = load_dataset()
+    s5 = next(sc for sc in data["scenarios"] if sc["id"] == "S5")
+    import json
+
+    run = json.loads((QWEN_V3 / "S5_r1.json").read_text())
+    assert "adjustments" not in run  # stored before the safety net existed: raw as stored
+    corrected = json.loads(json.dumps(run))
+    next(a for a in corrected["result"]["assessments"] if a["test_id"] == "TV-005")["status"] = "not_affected"
+    corrected["adjustments"] = [{"test_id": "TV-005", "original_status": "directly_affected"}]
+    # raw view: the model's own status is recovered from the recorded adjustment
+    raw, raw_adjustments = _assessments(corrected, s5, postcheck=False)
+    assert raw["TV-005"]["status"] == "directly_affected" and raw_adjustments == []
+    assert _model_result(corrected)["assessments"] == _model_result(run)["assessments"]
+    # post-check view: corrected again, and the correction is counted
+    checked, adjustments = _assessments(corrected, s5, postcheck=True)
+    assert checked["TV-005"]["status"] == "not_affected" and [x["test_id"] for x in adjustments] == ["TV-005"]

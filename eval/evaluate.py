@@ -219,9 +219,11 @@ def cmd_run(args) -> None:
         if m.get("think") is not None:
             config.ollama_think = m["think"]
         client = LLMClient(config)
-        out_dir = RESULTS / PROMPT_VERSION / _safe(m["name"])
+        out_dir = RESULTS / (args.out or PROMPT_VERSION) / _safe(m["name"])
         out_dir.mkdir(parents=True, exist_ok=True)
         for sc in data["scenarios"]:
+            if args.scenarios and sc["id"] not in args.scenarios.split(","):
+                continue
             revised = parse_spec(scenario_path(sc))
             diff = diff_specs(baseline, revised)
             register = parse_register(register_path(sc), revised, baseline)
@@ -311,15 +313,30 @@ def _prepared(sc: dict) -> Prepared:
     return _prepared_cached(str(scenario_path(sc)), str(register_path(sc)))
 
 
+def _model_result(run: dict) -> dict:
+    """The stored result with the application's own status corrections undone.
+
+    Runs made after the rewording safety net existed store the post-checked result and list
+    each correction in ``adjustments``; reverting them gives back the model's own statuses
+    (plus any fill-in for omitted tests). Older runs have no adjustments and are returned as stored.
+    """
+    result = json.loads(json.dumps(run["result"]))
+    original = {x["test_id"]: x["original_status"] for x in run.get("adjustments", [])}
+    for a in result["assessments"]:
+        if a["test_id"] in original:
+            a["status"] = original[a["test_id"]]
+    return result
+
+
 def _assessments(run: dict, sc: dict, postcheck: bool) -> tuple[dict[str, dict], list[dict]]:
     """Per-test assessments of one stored run, and the adjustments made, for the chosen view.
 
-    raw        the statuses exactly as stored (the model's own, plus any fill-in for omitted tests);
-    postcheck  the same stored output after analysis.post_check, as the application applies it now.
+    raw        the model's own statuses (plus any fill-in for omitted tests), never post-checked;
+    postcheck  the same output after analysis.post_check, as the application applies it now.
     """
+    result = _model_result(run)
     if not postcheck:
-        return {a["test_id"]: a for a in run["result"]["assessments"]}, []
-    result = json.loads(json.dumps(run["result"]))
+        return {a["test_id"]: a for a in result["assessments"]}, []
     for a in result["assessments"]:
         a.setdefault("required_actions", ["none"])  # prompt v1 had no such field
     prep = _prepared(sc)
@@ -677,6 +694,8 @@ def main() -> None:
     r.add_argument("--only")
     r.add_argument("--force", action="store_true")
     r.add_argument("--retry-failed", action="store_true", help="re-run scenarios whose previous run failed")
+    r.add_argument("--out", help="results sub-folder under eval/results (default: the prompt version)")
+    r.add_argument("--scenarios", help="comma-separated scenario ids to run, e.g. S1,S2,S5")
     sc = sub.add_parser("score")
     sc.add_argument("--version", default=PROMPT_VERSION, help="prompt version whose results to score")
     sc.add_argument("--labels", help="label revision to apply (default: same as --version; v1 = original labels)")
