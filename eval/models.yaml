@@ -9,3 +9,4 @@ models:
   - {name: groq-gpt-oss-120b, provider: groq, model: openai/gpt-oss-120b}
   - {name: groq-qwen3.8-27b, provider: groq, model: qwen/qwen3.8-27b}
   - {name: ollama-qwen3-8b, provider: ollama, model: "qwen3:8b"}
+  - {name: naive-baseline, provider: none, model: rules}   # rule-only baseline, see eval/naive_baseline.py
