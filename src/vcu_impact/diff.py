@@ -14,6 +14,7 @@ from vcu_impact.models import (
     SpecDiff,
     SpecDocument,
 )
+from vcu_impact.spec_parser import REQ_ID_PATTERN
 
 _UNIT_ALIASES = {
     "ms": "ms",
@@ -43,18 +44,28 @@ def _norm(text: str) -> str:
     return re.sub(r"\s+", " ", text).strip()
 
 
+# Units of the same quantity are compared in one base unit, so "100 ms" and "0.1 s" are equal.
+_TO_BASE = {"s": ("ms", 1000.0), "kHz": ("Hz", 1000.0)}
+_ID_RE = re.compile(REQ_ID_PATTERN)
+
+
 def extract_quantities(text: str) -> list[tuple[str, float, str]]:
     """Return (unit, value, matched_text) for every number in the text.
 
     Numbers without a recognised unit get the unit ``""`` so that a change of a
-    bare count is still reported.
+    bare count is still reported. Seconds are converted to milliseconds (and kHz to Hz); numbers
+    inside requirement IDs (``VCU-DR-01``) are not quantities and are skipped.
     """
     out = []
-    for m in _NUMBER_RE.finditer(text):
+    for m in _NUMBER_RE.finditer(_ID_RE.sub(" ", text)):
         raw_unit = (m.group("unit") or "").lower()
         unit = _UNIT_ALIASES.get(raw_unit, "")
         matched = m.group(0) if unit else m.group("num")
-        out.append((unit, float(m.group("num").replace(",", ".")), matched.strip()))
+        value = float(m.group("num").replace(",", "."))
+        if unit in _TO_BASE:
+            unit, factor = _TO_BASE[unit]
+            value = round(value * factor, 9)
+        out.append((unit, value, matched.strip()))
     return out
 
 

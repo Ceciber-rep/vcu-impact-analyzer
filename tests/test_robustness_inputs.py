@@ -117,7 +117,6 @@ def test_equal_numbers_in_equivalent_spellings_are_not_changes(old, new):  # E-0
 
 
 @pytest.mark.parametrize(("old", "new"), [("within 100 ms", "within 0.1 s"), ("within 100 ms", "within 0.10 seconds")])
-@pytest.mark.xfail(strict=True, reason="F-001: units are not converted, 100 ms vs 0.1 s is reported as a change")
 def test_equal_numbers_in_different_units_are_not_changes(old, new):  # E-011
     assert numeric_changes(old, new) == []
 
@@ -129,7 +128,6 @@ def test_changed_percentage_and_range_are_reported():  # E-012
     ]
 
 
-@pytest.mark.xfail(strict=True, reason="F-001: a number inside a referenced ID is reported as a numeric change")
 def test_numbers_inside_ids_are_not_numeric_changes():  # E-013
     assert numeric_changes("see VCU-DR-01 within 80 ms", "see VCU-DR-02 within 80 ms") == []
 
@@ -315,3 +313,7 @@ def test_pipeline_is_deterministic_for_identical_input():  # E-032
     new = make_spec([("VCU-A-01", "Limit", "The value is 80 ms."), ("VCU-B-02", "Other", "Keep 5 V.")])
     assert _prep(BASE, new).key == _prep(BASE, new).key
     assert pipeline.analyze(_prep(BASE, new), mode="replay").mode == "not_analysed"
+
+
+def test_a_real_change_across_units_is_still_reported():  # E-011b
+    assert [(c.old_value, c.new_value) for c in numeric_changes("within 100 ms", "within 0.08 s")] == [(100, 80)]
