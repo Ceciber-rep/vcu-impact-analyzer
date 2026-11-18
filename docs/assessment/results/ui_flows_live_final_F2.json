@@ -1,0 +1,174 @@
+[
+ {
+  "flow": "F2",
+  "title": "Reword a requirement, same meaning (DR-02)",
+  "mode": "live",
+  "after_change": {
+   "exceptions": [],
+   "banner": [
+    "From an earlier live run of gemini:gemini-3.5-flash at 2026-11-18T11:45:19+00:00 in this environment.",
+    "Edited VCU-DR-02. The diff in tab 1 is updated; run the analysis to update the assessment."
+   ],
+   "changes_shown": [
+    [
+     "VCU-DR-01",
+     "🟨 Modified"
+    ],
+    [
+     "VCU-DR-02",
+     "🟨 Modified"
+    ]
+   ],
+   "statuses": {
+    "TV-001": [
+     "🔴 Directly affected",
+     "high",
+     "Re-run test, Update procedure"
+    ],
+    "TV-002": [
+     "🔴 Directly affected",
+     "medium",
+     "Re-run test, Update procedure"
+    ],
+    "TV-003": [
+     "🔴 Directly affected",
+     "high",
+     "Re-run test, Update procedure, Fix requirement link *"
+    ],
+    "TV-004": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-005": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-006": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-007": [
+     "🔵 Needs human review",
+     "low",
+     "Fix requirement link *, Owner decision"
+    ],
+    "TV-008": [
+     "🟢 Not affected",
+     "high",
+     "Fix requirement link *"
+    ],
+    "TV-009": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-010": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-011": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-012": [
+     "🟢 Not affected",
+     "high",
+     "Fix requirement link *"
+    ]
+   },
+   "report_chars": 17482,
+   "report_contains_every_test": true,
+   "report_contains_every_status_label": true,
+   "approval_hits_in_report": []
+  },
+  "after_analysis": {
+   "exceptions": [],
+   "banner": [
+    "Live LLM analysis by gemini:gemini-3.5-flash at 2026-11-18T18:20:10+00:00.",
+    "groq:qwen/qwen3.8-27b failed: RateLimitError: per-minute rate limit of the free tier; wait a minute and run again"
+   ],
+   "changes_shown": [
+    [
+     "VCU-DR-01",
+     "🟨 Modified"
+    ],
+    [
+     "VCU-DR-02",
+     "🟨 Modified"
+    ]
+   ],
+   "statuses": {
+    "TV-001": [
+     "🔴 Directly affected",
+     "high",
+     "Re-run test, Update procedure"
+    ],
+    "TV-002": [
+     "🔴 Directly affected",
+     "high",
+     "Re-run test"
+    ],
+    "TV-003": [
+     "🔴 Directly affected",
+     "high",
+     "Re-run test, Update procedure, Fix requirement link *"
+    ],
+    "TV-004": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-005": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-006": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-007": [
+     "🔵 Needs human review",
+     "medium",
+     "Fix requirement link *, Owner decision"
+    ],
+    "TV-008": [
+     "🟢 Not affected",
+     "high",
+     "Fix requirement link *"
+    ],
+    "TV-009": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-010": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-011": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-012": [
+     "🟢 Not affected",
+     "high",
+     "Fix requirement link *"
+    ]
+   },
+   "report_chars": 17380,
+   "report_contains_every_test": true,
+   "report_contains_every_status_label": true,
+   "approval_hits_in_report": []
+  },
+  "seconds": 38.5
+ }
+]

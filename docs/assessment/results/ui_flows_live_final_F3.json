@@ -1,0 +1,173 @@
+[
+ {
+  "flow": "F3",
+  "title": "Add a requirement (VCU-THM-07)",
+  "mode": "live",
+  "after_change": {
+   "exceptions": [],
+   "banner": [
+    "From an earlier live run of groq:qwen/qwen3.8-27b at 2026-11-18T11:45:31+00:00 in this environment.",
+    "Added VCU-THM-07 (Thermal torque derating) after VCU-MOD-06. The diff in tab 1 is updated; run the analysis to update the assessment."
+   ],
+   "changes_shown": [
+    [
+     "VCU-DR-01",
+     "🟨 Modified"
+    ],
+    [
+     "VCU-THM-07",
+     "🟩 Added"
+    ]
+   ],
+   "statuses": {
+    "TV-001": [
+     "🔴 Directly affected",
+     "high",
+     "Re-run test, Update procedure"
+    ],
+    "TV-002": [
+     "🟠 Possibly affected",
+     "medium",
+     "Owner decision"
+    ],
+    "TV-003": [
+     "🔴 Directly affected",
+     "medium",
+     "Re-run test, Update procedure, Fix requirement link *"
+    ],
+    "TV-004": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-005": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-006": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-007": [
+     "🔵 Needs human review",
+     "low",
+     "Fix requirement link *, Owner decision"
+    ],
+    "TV-008": [
+     "🟢 Not affected",
+     "high",
+     "Fix requirement link *"
+    ],
+    "TV-009": [
+     "🟢 Not affected",
+     "medium",
+     "None"
+    ],
+    "TV-010": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-011": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-012": [
+     "🟢 Not affected",
+     "high",
+     "Fix requirement link *"
+    ]
+   },
+   "report_chars": 18759,
+   "report_contains_every_test": true,
+   "report_contains_every_status_label": true,
+   "approval_hits_in_report": []
+  },
+  "after_analysis": {
+   "exceptions": [],
+   "banner": [
+    "Live LLM analysis by groq:qwen/qwen3.8-27b at 2026-11-18T18:17:47+00:00."
+   ],
+   "changes_shown": [
+    [
+     "VCU-DR-01",
+     "🟨 Modified"
+    ],
+    [
+     "VCU-THM-07",
+     "🟩 Added"
+    ]
+   ],
+   "statuses": {
+    "TV-001": [
+     "🔴 Directly affected",
+     "high",
+     "Re-run test, Update procedure"
+    ],
+    "TV-002": [
+     "🟠 Possibly affected",
+     "medium",
+     "Re-run test"
+    ],
+    "TV-003": [
+     "🟠 Possibly affected",
+     "medium",
+     "Re-run test, Update procedure, Fix requirement link *"
+    ],
+    "TV-004": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-005": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-006": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-007": [
+     "🔵 Needs human review",
+     "low",
+     "Fix requirement link *, Owner decision"
+    ],
+    "TV-008": [
+     "🟢 Not affected",
+     "high",
+     "Fix requirement link *"
+    ],
+    "TV-009": [
+     "🟠 Possibly affected",
+     "medium",
+     "Owner decision"
+    ],
+    "TV-010": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-011": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-012": [
+     "🟢 Not affected",
+     "high",
+     "Fix requirement link *"
+    ]
+   },
+   "report_chars": 19198,
+   "report_contains_every_test": true,
+   "report_contains_every_status_label": true,
+   "approval_hits_in_report": []
+  },
+  "seconds": 5.5
+ }
+]

@@ -19,8 +19,7 @@ recommendations; final approval belongs to the authorized owner.
 > **Sample report:** [reports/example_impact_report.html](reports/example_impact_report.html)
 > (also as [Markdown](reports/example_impact_report.md)), generated from the provided files.
 
-<!-- TODO(owner): add the screenshots, e.g. docs/screenshots/changes.png and impact.png -->
-**Screenshots:** _can be found in `docs/screenshots/`._
+**Screenshots** of the running application (taken before the final fixes; the layout is unchanged apart from one added caption and warning line): [affected tests](docs/screenshots/Screenshot_18-11-2026_1234_localhost.jpeg), [edit tab](docs/screenshots/Screenshot_18-11-2026_12320_localhost.jpeg), and two more in [docs/screenshots/](docs/screenshots/).
 
 ## Quick start
 
@@ -32,7 +31,7 @@ key is needed to try the application: without one, it shows **recorded** LLM ana
 
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh     # once; then open a new terminal
-git clone <repository-url> vcu-impact-analyzer && cd vcu-impact-analyzer
+git clone git@github.com:Ceciber-rep/vcu-impact-analyzer.git vcu-impact-analyzer && cd vcu-impact-analyzer
 make install    # uv sync + creates .env from .env.example
 make run        # http://localhost:8501
 ```
@@ -43,7 +42,7 @@ Without `make`: `uv sync`, `cp .env.example .env`, `uv run streamlit run app/str
 
 ```powershell
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"   # once; then open a new terminal
-git clone <repository-url> vcu-impact-analyzer; cd vcu-impact-analyzer
+git clone git@github.com:Ceciber-rep/vcu-impact-analyzer.git vcu-impact-analyzer; cd vcu-impact-analyzer
 uv sync
 Copy-Item .env.example .env
 uv run streamlit run app/streamlit_app.py
@@ -172,8 +171,10 @@ repair retry. The UI and the report are built only from validated data.
   specification. Requirements are matched by ID; a renamed ID counts as removed plus added.
 - **Register format:** the header row is found by column names (`Test case`,
   `Req reference`, `Result`, …) in the first 20 rows, so title rows above it are fine. The
-  workshop notes are read from any sheet with `Date` and `Observation` columns. Links may
-  list several IDs separated by `;`, `,` or `/`.
+  workshop notes are read from any sheet with `Date` and `Observation` columns. A link cell may
+  list several IDs separated by `;`, `,`, `/`, a new line, a space or `and`. Test IDs must be unique.
+- **Word tracked changes** are read as if all were accepted (the app says so); text boxes and tables
+  are not read as requirements.
 - **Broken links:** an empty cell, `TBD`/`TBC`/`N/A`, an ID found in neither
   specification (e.g. `VCU-OLD-88`) or an ID removed in the revision are broken links:
   they always get `fix_link`, and are never taken as proof that a test is unrelated.
@@ -195,7 +196,19 @@ repair retry. The UI and the report are built only from validated data.
 
 ## Known issues and limitations
 
-See [docs/known_issues.md](docs/known_issues.md). The most important one: the model can
+The final assessment (requirements audit, edge cases, LLM evaluation, fixes) is in [docs/assessment/SUMMARY.md](docs/assessment/SUMMARY.md). Honest summary:
+
+- **Free-tier limits are the main operational risk.** Groq allows about 30 analyses per day and one per minute on this prompt; the Gemini
+  fallback answered 429 on every attempt during the assessment. When both fail the app shows "Not analysed" with a plain reason and keeps the diff
+  and register facts. For a demo use the recorded analysis, or run each change once and rely on the cache.
+- **The LLM evaluation of the final application is partial** (15 of 32 planned runs answered because the free-tier quotas ran out): a new run is needed
+  to complete it (`uv run python eval/assess_run.py` resumes). On the runs that completed there was no missed impact, 5 wrong cells out of 156 (all over-flags,
+  3 of them with high confidence), and the rule-only baseline was clearly worse on critical cells for S1-S10 but not demonstrably for the new scenarios.
+- Not handled (documented, not fixed): requirements in Word text boxes or tables, headings with other ID formats than `VCU-DR-01`, merged Excel cells and formulas without cached values,
+  lower-case IDs in link cells, raw error text for corrupt uploads, registers above about 60 tests, and a model's confidence is not a reliability measure.
+- Edits in the UI are diffed against the baseline, so the original revision's changes are always shown together with yours.
+
+See also [docs/known_issues.md](docs/known_issues.md). The most important model issue: the model can
 mark a test *directly affected* for a **pure rewording** of a requirement although its own
 interpretation of the change says nothing changed. This is a safety net in the application,
 not an improvement of the model: the post-check changes that status to *not affected* and
@@ -212,7 +225,8 @@ without notice.
 ## Tests
 
 ```bash
-make test     # 45 offline tests: parsing, diff, editing, post-checks, pipeline, cache, report, UI smoke
+make test     # 113 pass and 21 are expected failures (documented defects, `xfail`): parsing, diff, editing, post-checks,
+              # pipeline, cache, report, UI flows, robustness (corrupt files, provider failures, injection, escaping)
 make lint
 ```
 
@@ -228,8 +242,8 @@ evaluation harness in [`eval/`](eval/), which needs keys.
 | `src/vcu_impact/` | Core: parsers, diff, editor, LLM client, prompt, analysis, pipeline, cache, report, CLI |
 | `app/` | Streamlit UI |
 | `reports/` | Example exported report |
-| `eval/` | LLM evaluation: dataset, scenarios, harness, stored runs, frozen prompts |
-| `docs/` | Evaluation report, known issues, implementation plan, original exercise brief |
+| `eval/` | LLM evaluation (not needed to run the app): datasets, scenarios, harness, stored runs under `eval/results/` (frozen), frozen prompts, UI-flow script, rule-only baseline |
+| `docs/` | Evaluation report, known issues, implementation plan, original exercise brief, [assessment/](docs/assessment/) (audit, edge cases, LLM evaluation of the final app), [demo_script.md](docs/demo_script.md) |
 | `tests/` | Offline test suite |
 | `.env.example` | Template for LLM configuration |
 

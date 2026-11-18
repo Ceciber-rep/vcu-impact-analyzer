@@ -1,0 +1,165 @@
+[
+ {
+  "flow": "F1",
+  "title": "Change a numeric limit (DR-01 80 -> 60 ms)",
+  "mode": "live",
+  "after_change": {
+   "exceptions": [],
+   "banner": [
+    "From an earlier live run of groq:qwen/qwen3.8-27b at 2026-11-18T11:44:13+00:00 in this environment.",
+    "Edited VCU-DR-01. The diff in tab 1 is updated; run the analysis to update the assessment."
+   ],
+   "changes_shown": [
+    [
+     "VCU-DR-01",
+     "🟨 Modified"
+    ]
+   ],
+   "statuses": {
+    "TV-001": [
+     "🔴 Directly affected",
+     "high",
+     "Re-run test, Update procedure"
+    ],
+    "TV-002": [
+     "🟠 Possibly affected",
+     "medium",
+     "Re-run test, Update procedure"
+    ],
+    "TV-003": [
+     "🔴 Directly affected",
+     "medium",
+     "Re-run test, Update procedure, Fix requirement link *"
+    ],
+    "TV-004": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-005": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-006": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-007": [
+     "🔵 Needs human review",
+     "low",
+     "Fix requirement link *, Owner decision"
+    ],
+    "TV-008": [
+     "🟢 Not affected",
+     "high",
+     "Fix requirement link *"
+    ],
+    "TV-009": [
+     "🟢 Not affected",
+     "medium",
+     "None"
+    ],
+    "TV-010": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-011": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-012": [
+     "🟢 Not affected",
+     "high",
+     "Fix requirement link *"
+    ]
+   },
+   "report_chars": 18575,
+   "report_contains_every_test": true,
+   "report_contains_every_status_label": true,
+   "approval_hits_in_report": []
+  },
+  "after_analysis": {
+   "exceptions": [],
+   "banner": [
+    "Live LLM analysis by groq:qwen/qwen3.8-27b at 2026-11-18T18:15:35+00:00."
+   ],
+   "changes_shown": [
+    [
+     "VCU-DR-01",
+     "🟨 Modified"
+    ]
+   ],
+   "statuses": {
+    "TV-001": [
+     "🔴 Directly affected",
+     "high",
+     "Re-run test, Update procedure"
+    ],
+    "TV-002": [
+     "🟠 Possibly affected",
+     "medium",
+     "Re-run test, Update procedure"
+    ],
+    "TV-003": [
+     "🔴 Directly affected",
+     "medium",
+     "Re-run test, Update procedure, Fix requirement link *"
+    ],
+    "TV-004": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-005": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-006": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-007": [
+     "🔵 Needs human review",
+     "low",
+     "Fix requirement link *, Owner decision"
+    ],
+    "TV-008": [
+     "🟢 Not affected",
+     "high",
+     "Fix requirement link *"
+    ],
+    "TV-009": [
+     "🟢 Not affected",
+     "medium",
+     "None"
+    ],
+    "TV-010": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-011": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-012": [
+     "🟢 Not affected",
+     "high",
+     "Fix requirement link *"
+    ]
+   },
+   "report_chars": 18548,
+   "report_contains_every_test": true,
+   "report_contains_every_status_label": true,
+   "approval_hits_in_report": []
+  },
+  "seconds": 6.8
+ }
+]

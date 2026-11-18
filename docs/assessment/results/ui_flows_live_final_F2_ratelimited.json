@@ -1,0 +1,177 @@
+[
+ {
+  "flow": "F2",
+  "title": "Reword a requirement, same meaning (DR-02)",
+  "mode": "live",
+  "after_change": {
+   "exceptions": [],
+   "banner": [
+    "From an earlier live run of gemini:gemini-3.5-flash at 2026-11-18T11:45:19+00:00 in this environment.",
+    "Edited VCU-DR-02. The diff in tab 1 is updated; run the analysis to update the assessment."
+   ],
+   "changes_shown": [
+    [
+     "VCU-DR-01",
+     "🟨 Modified"
+    ],
+    [
+     "VCU-DR-02",
+     "🟨 Modified"
+    ]
+   ],
+   "statuses": {
+    "TV-001": [
+     "🔴 Directly affected",
+     "high",
+     "Re-run test, Update procedure"
+    ],
+    "TV-002": [
+     "🔴 Directly affected",
+     "medium",
+     "Re-run test, Update procedure"
+    ],
+    "TV-003": [
+     "🔴 Directly affected",
+     "high",
+     "Re-run test, Update procedure, Fix requirement link *"
+    ],
+    "TV-004": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-005": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-006": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-007": [
+     "🔵 Needs human review",
+     "low",
+     "Fix requirement link *, Owner decision"
+    ],
+    "TV-008": [
+     "🟢 Not affected",
+     "high",
+     "Fix requirement link *"
+    ],
+    "TV-009": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-010": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-011": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-012": [
+     "🟢 Not affected",
+     "high",
+     "Fix requirement link *"
+    ]
+   },
+   "report_chars": 17482,
+   "report_contains_every_test": true,
+   "report_contains_every_status_label": true,
+   "approval_hits_in_report": []
+  },
+  "after_analysis": {
+   "exceptions": [],
+   "banner": [
+    "Not analysed by an LLM. The register facts below come from the parser.",
+    "Not analysed by an LLM: every configured model failed. groq:qwen/qwen3.8-27b failed: RateLimitError: per-minute rate limit of the free tier; wait a minute and run again gemini:gemini-3.5-flash failed: RateLimitError: rate limit or quota reached (HTTP 429); wait, or use the recorded analysis The changes and register facts are still shown.",
+    "groq:qwen/qwen3.8-27b failed: RateLimitError: per-minute rate limit of the free tier; wait a minute and run again",
+    "gemini:gemini-3.5-flash failed: RateLimitError: rate limit or quota reached (HTTP 429); wait, or use the recorded analysis",
+    "No LLM assessment for these inputs: the report will contain the changes and register facts only."
+   ],
+   "changes_shown": [
+    [
+     "VCU-DR-01",
+     "🟨 Modified"
+    ],
+    [
+     "VCU-DR-02",
+     "🟨 Modified"
+    ]
+   ],
+   "statuses": {
+    "TV-001": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-002": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-003": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-004": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-005": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-006": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-007": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-008": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-009": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-010": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-011": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-012": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ]
+   },
+   "report_chars": 10651,
+   "report_contains_every_test": true,
+   "report_contains_every_status_label": true,
+   "approval_hits_in_report": []
+  },
+  "seconds": 4.4
+ }
+]
