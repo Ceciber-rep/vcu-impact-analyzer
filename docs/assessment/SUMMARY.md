@@ -4,7 +4,7 @@
 (Groq qwen3.8-27b with Gemini fallback, prompt v3), prioritised fixes, and finalisation. Details: files `00` to `05` in this folder.
 
 ## What was tested
-- 8 UI flows driven through the real Streamlit UI (replay and live); 133 automated tests (113 pass, 21 documented defects as strict `xfail`, plus 1 older); clean-clone and Docker start; secret and approval-language scans over the tree and the git history.
+- 8 UI flows driven through the real Streamlit UI (replay and live); 134 automated tests (113 pass; 21 are documented defects marked as strict `xfail`); clean-clone and Docker start; secret and approval-language scans over the tree and the git history.
 - LLM: 6 new held-out scenarios (labels reviewed by the project owner before any model ran), a rule-only baseline, repeats and perturbations of the application path.
 
 ## What failed (26 findings: S1 1, S2 11, S3 10, S4 3 before fixes)
