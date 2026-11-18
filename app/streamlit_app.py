@@ -170,6 +170,10 @@ def sidebar_summary(prep: Prepared, outcome: AnalysisOutcome) -> None:
         st.rerun()
     if not configs:
         sb.caption("Without a model, recorded analyses (replay) are shown when they exist for the inputs.")
+        sb.caption(
+            "To re-run the analysis, configure a model: put LLM_PROVIDER, LLM_MODEL and a key in .env, "
+            "or start Docker with `--env-file .env` (see the README)."
+        )
     sb.caption(f"Input key `{prep.key[:12]}` · prompt {outcome.run.prompt_version if outcome.run else '—'}")
 
 

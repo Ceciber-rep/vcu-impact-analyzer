@@ -45,6 +45,9 @@ def test_run_button_disabled_without_model():
     at = _run()
     run_button = next(b for b in at.sidebar.button if "analysis with the LLM" in b.label)
     assert run_button.disabled
+    # The sidebar says how to enable it (this is what a replay-only Docker start shows).
+    captions = " ".join(c.value for c in at.sidebar.caption)
+    assert "No model configured" in captions and "--env-file .env" in captions
 
 
 def _button(at: AppTest, label: str):

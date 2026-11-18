@@ -57,12 +57,19 @@ uv run streamlit run app/streamlit_app.py
 
 ```bash
 docker build -t vcu-impact .
-docker run --rm -p 8501:8501 vcu-impact                    # replay mode, no key
-docker run --rm -p 8501:8501 --env-file .env vcu-impact    # with a live model
+docker run --rm -p 8501:8501 vcu-impact                    # replay only: shows recordings, cannot re-run
+docker run --rm -p 8501:8501 --env-file .env vcu-impact    # live: "Run analysis" works (needs your .env)
 ```
 
-Then open http://localhost:8501. `make docker-build` and `make docker-run` do the same.
+Then open http://localhost:8501. `make docker-build` and `make docker-run` do the same (`make docker-run`
+adds `--env-file .env` when a `.env` exists).
 The image never contains `.env` (excluded by `.dockerignore`); keys are passed at run time.
+
+> **"No model configured (LLM_PROVIDER is empty)" in the sidebar, and the Run button is disabled?** That is
+> what the first command (no `--env-file`) shows: the container has no model, so it can only display the recorded
+> analyses. It is expected, not a failure. To re-run the analysis, create `.env` from `.env.example` with a key and
+> start the container with the second command. The same message appears for a local run when `.env` is missing or
+> `LLM_PROVIDER` is empty.
 
 > **Docker status (verified on Ubuntu 24.04 / WSL2, Docker 29.10):** the image builds; the container
 > starts, reports healthy, runs as a non-root user and contains no `.env`; replay mode works
@@ -234,5 +241,10 @@ evaluation harness in [`eval/`](eval/), which needs keys.
 
 ## AI conversations
 
-<!-- TODO(owner): add the read-only share links before submitting (mandatory). -->
-_Share links to the AI conversations used for this exercise: to be added._
+- **Shared chat (read-only):** https://claude.ai/share/619b1e7d-7a3a-4f80-99a5-8a31000c46a8
+  This chat was used by the project owner as an **assistant to Claude Code**: to prepare the step-by-step prompts for
+  Claude Code and to think through its proposals and decisions. It did not write the repository code.
+- **Claude Code** (Anthropic's coding agent, running in VS Code) is the assistant that **generated the code** in this
+  repository: the parsers, diff, LLM client, application, tests, evaluation harness and documentation. It worked step by
+  step, proposing and waiting for the project owner's decision at each step (model, UI framework, plan, evaluation
+  follow-up); the commits carry its `Co-Authored-By` line. The Claude Code session is not part of the shared chat above.
