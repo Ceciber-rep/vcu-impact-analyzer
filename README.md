@@ -95,10 +95,14 @@ https://aistudio.google.com/apikey. A local model also works:
 `ollama pull qwen3:8b`, then `LLM_PROVIDER=ollama`, `LLM_MODEL=qwen3:8b` and
 `LLM_TIMEOUT_S=1800` (much slower and less accurate, see the evaluation).
 
-**Why this model:** five models on three providers (Groq, Google Gemini, local Ollama) were compared on a task-specific dataset
-(7 change scenarios × 12 tests = 84 hand-labelled judgments). Groq `qwen/qwen3.8-27b` had
-the best critical-case score and fully consistent answers, and takes about 7 s per
-analysis. The method, results and limitations are in
+**Why this model:** five models were compared on a task-specific dataset (7 change scenarios,
+84 hand-labelled judgments), then the prompt was re-run on the three best candidates with three
+extra held-out scenarios. This is a **smoke test, not a ranking**: most labelled cells are easy,
+there is one annotator and one register. What it supports: gpt-oss-120b is clearly weaker for this
+task, and Groq `qwen/qwen3.8-27b` and Gemini 3.5 Flash cannot be told apart on accuracy (a tie).
+qwen is the primary model because ties go to it by a rule fixed before the follow-up runs, and
+because it answers in about 7 s against about 95 s, which makes live re-analysis practical.
+Gemini is the configured fallback. Method, results and caveats are in
 [docs/llm_evaluation.md](docs/llm_evaluation.md).
 
 ## What is live and what is replayed
@@ -180,7 +184,7 @@ repair retry. The UI and the report are built only from validated data.
 - **Only requirement changes trigger an assessment.** Other changed sections (e.g.
   revision notes) are shown and passed to the model as context. If no requirement
   changed, no model is called.
-- **Scale:** evaluated on a 12-test register. The UI warns above 60 tests; larger
+- **Scale:** evaluated on registers of 12 tests (13 in one held-out scenario). The UI warns above 60 tests; larger
   registers would need batching (not implemented).
 - **Single local user:** no authentication, no database; state lives in the browser
   session, live results are cached in `.cache/`. The register can be replaced by upload
@@ -205,7 +209,7 @@ without notice.
 ## Tests
 
 ```bash
-make test     # 32 offline tests: parsing, diff, editing, post-checks, pipeline, cache, report, UI smoke
+make test     # 45 offline tests: parsing, diff, editing, post-checks, pipeline, cache, report, UI smoke
 make lint
 ```
 

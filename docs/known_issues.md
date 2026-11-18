@@ -16,8 +16,8 @@ right).
 
 **Probable cause (not tested).** Groq `qwen/qwen3.8-27b` writes the JSON keys in
 alphabetical order, so `assessments` is generated **before** `change_interpretations`
-(verified in the stored raw outputs of all qwen runs; the other three models follow the
-schema order and write the interpretations first). The model therefore cannot use its own
+(verified on the stored raw outputs: 29 of 30 qwen runs; Gemini 3.5 Flash writes the
+interpretations first in 21 of 21 runs, the local qwen3:8b in 9 of 9, gpt-oss-120b in 19 of 21). The model therefore cannot use its own
 reading of the change when it writes the statuses. Whether reordering the fields removes
 the contradiction has not been tested (see docs/llm_evaluation.md, section 8).
 
@@ -56,6 +56,23 @@ report must show them next to the test.
   are not meaningful.
 - **Prompt fitted to its test set.** v3's wording was written after reading v2's failures
   on the same scenarios. Behaviour on different documents is not measured.
+- **The choice of primary model is a tie.** After the follow-up (docs/llm_evaluation.md,
+  section 8), Groq qwen3.8-27b and Gemini 3.5 Flash are indistinguishable on the held-out
+  scenarios (36/37, 15/16 critical, no missed impact, the same failed cell). The
+  pre-registered rule keeps qwen only because ties go to it and because the rewording safety net
+  is counted; on raw statuses Gemini has one critical failure fewer (1 against 2). qwen is kept
+  for its speed (about 7 s against about 95 s per analysis).
+- **Some labels may be too strict.** S8 TV-002 (85% pedal after the trigger was raised to 90%)
+  was answered `directly_affected` by both strong models, against the label. As with S4 TV-001
+  and S7 TV-007, the status `directly_affected` mixes "linked to the changed requirement" with
+  "its evidence is invalidated". The held-out labels were written by the assistant and have not
+  been reviewed by the project owner.
+- **The free-tier alternative is clearly worse.** gpt-oss-120b on Groq had 3 missed impacts
+  and fell for the "valid link, stimulus out of scope" case (S10 TV-013). One v3 analysis
+  also uses about the whole 8,000 tokens-per-minute free-tier budget of that model.
+- **No input-perturbation test.** qwen returns byte-identical output on repeated identical
+  input, so its consistency figure says nothing about robustness to rephrased requirements
+  or reordered register rows.
 - **Free-tier dependency.** Latency, rate limits and availability were observed on
   2026-11-16 and can change without notice. The Groq per-minute token cap causes waits of
   1 to 4 minutes when analyses run back to back. Gemini 3.5 Flash is the configured

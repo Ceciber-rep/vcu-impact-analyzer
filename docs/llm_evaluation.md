@@ -8,7 +8,37 @@ be re-scored with `uv run python eval/evaluate.py score --version v1` (or `v2`, 
 
 **Reading guide.** Sections 1–6 describe the model comparison, run with prompt **v1**
 (status only). Section 7 describes the later `required_actions` field, which produced prompts
-v2 and v3, and was run on the recommended model only.
+v2 and v3, and was run on the recommended model only. Section 8 is a follow-up written after an
+independent review of the evidence (prompt v3 on all three models, a rewording safety net in the
+application, and held-out scenarios).
+
+> **How much weight this evaluation can bear.** It is a **smoke test**, not a statistically
+> reliable ranking of models. The points below were raised by the independent review; each was
+> checked against the stored runs.
+>
+> - **Most cells are easy.** Of the 84 labelled cells, 60 use default labels (39 "unrelated",
+>   14 "broken link, unrelated", 7 "orphaned link") and only 24 carry an explicit judgment. In
+>   practice only 22 cells separated the four models that completed prompt v1 (at least one
+>   model wrong, or the models disagreeing), and in only 9 of those was any model wrong.
+> - **One annotator, one register.** All labels were written by one person (the assistant) and
+>   reviewed once by the project owner. Every scenario uses the same 12-test register.
+> - **"S1 consistency 12/12" for qwen is not robustness.** Groq qwen3.8-27b returned
+>   **byte-identical** output in all three S1 runs (same text, same 1669, 1775 or 1781 output tokens
+>   for prompts v1, v2 and v3). That is near-deterministic decoding on one provider at
+>   temperature 0, not stable reasoning, and it was never tested under input perturbation.
+>   The other models do vary between runs.
+> - **qwen's critical-case score fell between v1 and v3.** With the same two relabelled cells,
+>   qwen scores 16/16 critical cases on its v1 outputs and 15/16 on its v3 outputs, because of
+>   S5 TV-005 (a rewording marked directly affected). The v3 wording written to prevent this did
+>   not fix it.
+> - **The prompt and labels were adjusted after seeing results.** Prompt v3 was written after
+>   reading v2's failures on the same scenarios, and two labels (S4 TV-001, S7 TV-007) received a
+>   `directly_affected` allowance after the v1 results were known (section 5.2). Until the
+>   follow-up in section 8, v2 and v3 had only been run on qwen.
+> - **`nature` and `engineering_summary` are not scored.** The `nature` of a change is not
+>   stable: for S3 qwen answered `tightened` (v1), `relaxed` (v2) and `tightened` (v3), and the
+>   local qwen3:8b read the relaxation in S4 as `tightened`. The direction of S3 (a spike filter
+>   threshold lowered from 10 to 5 ms) is also arguably ambiguous.
 
 ## 1. What the model has to do
 
@@ -118,8 +148,9 @@ judgments**.
 | S6 | MOD-06 removed | A link that becomes orphaned (TV-009) |
 | S7 | New requirement THM-07 (thermal derating) | Added requirement with no existing link (TV-007) |
 
-Labels were written by hand from the documents before any model was run. Ambiguous cases
-accept several statuses. Each label has:
+Labels were written by hand from the documents before any model was run (two cells later
+received an extra allowance, see section 5.2). Ambiguous cases accept several statuses. Each
+label has:
 - a **preferred** status;
 - an **accepted** set of statuses;
 - a **critical** flag for the named traps and for cases where a miss would hide a real impact (16 of the 84).
@@ -257,8 +288,11 @@ Two critical "failures" shared by the strong models are really a **taxonomy prob
   `directly_affected`, because the test is the natural candidate to verify the new
   requirement once its procedure is updated. That is defensible under the same definition.
 
-The labels were not changed after seeing the results. As a sensitivity check, if these
-two cells also accepted `directly_affected`:
+The prompt-v1 labels were not changed. But these two cells were given an extra
+`directly_affected` allowance **after** the v1 results were known, and that allowance is
+applied when v2 and v3 are scored (`accept_from_v2` in the dataset). The v1 scores in section 5
+use the original labels. As a sensitivity check, if these two cells also accepted
+`directly_affected`:
 
 | Model | Lenient accuracy | Critical cases |
 |---|---|---|
@@ -304,9 +338,10 @@ field next to the status.
 
 **Recommended configuration:**
 
-1. **Primary: Groq `qwen/qwen3.8-27b`.** It has the best critical-case score and perfect
-   consistency, made no missed impacts and omitted nothing, and takes about 7 s per
-   analysis. That makes live re-analysis after an edit practical in a demo. Its two
+1. **Primary: Groq `qwen/qwen3.8-27b`.** It had the best critical-case score on the
+   original cells (one failure, against two for the other hosted models), no missed impacts,
+   and nothing omitted, and takes about 7 s per analysis. Its "perfect consistency" is
+   byte-identical decoding, not a robustness result (see the box at the top). That makes live re-analysis after an edit practical in a demo. Its two
    server-side JSON rejections are recovered by the client's repair retry.
 2. **Fallback: Gemini `gemini-3.5-flash`.** It has the most dependable structured output
    in this run (9/9 first try, no omissions, no service errors) and the best strict
@@ -323,17 +358,24 @@ field next to the status.
 Not recommended: gpt-oss-120b, which silently omitted tests; Gemini 3.5 Flash-Lite, which
 was unavailable for most of the run; GitHub Models, which is retired.
 
+Reading the table: the "S1 consistency" row measures agreement over three runs of one input.
+For qwen it reflects identical outputs (same text and token count every time) and says
+nothing about behaviour on slightly different inputs.
+
 ### Limitations of this evaluation
 
-- One annotator, 84 judgments, one register. The ranking among the three strong models
-  is within noise.
+- One annotator, 84 judgments (24 of them explicit), one register. The ranking among the
+  three strong models is within noise.
 - Free-tier behaviour (latency, rate limits, availability) was observed on one afternoon
   and can change without notice. Model IDs may be retired, as GitHub Models and
   `gemini-2.5-flash` were.
 - The quality of the reasons was checked by hand on the disputed cases only (quoted
   above), not scored systematically.
-- Temperature 0 does not make hosted models deterministic. The consistency column
-  measures exactly that.
+- Temperature 0 does not make hosted models deterministic: Gemini and gpt-oss-120b varied
+  between the three S1 runs. Groq qwen did not (byte-identical text and token counts), so
+  its consistency figure shows decoding determinism, not robustness. No input perturbation
+  (paraphrased requirements, reordered register rows) was tested for any model.
+- `nature` and `engineering_summary` of the change interpretations are not scored.
 
 ### Reproducing
 
@@ -414,7 +456,8 @@ Reading it honestly:
 - **Strict accuracy fell (82% to 76%)** largely because the code now flags broken links.
   The model therefore says `not_affected` plus `fix_link` for the orphaned TV-008 where
   v1 said `needs_human_review`, and my "preferred" labels expected the latter. This is a
-  mismatch between design and labels, not worse judgment. Labels were not changed.
+  mismatch between design and labels, not worse judgment. The v1 labels were not changed,
+  but the two-cell allowance described in section 5.2 does apply to v2 and v3.
 - **The new field works.** 15/16 labelled cases are right. The miss is S1 TV-002 (linked
   to DR-01, no timing in its old evidence): the model asked for `owner_decision` where
   `rerun` was labelled.
@@ -436,7 +479,8 @@ does not fix the model's answer, and the S5 TV-005 score is unchanged.
 
 Prompt **v3** with Groq `qwen/qwen3.8-27b` is the configuration used by the application,
 decided by the project owner after reviewing the labels. The open S5 TV-005 failure and
-the other limitations are tracked in [known_issues.md](known_issues.md).
+the other limitations are tracked in [known_issues.md](known_issues.md). Section 8 re-examined
+this choice: the pre-registered rule keeps it, but as a tie with Gemini 3.5 Flash.
 
 ### Caveats
 
@@ -489,3 +533,200 @@ Definitions used by the rule:
 incumbent, on an evaluation that is a smoke test and not a statistically reliable ranking
 (section 8.3). It was written after the qwen results on S1 to S7 (prompts v1 to v3) were
 known, and before any challenger result with prompt v3 and any held-out result.
+
+### 8.2 The rewording safety net (code change, not a model improvement)
+
+Problem found in section 7: with prompt v3, qwen marks S5 TV-005 `directly_affected` although its own
+`change_interpretations` says the change is `reworded_same_meaning`. The review noted that qwen writes the
+JSON keys in alphabetical order, so `assessments` comes **before** `change_interpretations` in its output.
+Checked on all stored runs (every prompt version): qwen writes `assessments` first in 29 of 30 runs, while Gemini
+writes `change_interpretations` first in 21 of 21, the local qwen3:8b in 9 of 9 and gpt-oss-120b in 19 of 21. That is a
+plausible reason why qwen cannot use its own reading of the change; **it was not tested** (the optional field-rename
+experiment was not run, see 8.7).
+
+What the application now does, in `analysis.post_check`: if a test is `directly_affected` and **all** of its
+`related_requirements` were interpreted as `reworded_same_meaning`, its status becomes `not_affected`. The change
+is recorded as an `Adjustment` on the run (outside the LLM schema; the schema sent to the model is byte-identical),
+as a warning, and as `adjustment` on each result row; the model's own output is kept in `raw_text`. Mixed related
+requirements are untouched, and an empty `related_requirements` only warns. Seven test functions (one of them
+parametrised) cover these cases.
+**The model still contradicts itself; the application corrects it visibly.**
+
+Applying it to the stored outputs (original 84 cells; the v1 outputs are scored with the v2+ labels, the like-for-like
+column of section 7; `score` writes the two views to separate files and never mixes them in one column):
+
+| Outputs of | Raw: lenient, critical | Post-check: lenient, critical | Statuses changed |
+|---|---|---|---|
+| qwen, prompt v1 | 82/84, 16/16 | 82/84, 16/16 | none |
+| qwen, prompt v2 | 83/84, 15/16 | 84/84, 16/16 | S5 TV-005 |
+| qwen, prompt v3 | 83/84, 15/16 | 84/84, 16/16 | S5 TV-005 |
+
+The same rule also corrects S5 TV-005 in the stored v1 output of the local qwen3:8b (critical cases 14/16 to 15/16).
+It changes nothing for Gemini 3.5 Flash or gpt-oss-120b, in v1 or v3, and nothing in any held-out scenario.
+
+Caveats, stated plainly:
+- **The rule was written after seeing this failure and it fixes exactly that cell.** S5 is therefore no longer a test
+  of the model, and the gain is partly circular. On the held-out scenarios the rule never fired, so they say nothing
+  either way about it.
+- **It trusts `nature`**, which is not scored and not stable (section 8.4). If a model read a real change as a
+  rewording and marked an affected test `directly_affected`, the rule would hide a real impact. The visible warning and
+  the adjustment record are the protection.
+
+### 8.3 Prompt v3 on all three models: original scenarios (S1 to S7, 84 cells)
+
+Same prompt, schema and scenarios for all three; S1 was run three times and only its first run is scored for accuracy.
+`gemini-3.5-flash-lite` was skipped (unavailable earlier). Valid on the first try: 100% for all three; no omitted tests;
+no approval wording. Raw statuses, exactly as returned:
+
+| Model | Lenient acc. | Strict acc. | Critical cases | Missed impacts | Over-flags (D) | Unneeded review flags | Median latency |
+|---|---|---|---|---|---|---|---|
+| groq-qwen3.8-27b | 99% (83/84) | 76% (64/84) | 94% (15/16) | 0 | 1 | 5 | 6 s |
+| gemini-3.5-flash | 98% (82/84) | 80% (67/84) | 100% (16/16) | 0 | 2 | 0 | 97 s |
+| groq-gpt-oss-120b | 99% (83/84) | 81% (68/84) | 94% (15/16) | 1 | 0 | 3 | 9 s |
+
+Same stored outputs after the application's post-check:
+
+| Model | Lenient acc. | Strict acc. | Critical cases | Missed impacts | Over-flags (D) | Unneeded review flags | Median latency |
+|---|---|---|---|---|---|---|---|
+| groq-qwen3.8-27b | 100% (84/84) | 77% (65/84) | 100% (16/16) | 0 | 0 | 5 | 6 s |
+| gemini-3.5-flash | 98% (82/84) | 80% (67/84) | 100% (16/16) | 0 | 2 | 0 | 97 s |
+| groq-gpt-oss-120b | 99% (83/84) | 81% (68/84) | 94% (15/16) | 1 | 0 | 3 | 9 s |
+
+Critical-case failures and missed impacts, raw view: 
+- **groq-qwen3.8-27b**: S5 TV-005: got D, expected N/P
+- **gemini-3.5-flash**: none
+- **groq-gpt-oss-120b**: S1 TV-007: got N, expected P/R; missed impacts: S1 TV-007
+
+After the post-check: 
+- **groq-qwen3.8-27b**: none
+- **gemini-3.5-flash**: none
+- **groq-gpt-oss-120b**: S1 TV-007: got N, expected P/R; missed impacts: S1 TV-007
+
+S1 consistency over three runs: qwen 12/12 (byte-identical outputs, see the box at the top), Gemini 10/12 over 3 runs,
+gpt-oss-120b 11/12 over 3 runs. Required actions on the 16 labelled cells:
+Gemini 16/16, qwen 15/16, gpt-oss-120b 15/16.
+
+### 8.4 Held-out scenarios (S8 to S10, 37 cells, reported separately)
+
+Written and committed (`48d30d9`) before any model ran on them; no prompt edits afterwards; one run each.
+S8: the DR-01 trigger raised from 70% to 90% pedal demand (time limit unchanged). S9: the real revision plus an 80 ms
+brake command limit on BRK-03 (two clocks, two changed requirements). S10: the real revision with a register edit
+(TV-003 linked to DR-01, and a new TV-013 linked to DR-01 whose stimulus is 60%, below the trigger), so the register
+has 13 tests. The post-check changed no status here, so raw and post-check are identical:
+
+| Model | Lenient acc. | Strict acc. | Critical cases | Missed impacts | Over-flags (D) | Unneeded review flags | Median latency |
+|---|---|---|---|---|---|---|---|
+| groq-qwen3.8-27b | 97% (36/37) | 73% (27/37) | 94% (15/16) | 0 | 1 | 2 | 7 s |
+| gemini-3.5-flash | 97% (36/37) | 81% (30/37) | 94% (15/16) | 0 | 1 | 0 | 94 s |
+| groq-gpt-oss-120b | 89% (33/37) | 68% (25/37) | 81% (13/16) | 2 | 2 | 1 | 24 s |
+
+Critical-case failures and missed impacts: 
+- **groq-qwen3.8-27b**: S8 TV-002: got D, expected N/P
+- **gemini-3.5-flash**: S8 TV-002: got D, expected N/P
+- **groq-gpt-oss-120b**: S8 TV-001: got N, expected D/P; S10 TV-007: got N, expected P/R; S10 TV-013: got D, expected N/P; missed impacts: S8 TV-001, S10 TV-007
+
+Required actions (7 labelled cells): qwen 7/7, Gemini 7/7, gpt-oss-120b 4/7. Related requirements (7 labelled cells):
+each model gets 6/7 and misses a different cell: qwen S9 TV-002 (listed only BRK-03), Gemini S9 TV-011 (tied the brake test
+to DR-01 as well as BRK-03), gpt-oss-120b S8 TV-001 (listed none).
+
+What the failures look like (quoted from the stored outputs):
+- **S10 TV-013, the "valid link but out-of-scope stimulus" probe.** gpt-oss-120b: `directly_affected`, "the test
+  measures response at 60 % demand, recorded 86 ms; exceeds the new 80 ms limit" (a valid link plus a number, ignoring the
+  70% trigger). Gemini: `not_affected`, "VCU-DR-01 explicitly applies only to pedal demand rising above 70%". qwen:
+  `possibly_affected`, "below the 70% threshold... unclear if this test is intended to verify the same behavior".
+- **S8 TV-001.** gpt-oss-120b: `not_affected`, "75% is below the new 90% threshold, so it does not exercise the changed
+  condition". That is the reasoning but the wrong conclusion: the test is linked to DR-01 and no longer verifies it, so
+  its stimulus has to change. This is a missed impact.
+- **S1 and S10 TV-007** (unlinked, NOT RUN, 80% pedal). gpt-oss-120b: `not_affected` ("no timing measurement"), a
+  missed impact, where qwen and Gemini answered needs human review.
+- **S8 TV-002.** qwen and Gemini both answered `directly_affected` (85% pedal is below the new 90% trigger, so
+  "the procedure must be updated to exceed 90% and re-tested"); the label expected `not_affected` or `possibly_affected`.
+  Two independent models disagreeing with the label in the same way suggests **the label may be too strict**, as with
+  S4 TV-001 and S7 TV-007 in section 5.2. It was not changed (it was committed before the runs). If it accepted
+  `directly_affected`, qwen and Gemini would both have no critical failure on the held-out cells, and the decision
+  below would be unchanged.
+- **Held-out labels were written by the assistant and have not been reviewed by the project owner.**
+
+`nature` of the change (not scored; first run, abbreviated):
+
+| Scenario | qwen | Gemini | gpt-oss-120b |
+|---|---|---|---|
+| S3 (spike filter 10 to 5 ms) | tightened | tightened | tightened |
+| S8 (trigger 70% to 90%) | tightened | relaxed | relaxed |
+| S9 (DR-01 and BRK-03) | DR-01 tightened, BRK-03 added | both tightened | both tightened |
+
+No model answered `scope_changed` for a change of trigger condition. With prompt v1 qwen had also answered S3 as
+`tightened`, with v2 as `relaxed`.
+
+### 8.5 Decision rule outcome (pre-registered in 8.1)
+
+Computed by `uv run python eval/evaluate.py decide --version v3`, post-check applied, original plus held-out cells
+(32 critical cells in all: 16 original, 16 held-out):
+
+| Model | Critical failures | Missed impacts | Replaces the primary? |
+|---|---|---|---|
+| gemini-3.5-flash | 1 | 0 | no: not strictly fewer critical failures |
+| groq-gpt-oss-120b | 4 | 3 | no: not strictly fewer critical failures; 3 missed impact(s) |
+| groq-qwen3.8-27b | 1 | 0 | (primary) |
+
+**Outcome: Groq `qwen/qwen3.8-27b` stays primary.** Gemini 3.5 Flash does not have *strictly fewer* critical failures
+(1 against 1, the same cell, S8 TV-002), so the tie goes to qwen. gpt-oss-120b is clearly worse (4 critical failures,
+3 missed impacts).
+
+**This is a tie, not a win, and the tie depends on the post-check.** For transparency (informational only, not the
+pre-registered rule), the same computation on the **raw** statuses (`decide --view raw`) gives:
+
+| Model | Critical failures | Missed impacts | Replaces the primary? |
+|---|---|---|---|
+| gemini-3.5-flash | 1 | 0 | yes |
+| groq-gpt-oss-120b | 4 | 3 | no: not strictly fewer critical failures; 3 missed impact(s) |
+| groq-qwen3.8-27b | 2 | 0 | (primary) |
+
+Without the safety net Gemini would have replaced qwen, by one critical cell. That cell is S5 TV-005, the failure the
+safety net was written for after it was seen. On the held-out scenarios, the only data that no rule or prompt was fitted
+to, qwen and Gemini are identical (36/37 lenient, 15/16 critical, no missed impact, the same failed cell). With 121
+cells, one cell is within noise: **the evidence does not separate qwen from Gemini.**
+
+### 8.6 Final decisions
+
+1. **Primary model: Groq `qwen/qwen3.8-27b`, with prompt v3 unchanged.** By the pre-registered rule, and on the
+   non-rule factors that the rule leaves to a human: it answers in about 6 to 7 seconds (median, original and held-out
+   scenarios), against 94 to 97 seconds for Gemini 3.5 Flash (up to 623 s for one analysis), which makes live
+   re-analysis after an edit practical in a demo. Its free-tier cost is a per-minute token budget: back-to-back
+   analyses wait 1 to 4 minutes.
+2. **Fallback: Gemini `gemini-3.5-flash`** (already the configured fallback). It is level with qwen and differs by a
+   few cells in both directions. Gemini has higher strict accuracy (67 against 65 original cells, 30 against 27 held-out),
+   fewer unneeded review flags (0 against 5 and 2), and needed no post-check correction. qwen has higher lenient accuracy
+   on the original cells after the post-check (84/84 against 82/84) and fewer `directly_affected` over-flags there (0
+   against 2). Gemini is slow, and was rate-limited once for about 8 minutes. If the project owner prefers not to rely on
+   the safety net, Gemini is the better-supported primary: on raw statuses it has fewer critical failures (1 against 2).
+3. **Not recommended: `groq-gpt-oss-120b`.** Held-out 33/37 and 13/16 critical, 3 missed impacts across all cells,
+   fell for the TV-013 trap, 4/7 on required actions, and one v3 analysis (about 4,300 prompt plus 3,500 completion
+   tokens) sits at Groq's 8,000 tokens-per-minute free-tier cap, which produced 413 errors until the harness was made to
+   wait on them.
+4. **Keep the rewording safety net,** documented as a patch with a stated risk (8.2, `docs/known_issues.md`), not as
+   evidence of model quality.
+5. **Keep the replay recordings and the README claims as they are:** they come from qwen with prompt v3 and are labelled
+   as recorded.
+6. **Do not describe this evaluation as a ranking.** It is a smoke test (box at the top): it rules out gpt-oss-120b for this
+   task and does not separate the other two.
+
+### 8.7 What was not done, or not verified
+
+- **The field-order experiment** (renaming the top-level `assessments` so that it sorts after `change_interpretations`,
+  to see whether qwen's S5 behaviour changes) was **not run**. It changes the frozen output schema, so it belongs on a
+  branch and needs the owner's decision first.
+- Prompt v3 was not re-run for the local qwen3:8b or for Gemini 3.5 Flash-Lite. No paid provider was used.
+- No input-perturbation test (paraphrased requirements, reordered register rows), so qwen's consistency is untested.
+- Held-out scenarios: one run each, one annotator, labels not reviewed by the owner (see S8 TV-002).
+- Latency and rate-limit behaviour come from two sessions on a free tier and can change without notice.
+- The optional UI/report display of `adjustment` was not built: the adjusted status and the warning already appear in
+  the detail panel and in the report, and `adjustment` is available on each result row for later use.
+
+### 8.8 Traceability
+
+Commits, in order: decision rule `6a6abb8`, rewording safety net `97280f3`, scoring views and `decide` `5a3c6c6`, held-out
+scenarios `48d30d9` (before any model ran on them), harness fix for Groq's tokens-per-minute 413 `ba740cc`. Frozen and
+checked unchanged: `SYSTEM_PROMPT`, `build_user_prompt`, the LLM output models and their schema, `eval/prompts/*`, and every
+file that existed under `eval/results/v1`, `v2` and `v3`. The two gpt-oss-120b 413 failures that were retried are kept in
+`eval/results/v3/groq-gpt-oss-120b/availability_log.jsonl`.
