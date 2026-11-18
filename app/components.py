@@ -227,7 +227,8 @@ def impact_table(rows: list[TestImpactRow]) -> TestImpactRow | None:
     )
     st.caption(
         "Select a row to see the explanation. * = action set by the application from the register "
-        "links, not by the model."
+        "links, not by the model. Confidence is the model's own estimate; in the evaluation it did not separate "
+        "right from wrong answers, so read the reason and the evidence rather than relying on it."
     )
     selected = event.selection.rows if event and event.selection else []
     return visible[selected[0]] if selected else None

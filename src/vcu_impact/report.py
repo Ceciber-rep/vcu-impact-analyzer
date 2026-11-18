@@ -41,6 +41,8 @@ LIMITATIONS = [
     "meaning. The application then changes the status to 'not affected' and says so next to the test (a "
     "safety net, not a better model, and never applied when the diff found a changed number); it relies on "
     "the model's reading of the change, which is not evaluated (docs/known_issues.md, issue 1).",
+    "The confidence given for each test is the model's own estimate. In the evaluation it did not separate right from "
+    "wrong answers (high confidence was wrong about as often as medium), so rely on the reason and the evidence.",
     "The analysis was evaluated on 7 change scenarios of this register (84 judgments); see docs/llm_evaluation.md.",
 ]
 
