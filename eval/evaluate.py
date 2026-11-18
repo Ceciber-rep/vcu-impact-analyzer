@@ -5,7 +5,7 @@
     uv run python eval/evaluate.py run [--only NAME]  # run all models x scenarios (resumable)
     uv run python eval/evaluate.py score [--version v3] [--labels v2]
         # -> eval/results/<version>/summary_raw*.{json,md} and summary_postcheck*.{json,md}
-    uv run python eval/evaluate.py decide [--version v3]   # apply the pre-registered decision rule
+    uv run python eval/evaluate.py decide [--version v3] [--view raw]   # the pre-registered decision rule
 
 Every model receives the same system prompt, the same input and the same schema.
 Raw outputs are stored under eval/results/<version>/<model>/ so scores can be re-computed
@@ -589,14 +589,14 @@ def render_markdown(summary: dict, scenarios: list[dict], postcheck: bool) -> li
 PRIMARY = "groq-qwen3.8-27b"
 
 
-def decision_rows(data: dict, version: str) -> dict[str, dict]:
-    """Critical failures and missed impacts over original + held-out cells, post-check applied."""
+def decision_rows(data: dict, version: str, postcheck: bool = True) -> dict[str, dict]:
+    """Critical failures and missed impacts over original + held-out cells (post-check applied by default)."""
     scenarios = data["scenarios"]
     critical_cells = sum(c["critical"] for sc in scenarios for c in sc["tests"].values())
     out = {}
     for m, d in _model_dirs(version):
-        o = score_model(d, original_scenarios(data), version, postcheck=True)
-        h = score_model(d, held_out_scenarios(data), version, postcheck=True)
+        o = score_model(d, original_scenarios(data), version, postcheck=postcheck)
+        h = score_model(d, held_out_scenarios(data), version, postcheck=postcheck)
         out[m["name"]] = {
             "critical_failures": critical_cells - (o["critical_correct"] + h["critical_correct"]),
             "critical_cells": critical_cells,
@@ -612,15 +612,18 @@ def decision_rows(data: dict, version: str) -> dict[str, dict]:
 
 def cmd_decide(args) -> None:
     data = load_dataset()
-    rows = decision_rows(data, args.version)
+    postcheck = args.view == "postcheck"
+    rows = decision_rows(data, args.version, postcheck)
     if PRIMARY not in rows:
         sys.exit(f"No results for the primary model {PRIMARY!r} under {args.version}.")
     prim = rows[PRIMARY]
     lines = [
-        "# Decision rule outcome",
+        "# Decision rule outcome"
+        + ("" if postcheck else " (raw statuses: INFORMATIONAL, not the pre-registered rule)"),
         "",
-        f"Prompt version {args.version}; post-check applied; original + held-out cells "
-        f"({prim['critical_cells']} critical cells).",
+        f"Prompt version {args.version}; "
+        + ("post-check applied (as pre-registered)" if postcheck else "raw model statuses, post-check NOT applied")
+        + f"; original + held-out cells ({prim['critical_cells']} critical cells).",
         "",
         "Rule: the primary model stays unless a challenger has strictly fewer critical failures AND zero missed "
         "impacts. Ties go to the primary. A scenario without a valid run counts all its critical cells as failures.",
@@ -659,7 +662,7 @@ def cmd_decide(args) -> None:
         else f"**Outcome: several challengers qualify ({', '.join(winners)}); the rule does not choose between them.**",
     ]
     md = "\n".join(lines) + "\n"
-    (RESULTS / args.version / "decision.md").write_text(md)
+    (RESULTS / args.version / ("decision.md" if postcheck else "decision_raw.md")).write_text(md)
     print(md)
 
 
@@ -679,6 +682,12 @@ def main() -> None:
     sc.add_argument("--labels", help="label revision to apply (default: same as --version; v1 = original labels)")
     d = sub.add_parser("decide")
     d.add_argument("--version", default=PROMPT_VERSION)
+    d.add_argument(
+        "--view",
+        choices=["postcheck", "raw"],
+        default="postcheck",
+        help="postcheck is the pre-registered rule; raw is shown for transparency only",
+    )
     args = p.parse_args()
     {"build": cmd_build, "list-models": cmd_list_models, "run": cmd_run, "score": cmd_score, "decide": cmd_decide}[
         args.cmd
