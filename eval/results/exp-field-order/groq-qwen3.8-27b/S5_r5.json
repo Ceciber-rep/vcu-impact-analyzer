@@ -1,0 +1,218 @@
+{
+ "ok": true,
+ "model_label": "groq:qwen/qwen3.8-27b",
+ "prompt_version": "v3",
+ "created_at": "2026-11-18T10:01:42+00:00",
+ "latency_s": 4.72,
+ "attempts": 1,
+ "prompt_tokens": 4255,
+ "completion_tokens": 1733,
+ "structured_mode": "json_schema",
+ "result": {
+  "change_interpretations": [
+   {
+    "requirement_id": "VCU-DGN-04",
+    "nature": "reworded_same_meaning",
+    "engineering_summary": "The change is an editorial rewording of the requirement text (e.g., 'unavailable' to 'lost', 'enter' to 'switch', 'log' to 'record') without altering the functional behavior, thresholds, or expected system response. No new verification evidence is required, but the test procedure should be updated to reflect the new terminology for traceability."
+   }
+  ],
+  "assessments": [
+   {
+    "test_id": "TV-001",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test verifies driver torque response timing, which is governed by the unchanged requirement VCU-DR-01. The change to VCU-DGN-04 (sensor degradation) does not affect this behavior.",
+    "evidence": [
+     "Test verifies torque response time (94 ms) against a 100 ms limit.",
+     "Linked requirement VCU-DR-01 is unchanged."
+    ],
+    "recommended_action": "No action required."
+   },
+   {
+    "test_id": "TV-002",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test verifies brake override priority, which is governed by the unchanged requirement VCU-BRK-03. The change to VCU-DGN-04 does not affect this arbitration logic.",
+    "evidence": [
+     "Test verifies brake priority over pedal demand.",
+     "Linked requirements VCU-DR-01 and VCU-BRK-03 are unchanged."
+    ],
+    "recommended_action": "No action required."
+   },
+   {
+    "test_id": "TV-003",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link"
+    ],
+    "reason": "The test content relates to torque response timing, which is unrelated to the sensor degradation requirement VCU-DGN-04. The missing link does not change the functional relevance to the current change.",
+    "evidence": [
+     "Test verifies torque transient response (92 ms).",
+     "No valid requirement link provided (missing)."
+    ],
+    "recommended_action": "No action required for this specific change."
+   },
+   {
+    "test_id": "TV-004",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test verifies brake actuator response, which is governed by the unchanged requirement VCU-BRK-03. The change to VCU-DGN-04 does not affect this behavior.",
+    "evidence": [
+     "Test verifies brake command latency (88 ms).",
+     "Linked requirement VCU-BRK-03 is unchanged."
+    ],
+    "recommended_action": "No action required."
+   },
+   {
+    "test_id": "TV-005",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [
+     "VCU-DGN-04"
+    ],
+    "required_actions": [
+     "update_procedure"
+    ],
+    "reason": "The test directly verifies the behavior described in VCU-DGN-04. Although the requirement text was reworded, the functional behavior (degraded mode + diagnostic event) remains the same. The test procedure uses the term 'fault log' which aligns with the new 'record a diagnostic event' but could be updated for terminology consistency.",
+    "evidence": [
+     "Test explicitly unplugs wheel-speed sensor and checks for degraded mode and fault log.",
+     "Linked requirement VCU-DGN-04 is the changed requirement."
+    ],
+    "recommended_action": "Update test procedure terminology to match the new requirement wording ('record a diagnostic event') for traceability."
+   },
+   {
+    "test_id": "TV-006",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test verifies trace and evidence logging for mode changes, which is governed by the unchanged requirement VCU-LOG-05. The change to VCU-DGN-04 does not affect this behavior.",
+    "evidence": [
+     "Test verifies mode change logging (timestamp and build ID).",
+     "Linked requirement VCU-LOG-05 is unchanged."
+    ],
+    "recommended_action": "No action required."
+   },
+   {
+    "test_id": "TV-007",
+    "status": "not_affected",
+    "confidence": "medium",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link"
+    ],
+    "reason": "The test content relates to torque delivery under thermal load, which is unrelated to the sensor degradation requirement VCU-DGN-04. The TBD link prevents full traceability but does not indicate relevance to the current change.",
+    "evidence": [
+     "Test checks torque delivery at thermal load.",
+     "Requirement link is TBD."
+    ],
+    "recommended_action": "No action required for this specific change; clarify TBD link separately."
+   },
+   {
+    "test_id": "TV-008",
+    "status": "not_affected",
+    "confidence": "medium",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link"
+    ],
+    "reason": "The test is a legacy diagnostic replay. While it involves diagnostics, the specific change to VCU-DGN-04 is an editorial rewording of a specific sensor degradation requirement. The test's link to an unknown requirement makes it difficult to confirm if it covers VCU-DGN-04, but the content 'non-blocking status' is vague. Given the change is editorial, even if it did cover VCU-DGN-04, no functional re-run is needed. However, the broken link to a removed requirement is a separate issue. For this specific change, the test is not directly affected by the rewording.",
+    "evidence": [
+     "Test re-runs old diagnostic trace.",
+     "Linked requirement VCU-OLD-88 is unknown/removed."
+    ],
+    "recommended_action": "No action required for this specific change; address the unknown requirement link separately."
+   },
+   {
+    "test_id": "TV-009",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test verifies operating mode torque profiles, which is governed by the unchanged requirement VCU-MOD-06. The change to VCU-DGN-04 does not affect this behavior.",
+    "evidence": [
+     "Test compares torque ramp in Sport vs Comfort modes.",
+     "Linked requirement VCU-MOD-06 is unchanged."
+    ],
+    "recommended_action": "No action required."
+   },
+   {
+    "test_id": "TV-010",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test verifies pedal signal filtering, which is governed by the unchanged requirement VCU-DR-02. The change to VCU-DGN-04 does not affect this behavior.",
+    "evidence": [
+     "Test injects a 7 ms pedal spike.",
+     "Linked requirement VCU-DR-02 is unchanged."
+    ],
+    "recommended_action": "No action required."
+   },
+   {
+    "test_id": "TV-011",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test verifies brake priority torque cancellation, which is governed by the unchanged requirement VCU-BRK-03. The change to VCU-DGN-04 does not affect this behavior.",
+    "evidence": [
+     "Test verifies torque cancellation during emergency braking.",
+     "Linked requirement VCU-BRK-03 is unchanged."
+    ],
+    "recommended_action": "No action required."
+   },
+   {
+    "test_id": "TV-012",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link"
+    ],
+    "reason": "The test verifies platform startup timing, which is unrelated to the sensor degradation requirement VCU-DGN-04. The missing link does not change the functional relevance to the current change.",
+    "evidence": [
+     "Test verifies ECU wake-up timing (433 ms).",
+     "No valid requirement link provided (missing)."
+    ],
+    "recommended_action": "No action required for this specific change."
+   }
+  ]
+ },
+ "warnings": [
+  "TV-005: status changed from directly_affected to not_affected by the application's post-check, not by the model. The model read the change to VCU-DGN-04 as a rewording with the same meaning, so a test related only to it cannot be directly affected. The model's answer was inconsistent; review manually.",
+  "TV-005: status not_affected but actions ['update_procedure']; check it."
+ ],
+ "adjustments": [
+  {
+   "test_id": "TV-005",
+   "rule": "rewording_contradiction",
+   "original_status": "directly_affected",
+   "new_status": "not_affected",
+   "reason": "The model read the change to VCU-DGN-04 as a rewording with the same meaning, so a test related only to it cannot be directly affected."
+  }
+ ],
+ "raw_text": "{\"change_interpretations\": [{\"engineering_summary\": \"The change is an editorial rewording of the requirement text (e.g., 'unavailable' to 'lost', 'enter' to 'switch', 'log' to 'record') without altering the functional behavior, thresholds, or expected system response. No new verification evidence is required, but the test procedure should be updated to reflect the new terminology for traceability.\", \"nature\": \"reworded_same_meaning\", \"requirement_id\": \"VCU-DGN-04\"}], \"test_assessments\": [{\"confidence\": \"high\", \"evidence\": [\"Test verifies torque response time (94 ms) against a 100 ms limit.\", \"Linked requirement VCU-DR-01 is unchanged.\"], \"reason\": \"The test verifies driver torque response timing, which is governed by the unchanged requirement VCU-DR-01. The change to VCU-DGN-04 (sensor degradation) does not affect this behavior.\", \"recommended_action\": \"No action required.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-001\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies brake priority over pedal demand.\", \"Linked requirements VCU-DR-01 and VCU-BRK-03 are unchanged.\"], \"reason\": \"The test verifies brake override priority, which is governed by the unchanged requirement VCU-BRK-03. The change to VCU-DGN-04 does not affect this arbitration logic.\", \"recommended_action\": \"No action required.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-002\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies torque transient response (92 ms).\", \"No valid requirement link provided (missing).\"], \"reason\": \"The test content relates to torque response timing, which is unrelated to the sensor degradation requirement VCU-DGN-04. The missing link does not change the functional relevance to the current change.\", \"recommended_action\": \"No action required for this specific change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-003\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies brake command latency (88 ms).\", \"Linked requirement VCU-BRK-03 is unchanged.\"], \"reason\": \"The test verifies brake actuator response, which is governed by the unchanged requirement VCU-BRK-03. The change to VCU-DGN-04 does not affect this behavior.\", \"recommended_action\": \"No action required.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-004\"}, {\"confidence\": \"high\", \"evidence\": [\"Test explicitly unplugs wheel-speed sensor and checks for degraded mode and fault log.\", \"Linked requirement VCU-DGN-04 is the changed requirement.\"], \"reason\": \"The test directly verifies the behavior described in VCU-DGN-04. Although the requirement text was reworded, the functional behavior (degraded mode + diagnostic event) remains the same. The test procedure uses the term 'fault log' which aligns with the new 'record a diagnostic event' but could be updated for terminology consistency.\", \"recommended_action\": \"Update test procedure terminology to match the new requirement wording ('record a diagnostic event') for traceability.\", \"related_requirements\": [\"VCU-DGN-04\"], \"required_actions\": [\"update_procedure\"], \"status\": \"directly_affected\", \"test_id\": \"TV-005\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies mode change logging (timestamp and build ID).\", \"Linked requirement VCU-LOG-05 is unchanged.\"], \"reason\": \"The test verifies trace and evidence logging for mode changes, which is governed by the unchanged requirement VCU-LOG-05. The change to VCU-DGN-04 does not affect this behavior.\", \"recommended_action\": \"No action required.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-006\"}, {\"confidence\": \"medium\", \"evidence\": [\"Test checks torque delivery at thermal load.\", \"Requirement link is TBD.\"], \"reason\": \"The test content relates to torque delivery under thermal load, which is unrelated to the sensor degradation requirement VCU-DGN-04. The TBD link prevents full traceability but does not indicate relevance to the current change.\", \"recommended_action\": \"No action required for this specific change; clarify TBD link separately.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-007\"}, {\"confidence\": \"medium\", \"evidence\": [\"Test re-runs old diagnostic trace.\", \"Linked requirement VCU-OLD-88 is unknown/removed.\"], \"reason\": \"The test is a legacy diagnostic replay. While it involves diagnostics, the specific change to VCU-DGN-04 is an editorial rewording of a specific sensor degradation requirement. The test's link to an unknown requirement makes it difficult to confirm if it covers VCU-DGN-04, but the content 'non-blocking status' is vague. Given the change is editorial, even if it did cover VCU-DGN-04, no functional re-run is needed. However, the broken link to a removed requirement is a separate issue. For this specific change, the test is not directly affected by the rewording.\", \"recommended_action\": \"No action required for this specific change; address the unknown requirement link separately.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-008\"}, {\"confidence\": \"high\", \"evidence\": [\"Test compares torque ramp in Sport vs Comfort modes.\", \"Linked requirement VCU-MOD-06 is unchanged.\"], \"reason\": \"The test verifies operating mode torque profiles, which is governed by the unchanged requirement VCU-MOD-06. The change to VCU-DGN-04 does not affect this behavior.\", \"recommended_action\": \"No action required.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-009\"}, {\"confidence\": \"high\", \"evidence\": [\"Test injects a 7 ms pedal spike.\", \"Linked requirement VCU-DR-02 is unchanged.\"], \"reason\": \"The test verifies pedal signal filtering, which is governed by the unchanged requirement VCU-DR-02. The change to VCU-DGN-04 does not affect this behavior.\", \"recommended_action\": \"No action required.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-010\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies torque cancellation during emergency braking.\", \"Linked requirement VCU-BRK-03 is unchanged.\"], \"reason\": \"The test verifies brake priority torque cancellation, which is governed by the unchanged requirement VCU-BRK-03. The change to VCU-DGN-04 does not affect this behavior.\", \"recommended_action\": \"No action required.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-011\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies ECU wake-up timing (433 ms).\", \"No valid requirement link provided (missing).\"], \"reason\": \"The test verifies platform startup timing, which is unrelated to the sensor degradation requirement VCU-DGN-04. The missing link does not change the functional relevance to the current change.\", \"recommended_action\": \"No action required for this specific change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-012\"}]}"
+}

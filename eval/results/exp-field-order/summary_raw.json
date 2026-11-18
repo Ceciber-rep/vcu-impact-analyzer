@@ -1,0 +1,85 @@
+{
+ "original": {
+  "groq-qwen3.8-27b": {
+   "provider": "groq",
+   "model": "qwen/qwen3.8-27b",
+   "action_total": 16,
+   "action_correct": 12,
+   "action_failures": [
+    "S1 TV-001: got ['rerun'], rule {'must': ['rerun', 'update_procedure']}",
+    "S4 TV-001: got ['rerun', 'update_procedure'], rule {'must': ['update_procedure'], 'must_not': ['rerun']}",
+    "S4 TV-003: got ['fix_link', 'owner_decision', 'rerun', 'update_procedure'], rule {'must_not': ['rerun']}",
+    "S5 TV-005: got ['update_procedure'], rule {'must_not': ['rerun', 'update_procedure']}"
+   ],
+   "related_total": 0,
+   "related_correct": 0,
+   "related_failures": [],
+   "review_noise": 5,
+   "runs": 9,
+   "failed_runs": 0,
+   "valid_first_attempt": 8,
+   "judgments": 84,
+   "lenient_correct": 82,
+   "strict_correct": 62,
+   "critical_cells": 16,
+   "critical_total": 16,
+   "critical_correct": 15,
+   "missed_impacts": 0,
+   "missed_impact_cells": [],
+   "over_flags": 1,
+   "omitted_tests": 0,
+   "approval_hits": 0,
+   "adjustments": [],
+   "latencies": [
+    6.22,
+    11.51,
+    21.48,
+    38.66,
+    5.23,
+    32.09,
+    4.55,
+    4.6,
+    18.61
+   ],
+   "completion_tokens": [
+    1962,
+    1966,
+    2069,
+    1866,
+    1926,
+    2275,
+    1733,
+    1727,
+    2098
+   ],
+   "errors": [],
+   "per_scenario": {
+    "S1": "12/12",
+    "S2": "12/12",
+    "S3": "12/12",
+    "S4": "12/12",
+    "S5": "11/12",
+    "S6": "11/12",
+    "S7": "12/12"
+   },
+   "critical_failures": [
+    "S5 TV-005: got D, expected N/P"
+   ],
+   "consistency": "11/12 over 3 runs",
+   "structured_modes": [
+    "json_schema"
+   ],
+   "valid_scenarios": [
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "S6",
+    "S7"
+   ],
+   "service_errors": 0,
+   "complete": true
+  }
+ }
+}

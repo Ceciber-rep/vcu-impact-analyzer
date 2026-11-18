@@ -215,5 +215,10 @@ class TestAssessment(_Strict):
 
 
 class LLMImpactResult(_Strict):
+    # EXPERIMENT (branch exp/field-order): the JSON name is `test_assessments` so that it sorts after
+    # `change_interpretations`. Groq's qwen writes keys alphabetically, so it used to produce the
+    # statuses before its own reading of the change. The Python name is unchanged.
+    model_config = ConfigDict(extra="forbid", populate_by_name=True)
+
     change_interpretations: list[ChangeInterpretation]
-    assessments: list[TestAssessment]
+    assessments: list[TestAssessment] = Field(alias="test_assessments")

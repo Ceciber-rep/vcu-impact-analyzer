@@ -1,0 +1,226 @@
+{
+ "ok": true,
+ "model_label": "groq:qwen/qwen3.8-27b",
+ "prompt_version": "v3",
+ "created_at": "2026-11-18T09:28:16+00:00",
+ "latency_s": 38.66,
+ "attempts": 1,
+ "prompt_tokens": 4304,
+ "completion_tokens": 1866,
+ "structured_mode": "json_schema",
+ "result": {
+  "change_interpretations": [
+   {
+    "requirement_id": "VCU-BRK-03",
+    "nature": "tightened",
+    "engineering_summary": "A new quantitative timing limit (80 ms) is added to the brake override requirement. The priority logic remains unchanged, but verification must now demonstrate that the brake command is issued within 80 ms of the emergency brake input."
+   }
+  ],
+  "assessments": [
+   {
+    "test_id": "TV-001",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "TV-001 verifies positive torque response time under VCU-DR-01. The change to VCU-BRK-03 adds a brake command timing limit, which is a different quantity measured with a different clock per workshop notes. The test does not exercise brake command latency.",
+    "evidence": [
+     "Test verifies positive torque response time (94 ms vs 100 ms limit).",
+     "Change adds a brake command timing limit (80 ms).",
+     "Workshop notes state brake and torque latencies use different clocks and must not be conflated."
+    ],
+    "recommended_action": "No action required for this change."
+   },
+   {
+    "test_id": "TV-002",
+    "status": "directly_affected",
+    "confidence": "high",
+    "related_requirements": [
+     "VCU-BRK-03"
+    ],
+    "required_actions": [
+     "rerun"
+    ],
+    "reason": "TV-002 verifies brake/pedal arbitration and is linked to VCU-BRK-03. The change adds an 80 ms timing limit for the brake command. The previous evidence does not record timing, so it cannot demonstrate compliance with the new limit.",
+    "evidence": [
+     "Test is linked to VCU-BRK-03.",
+     "Previous result is PASS but comment states 'Timing not reported in old evidence'.",
+     "New requirement mandates brake command within 80 ms."
+    ],
+    "recommended_action": "Rerun the test to capture and verify brake command latency against the new 80 ms limit."
+   },
+   {
+    "test_id": "TV-003",
+    "status": "not_affected",
+    "confidence": "medium",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link"
+    ],
+    "reason": "TV-003 tests high-load torque transients with a missing requirement link. The procedure focuses on torque demand sweep, not brake command latency. There is no evidence it exercises the changed brake override timing behavior.",
+    "evidence": [
+     "Test has a missing requirement link.",
+     "Procedure involves torque demand sweep, not brake input.",
+     "Comment mentions legacy 95 ms tolerance, unrelated to brake timing."
+    ],
+    "recommended_action": "No action required for this change; address missing link separately."
+   },
+   {
+    "test_id": "TV-004",
+    "status": "directly_affected",
+    "confidence": "high",
+    "related_requirements": [
+     "VCU-BRK-03"
+    ],
+    "required_actions": [
+     "rerun",
+     "update_procedure"
+    ],
+    "reason": "TV-004 directly tests brake actuator response latency and is linked to VCU-BRK-03. The new limit is 80 ms, but the previous result was 88 ms, which would fail the new limit. Additionally, the procedure uses a 100 ms target, which must be updated to 80 ms.",
+    "evidence": [
+     "Test is linked to VCU-BRK-03.",
+     "Procedure targets brake command latency within 100 ms.",
+     "Previous result was 88 ms, which exceeds the new 80 ms limit.",
+     "Comment notes 'Different measurement clock'."
+    ],
+    "recommended_action": "Update the procedure threshold to 80 ms and rerun to verify compliance with the new limit."
+   },
+   {
+    "test_id": "TV-005",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "TV-005 tests sensor degradation for wheel speed, linked to VCU-DGN-04. It does not exercise brake override or timing behavior.",
+    "evidence": [
+     "Test is linked to VCU-DGN-04 (sensor degradation).",
+     "Procedure involves wheel-speed sensor failure.",
+     "No relation to brake override timing."
+    ],
+    "recommended_action": "No action required for this change."
+   },
+   {
+    "test_id": "TV-006",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "TV-006 tests mode event audit trail, linked to VCU-LOG-05. It does not exercise brake override or timing behavior.",
+    "evidence": [
+     "Test is linked to VCU-LOG-05 (trace and evidence).",
+     "Procedure involves mode change logging.",
+     "No relation to brake override timing."
+    ],
+    "recommended_action": "No action required for this change."
+   },
+   {
+    "test_id": "TV-007",
+    "status": "needs_human_review",
+    "confidence": "low",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link",
+     "owner_decision"
+    ],
+    "reason": "TV-007 has a TBD link and unclear ownership. The procedure involves acceleration at thermal load, which is not clearly related to brake override timing. However, the missing link and unclear scope prevent a definitive judgment.",
+    "evidence": [
+     "Test has a TBD requirement link.",
+     "Procedure involves acceleration at thermal load.",
+     "Comment states 'Ownership and source link to be clarified'."
+    ],
+    "recommended_action": "Clarify requirement link and ownership before assessing impact."
+   },
+   {
+    "test_id": "TV-008",
+    "status": "not_affected",
+    "confidence": "medium",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link"
+    ],
+    "reason": "TV-008 is linked to an unknown requirement (VCU-OLD-88) and involves legacy diagnostic replay. The content is not clearly related to brake override timing, but the unknown link prevents full certainty.",
+    "evidence": [
+     "Test is linked to VCU-OLD-88 (unknown requirement).",
+     "Procedure involves legacy diagnostic replay.",
+     "Comment states 'requirements catalog changed'."
+    ],
+    "recommended_action": "No action required for this change; address unknown link separately."
+   },
+   {
+    "test_id": "TV-009",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "TV-009 tests torque ramp profiles under different modes, linked to VCU-MOD-06. It does not exercise brake override or timing behavior.",
+    "evidence": [
+     "Test is linked to VCU-MOD-06 (operating mode).",
+     "Procedure compares Sport vs Comfort torque ramp.",
+     "Comment states 'No quantitative response-time assertion'."
+    ],
+    "recommended_action": "No action required for this change."
+   },
+   {
+    "test_id": "TV-010",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "TV-010 tests pedal signal spike filtering, linked to VCU-DR-02. It does not exercise brake override or timing behavior.",
+    "evidence": [
+     "Test is linked to VCU-DR-02 (driver input validation).",
+     "Procedure involves pedal signal spike filtering.",
+     "No relation to brake override timing."
+    ],
+    "recommended_action": "No action required for this change."
+   },
+   {
+    "test_id": "TV-011",
+    "status": "directly_affected",
+    "confidence": "high",
+    "related_requirements": [
+     "VCU-BRK-03"
+    ],
+    "required_actions": [
+     "rerun"
+    ],
+    "reason": "TV-011 verifies torque cancellation during emergency braking and is linked to VCU-BRK-03. The change adds an 80 ms timing limit for the brake command. The previous evidence does not record timing, so it cannot demonstrate compliance with the new limit.",
+    "evidence": [
+     "Test is linked to VCU-BRK-03.",
+     "Procedure verifies torque cancellation on emergency braking.",
+     "Previous result is PASS but no timing values are recorded."
+    ],
+    "recommended_action": "Rerun the test to capture and verify brake command latency against the new 80 ms limit."
+   },
+   {
+    "test_id": "TV-012",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link"
+    ],
+    "reason": "TV-012 tests ECU wake-up timing, which is unrelated to brake override timing. The missing link does not change the fact that the test content is clearly unrelated to the changed behavior.",
+    "evidence": [
+     "Test has a missing requirement link.",
+     "Procedure involves ECU wake-up timing (500 ms).",
+     "Comment states 'Platform startup only'."
+    ],
+    "recommended_action": "No action required for this change."
+   }
+  ]
+ },
+ "warnings": [],
+ "adjustments": [],
+ "raw_text": "{\"change_interpretations\": [{\"engineering_summary\": \"A new quantitative timing limit (80 ms) is added to the brake override requirement. The priority logic remains unchanged, but verification must now demonstrate that the brake command is issued within 80 ms of the emergency brake input.\", \"nature\": \"tightened\", \"requirement_id\": \"VCU-BRK-03\"}], \"test_assessments\": [{\"confidence\": \"high\", \"evidence\": [\"Test verifies positive torque response time (94 ms vs 100 ms limit).\", \"Change adds a brake command timing limit (80 ms).\", \"Workshop notes state brake and torque latencies use different clocks and must not be conflated.\"], \"reason\": \"TV-001 verifies positive torque response time under VCU-DR-01. The change to VCU-BRK-03 adds a brake command timing limit, which is a different quantity measured with a different clock per workshop notes. The test does not exercise brake command latency.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-001\"}, {\"confidence\": \"high\", \"evidence\": [\"Test is linked to VCU-BRK-03.\", \"Previous result is PASS but comment states 'Timing not reported in old evidence'.\", \"New requirement mandates brake command within 80 ms.\"], \"reason\": \"TV-002 verifies brake/pedal arbitration and is linked to VCU-BRK-03. The change adds an 80 ms timing limit for the brake command. The previous evidence does not record timing, so it cannot demonstrate compliance with the new limit.\", \"recommended_action\": \"Rerun the test to capture and verify brake command latency against the new 80 ms limit.\", \"related_requirements\": [\"VCU-BRK-03\"], \"required_actions\": [\"rerun\"], \"status\": \"directly_affected\", \"test_id\": \"TV-002\"}, {\"confidence\": \"medium\", \"evidence\": [\"Test has a missing requirement link.\", \"Procedure involves torque demand sweep, not brake input.\", \"Comment mentions legacy 95 ms tolerance, unrelated to brake timing.\"], \"reason\": \"TV-003 tests high-load torque transients with a missing requirement link. The procedure focuses on torque demand sweep, not brake command latency. There is no evidence it exercises the changed brake override timing behavior.\", \"recommended_action\": \"No action required for this change; address missing link separately.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-003\"}, {\"confidence\": \"high\", \"evidence\": [\"Test is linked to VCU-BRK-03.\", \"Procedure targets brake command latency within 100 ms.\", \"Previous result was 88 ms, which exceeds the new 80 ms limit.\", \"Comment notes 'Different measurement clock'.\"], \"reason\": \"TV-004 directly tests brake actuator response latency and is linked to VCU-BRK-03. The new limit is 80 ms, but the previous result was 88 ms, which would fail the new limit. Additionally, the procedure uses a 100 ms target, which must be updated to 80 ms.\", \"recommended_action\": \"Update the procedure threshold to 80 ms and rerun to verify compliance with the new limit.\", \"related_requirements\": [\"VCU-BRK-03\"], \"required_actions\": [\"update_procedure\", \"rerun\"], \"status\": \"directly_affected\", \"test_id\": \"TV-004\"}, {\"confidence\": \"high\", \"evidence\": [\"Test is linked to VCU-DGN-04 (sensor degradation).\", \"Procedure involves wheel-speed sensor failure.\", \"No relation to brake override timing.\"], \"reason\": \"TV-005 tests sensor degradation for wheel speed, linked to VCU-DGN-04. It does not exercise brake override or timing behavior.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-005\"}, {\"confidence\": \"high\", \"evidence\": [\"Test is linked to VCU-LOG-05 (trace and evidence).\", \"Procedure involves mode change logging.\", \"No relation to brake override timing.\"], \"reason\": \"TV-006 tests mode event audit trail, linked to VCU-LOG-05. It does not exercise brake override or timing behavior.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-006\"}, {\"confidence\": \"low\", \"evidence\": [\"Test has a TBD requirement link.\", \"Procedure involves acceleration at thermal load.\", \"Comment states 'Ownership and source link to be clarified'.\"], \"reason\": \"TV-007 has a TBD link and unclear ownership. The procedure involves acceleration at thermal load, which is not clearly related to brake override timing. However, the missing link and unclear scope prevent a definitive judgment.\", \"recommended_action\": \"Clarify requirement link and ownership before assessing impact.\", \"related_requirements\": [], \"required_actions\": [\"owner_decision\"], \"status\": \"needs_human_review\", \"test_id\": \"TV-007\"}, {\"confidence\": \"medium\", \"evidence\": [\"Test is linked to VCU-OLD-88 (unknown requirement).\", \"Procedure involves legacy diagnostic replay.\", \"Comment states 'requirements catalog changed'.\"], \"reason\": \"TV-008 is linked to an unknown requirement (VCU-OLD-88) and involves legacy diagnostic replay. The content is not clearly related to brake override timing, but the unknown link prevents full certainty.\", \"recommended_action\": \"No action required for this change; address unknown link separately.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-008\"}, {\"confidence\": \"high\", \"evidence\": [\"Test is linked to VCU-MOD-06 (operating mode).\", \"Procedure compares Sport vs Comfort torque ramp.\", \"Comment states 'No quantitative response-time assertion'.\"], \"reason\": \"TV-009 tests torque ramp profiles under different modes, linked to VCU-MOD-06. It does not exercise brake override or timing behavior.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-009\"}, {\"confidence\": \"high\", \"evidence\": [\"Test is linked to VCU-DR-02 (driver input validation).\", \"Procedure involves pedal signal spike filtering.\", \"No relation to brake override timing.\"], \"reason\": \"TV-010 tests pedal signal spike filtering, linked to VCU-DR-02. It does not exercise brake override or timing behavior.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-010\"}, {\"confidence\": \"high\", \"evidence\": [\"Test is linked to VCU-BRK-03.\", \"Procedure verifies torque cancellation on emergency braking.\", \"Previous result is PASS but no timing values are recorded.\"], \"reason\": \"TV-011 verifies torque cancellation during emergency braking and is linked to VCU-BRK-03. The change adds an 80 ms timing limit for the brake command. The previous evidence does not record timing, so it cannot demonstrate compliance with the new limit.\", \"recommended_action\": \"Rerun the test to capture and verify brake command latency against the new 80 ms limit.\", \"related_requirements\": [\"VCU-BRK-03\"], \"required_actions\": [\"rerun\"], \"status\": \"directly_affected\", \"test_id\": \"TV-011\"}, {\"confidence\": \"high\", \"evidence\": [\"Test has a missing requirement link.\", \"Procedure involves ECU wake-up timing (500 ms).\", \"Comment states 'Platform startup only'.\"], \"reason\": \"TV-012 tests ECU wake-up timing, which is unrelated to brake override timing. The missing link does not change the fact that the test content is clearly unrelated to the changed behavior.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-012\"}]}"
+}
