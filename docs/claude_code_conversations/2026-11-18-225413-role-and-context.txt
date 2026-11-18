@@ -729,7 +729,7 @@
 ● Bash(export PATH=$HOME/.local/bin:$PATH && uv init --lib --name vcu-impact
       --no-readme --python 3.12 . 2>&1 | tail -2; ls; cat pyproject.toml; find
       src -type f)
-  ⎿  Initialized project `vcu-impact` at `/home/cberti/vcu-impact-analyzer`
+  ⎿  Initialized project `vcu-impact` at `<project>`
      README.md
      data
      … +18 lines (ctrl+o to expand)
@@ -1032,7 +1032,7 @@
 ● Bash(export PATH=$HOME/.local/bin:$PATH && uv add httpx 2>&1 | tail -1 && uv
       run python eval/evaluate.py build && uv run python -c "
       from vcu_impact.spec_parser impo…)
-  ⎿   ~ vcu-impact==0.1.0 (from file:///home/cberti/vcu-impact-analyzer)
+  ⎿   ~ vcu-impact==0.1.0 (from file://<project>)
      S2: eval/scenarios/S2.docx -> VCU-BRK-03 modified
      S3: eval/scenarios/S3.docx -> VCU-DR-02 modified
      … +29 lines (ctrl+o to expand)
@@ -1532,7 +1532,7 @@
   method, the results and the recommendation.
 
 ❯ <ide_opened_file>The user opened the file
-  /home/cberti/vcu-impact-analyzer/.env in the IDE. This may or may not be
+  <project>/.env in the IDE. This may or may not be
   related to the current task.</ide_opened_file>
 
 ❯ I installed ollama and added the api tokens to the .env file. I removed the
@@ -2888,7 +2888,7 @@
   ⎿  Set model to eu.anthropic.claude-sonnet-5-5
 
 ❯ <ide_opened_file>The user opened the file
-  /home/cberti/vcu-impact-analyzer/eval/evaluate.py in the IDE. This may or may
+  <project>/eval/evaluate.py in the IDE. This may or may
   not be related to the current task.</ide_opened_file>
 
 ❯ explain better the point 2: Status design. One status can't tell "re-run the
@@ -4912,7 +4912,7 @@
   can say "no action required" while still carrying it.
 
 ❯ <ide_opened_file>The user opened the file
-  /home/cberti/vcu-impact-analyzer/README.md in the IDE. This may or may not be
+  <project>/README.md in the IDE. This may or may not be
   related to the current task.</ide_opened_file>
 
 ❯ You should now be able to push the code. Do that and make a summary of what
@@ -5020,7 +5020,7 @@
   ⎿  Set model to eu.anthropic.claude-opus-5-5
 
 ❯ <ide_opened_file>The user opened the file
-  /home/cberti/vcu-impact-analyzer/eval/dataset.yaml in the IDE. This may or
+  <project>/eval/dataset.yaml in the IDE. This may or
   may not be related to the current task.</ide_opened_file>
 
 ❯ I checked the labelling and it's okay. We can proceed with version 3 but
@@ -6930,7 +6930,7 @@
       print(jinja2.__version__)" && uv add jinja2 2>&1 | tail -1 && grep -n
       jinja2 pyproject.to…)
   ⎿  3.1.6
-      ~ vcu-impact==0.1.0 (from file:///home/cberti/vcu-impact-analyzer)
+      ~ vcu-impact==0.1.0 (from file://<project>)
      8:    "jinja2>=3.1.6",
   ⎿  Updated pyproject.toml +1
        5  requires-python = ">=3.12"
@@ -10456,7 +10456,7 @@
   5. When should I push?
 
 ❯ <ide_selection>The user selected the lines 202 to 300 from
-  /home/cberti/vcu-impact-analyzer/eval/dataset.yaml:
+  <project>/eval/dataset.yaml:
     #
   ---------------------------------------------------------------------------
     # Held-out scenarios S8 to S10: labels written from the documents before

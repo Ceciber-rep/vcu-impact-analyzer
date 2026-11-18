@@ -176,7 +176,7 @@
     - F-005: the approval-language detector misses phrasings such as "owner
       approved", "authorised" and "cleared for release".
     - F-006: 8 frozen files under eval/results contain the local path
-      /home/cberti/....
+      <home>/....
   - S4: 2, README placeholders (no LICENSE yet) and the missing real-browser
     check.
 
@@ -375,7 +375,7 @@
   labels before any result is analysed.
 
   Ran 1 shell command (ctrl+o to expand)
-● Background command "cd /home/cberti/vcu-impact-analyzer; sed -i '3s|.*| uv run
+● Background command "cd <project>; sed -i '3s|.*| uv run
   python eval/assess_run.py [--pause 65] [--only S1,N4] # resumable; ->
   eval/results/assessment/app-groq-gemini/|' eval/assess_run.py; uv run ruff
   check eval | tail -1; git add -A eval; git commit -qm "Phase 4 runner for the
@@ -427,7 +427,7 @@
 
   The application-path numbers will come from this run.
 
-● Background command "cd /home/cberti/vcu-impact-analyzer; mkdir -p .cache; uv
+● Background command "cd <project>; mkdir -p .cache; uv
   run python -u eval/assess_run.py 2>&1 | grep -v -E "WARNING|ScriptRunContext"
   | tee .cache/assess_run.log" completed (exit code 0)
 
@@ -649,7 +649,7 @@
 
   Ran 1 shell command (ctrl+o to expand)
 
-● Background command "cd /home/cberti/vcu-impact-analyzer; (uv run python
+● Background command "cd <project>; (uv run python
   eval/ui_flows.py --mode live --flows F2 --out
   docs/assessment/results/ui_flows_live_final_F2.json; sleep 80; uv run python
   eval/ui_flows.py --mode live --flows F3 --out
@@ -663,7 +663,7 @@
 
   Ran 5 shell commands (ctrl+o to expand)
 
-● Background command "cd /home/cberti/vcu-impact-analyzer; mv
+● Background command "cd <project>; mv
   docs/assessment/results/ui_flows_live_final_F2.json
   docs/assessment/results/ui_flows_live_final_F2_ratelimited.json; (uv run
   python -c "import time; time.sleep(75)"; uv run python eval/ui_flows.py --mode
@@ -807,7 +807,7 @@
     the app shell. Please open it in a private window and confirm it's readable
     without logging in.
   - License: none added.
-  - Redaction: I redacted the Groq organisation id and the /home/cberti paths in
+  - Redaction: I redacted the Groq organisation id and the <home> paths in
     10 stored result files. Only identifiers in error text and tracebacks
     changed. The phase 4 tables regenerate identically, and the 113 tests still
     pass. The old values remain in git history. The remaining stored files are
