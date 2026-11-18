@@ -447,10 +447,6 @@ def test_edit_then_revert_returns_to_the_original_result(monkeypatch):  # E-071
     assert "2 edit(s) applied" in " ".join(m.value for m in at.sidebar.markdown)
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="F-020: after a browser refresh the live result on disk is not shown (st.cache_data keeps 'not analysed')",
-)
 def test_live_result_is_shown_again_after_a_browser_refresh(monkeypatch):  # E-072
     prep = _prep()
     calls = []

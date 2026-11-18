@@ -61,9 +61,10 @@ def _prepare(b: tuple[str, bytes], r: tuple[str, bytes], g: tuple[str, bytes]) -
     return prepare(Inputs(InputFile(*b), InputFile(*r), InputFile(*g)))
 
 
-@st.cache_data(show_spinner=False)
-def _replay(key: str, _prep: Prepared) -> AnalysisOutcome:
-    return analyze(_prep, mode="replay")
+def _replay(prep: Prepared) -> AnalysisOutcome:
+    # Not cached with st.cache_data: that cache is shared by every session and would keep a "not analysed"
+    # outcome after a live run saved its result on disk (F-020). Reading one small JSON file is cheap.
+    return analyze(prep, mode="replay")
 
 
 def _effective_inputs() -> Inputs:
@@ -84,7 +85,7 @@ def _current() -> Prepared:
 
 
 def _outcome(prep: Prepared) -> AnalysisOutcome:
-    return st.session_state.live_outcomes.get(prep.key) or _replay(prep.key, prep)
+    return st.session_state.live_outcomes.get(prep.key) or _replay(prep)
 
 
 # ---------------------------------------------------------------------------
