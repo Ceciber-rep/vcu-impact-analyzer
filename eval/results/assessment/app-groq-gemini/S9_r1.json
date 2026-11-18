@@ -1,0 +1,246 @@
+{
+ "ok": true,
+ "case": "S9_r1",
+ "scenario": "S9",
+ "kind": "base",
+ "served_by": "groq:qwen/qwen3.8-27b",
+ "fallback_used": false,
+ "first_attempt_failed": "every configured model failed. groq:qwen/qwen3.8-27b failed: RateLimitError: Error code: 429 - Request too large for model `qwen/qwen3.8-27b` in organization `org_REDACTED` service tier `on_demand` on output tokens per minute (OTPM): Limit 1000, Requested 162 gemini:gemini-3.5-flash failed: InternalServerError: Error code: 503",
+ "model_label": "groq:qwen/qwen3.8-27b",
+ "prompt_version": "v3",
+ "created_at": "2026-11-18T14:06:30+00:00",
+ "latency_s": 5.28,
+ "attempts": 1,
+ "prompt_tokens": 4445,
+ "completion_tokens": 2140,
+ "structured_mode": "json_schema",
+ "result": {
+  "change_interpretations": [
+   {
+    "requirement_id": "VCU-DR-01",
+    "nature": "tightened",
+    "engineering_summary": "The driver torque response time limit is tightened from 100 ms to 80 ms. This requires re-evaluation of all tests that measure torque response time, as previous evidence may no longer meet the new limit. Test procedures and scripts must be updated to reflect the new threshold."
+   },
+   {
+    "requirement_id": "VCU-BRK-03",
+    "nature": "added",
+    "engineering_summary": "A new 80 ms latency requirement is added for emergency brake commands. This requires re-evaluation of all tests that measure brake command latency, as previous evidence may not include timing data or may not meet the new limit. Test procedures must be updated to include latency measurement."
+   }
+  ],
+  "assessments": [
+   {
+    "test_id": "TV-001",
+    "status": "directly_affected",
+    "confidence": "high",
+    "related_requirements": [
+     "VCU-DR-01"
+    ],
+    "required_actions": [
+     "rerun",
+     "update_procedure"
+    ],
+    "reason": "The test verifies the driver torque response time which is directly altered by the tightening of the limit from 100 ms to 80 ms. The previous evidence of 94 ms no longer meets the new 80 ms requirement, and the test script still references the old 100 ms threshold.",
+    "evidence": [
+     "Procedure explicitly checks torque response within 100 ms",
+     "Previous result recorded 94 ms",
+     "Requirement VCU-DR-01 limit tightened from 100 ms to 80 ms"
+    ],
+    "recommended_action": "Update the test script threshold to 80 ms and rerun the test to generate new evidence."
+   },
+   {
+    "test_id": "TV-002",
+    "status": "directly_affected",
+    "confidence": "high",
+    "related_requirements": [
+     "VCU-BRK-03"
+    ],
+    "required_actions": [
+     "rerun",
+     "update_procedure"
+    ],
+    "reason": "The test is linked to VCU-BRK-03, which now includes a specific 80 ms latency requirement for brake commands. The previous evidence does not record timing, so it cannot verify the new requirement. The procedure may need updating to include latency measurement.",
+    "evidence": [
+     "Linked to VCU-BRK-03 which added an 80 ms latency requirement",
+     "Comment states 'Timing not reported in old evidence'",
+     "Procedure inspects priorities but does not explicitly measure latency"
+    ],
+    "recommended_action": "Update the procedure to include brake command latency measurement and rerun to capture timing data."
+   },
+   {
+    "test_id": "TV-003",
+    "status": "needs_human_review",
+    "confidence": "medium",
+    "related_requirements": [
+     "VCU-DR-01"
+    ],
+    "required_actions": [
+     "rerun",
+     "update_procedure",
+     "fix_link",
+     "owner_decision"
+    ],
+    "reason": "The test content (torque response time under high load) directly relates to the tightened VCU-DR-01 limit. The previous result of 92 ms exceeds the new 80 ms limit, and the legacy script uses an outdated 95 ms tolerance. The missing link prevents definitive confirmation, but the content is clearly relevant.",
+    "evidence": [
+     "Procedure sweeps demand 75-95% and records 92 ms",
+     "Comment notes 'Legacy suite still checks 95 ms tolerance'",
+     "No valid requirement link, but content aligns with VCU-DR-01"
+    ],
+    "recommended_action": "Clarify the requirement link, update the tolerance to 80 ms, and rerun the test."
+   },
+   {
+    "test_id": "TV-004",
+    "status": "directly_affected",
+    "confidence": "high",
+    "related_requirements": [
+     "VCU-BRK-03"
+    ],
+    "required_actions": [
+     "rerun",
+     "update_procedure"
+    ],
+    "reason": "The test verifies brake command latency, which is now explicitly required to be within 80 ms by VCU-BRK-03. The previous result of 88 ms exceeds the new limit. The workshop note warns that brake and torque latencies use different clocks, so the 88 ms value must be re-evaluated against the new 80 ms limit using the correct clock.",
+    "evidence": [
+     "Linked to VCU-BRK-03 which added an 80 ms latency requirement",
+     "Previous result recorded 88 ms",
+     "Comment notes 'Different measurement clock'"
+    ],
+    "recommended_action": "Verify the measurement clock alignment, update the procedure threshold to 80 ms, and rerun the test."
+   },
+   {
+    "test_id": "TV-005",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test verifies sensor degradation behavior, which is governed by the unchanged requirement VCU-DGN-04. It does not exercise the changed torque response or brake latency behaviors.",
+    "evidence": [
+     "Linked to VCU-DGN-04 which is unchanged",
+     "Procedure tests wheel-speed sensor failure",
+     "No timing or torque response involved"
+    ],
+    "recommended_action": "No action required for this change."
+   },
+   {
+    "test_id": "TV-006",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test verifies audit trail logging for mode changes, which is governed by the unchanged requirement VCU-LOG-05. It does not exercise the changed torque response or brake latency behaviors.",
+    "evidence": [
+     "Linked to VCU-LOG-05 which is unchanged",
+     "Procedure tests mode change logging",
+     "No timing or torque response involved"
+    ],
+    "recommended_action": "No action required for this change."
+   },
+   {
+    "test_id": "TV-007",
+    "status": "needs_human_review",
+    "confidence": "low",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link",
+     "owner_decision"
+    ],
+    "reason": "The test content (torque delivery at 80% pedal) plausibly relates to the changed VCU-DR-01 requirement, but the TBD link and unclear ownership prevent a definitive assessment. The test has not been run, so no evidence exists to evaluate against the new limit.",
+    "evidence": [
+     "Requirement link is TBD",
+     "Procedure mentions 80% pedal and torque delivery",
+     "Comment states 'Ownership and source link to be clarified'"
+    ],
+    "recommended_action": "Clarify the requirement link and ownership, then determine if the test needs to be run against the new 80 ms limit."
+   },
+   {
+    "test_id": "TV-008",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link"
+    ],
+    "reason": "The test is linked to a removed or unknown requirement (VCU-OLD-88) and tests diagnostic replay, which is unrelated to the changed torque response or brake latency requirements. The broken link alone does not make it needs_human_review since the content is clearly unrelated.",
+    "evidence": [
+     "Linked to VCU-OLD-88 which is an unknown/removed requirement",
+     "Procedure tests diagnostic replay",
+     "No relation to torque response or brake latency"
+    ],
+    "recommended_action": "No action required for this change; the link issue is handled separately by the application."
+   },
+   {
+    "test_id": "TV-009",
+    "status": "possibly_affected",
+    "confidence": "medium",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test verifies torque ramp profiles under different modes, which is governed by the unchanged requirement VCU-MOD-06. While it involves torque response, it does not assert a specific timing limit, so the tightened 80 ms limit in VCU-DR-01 does not directly invalidate this test. However, if the ramp profile affects the 80 ms response, it could be indirectly affected.",
+    "evidence": [
+     "Linked to VCU-MOD-06 which is unchanged",
+     "Procedure compares Sport vs Comfort torque ramp",
+     "Comment notes 'No quantitative response-time assertion'"
+    ],
+    "recommended_action": "No immediate action required, but consider if the ramp profile interacts with the new 80 ms limit."
+   },
+   {
+    "test_id": "TV-010",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test verifies pedal signal filtering, which is governed by the unchanged requirement VCU-DR-02. It does not exercise the changed torque response or brake latency behaviors.",
+    "evidence": [
+     "Linked to VCU-DR-02 which is unchanged",
+     "Procedure tests pedal signal spike filtering",
+     "No timing or torque response involved"
+    ],
+    "recommended_action": "No action required for this change."
+   },
+   {
+    "test_id": "TV-011",
+    "status": "directly_affected",
+    "confidence": "high",
+    "related_requirements": [
+     "VCU-BRK-03"
+    ],
+    "required_actions": [
+     "rerun",
+     "update_procedure"
+    ],
+    "reason": "The test verifies brake priority over torque, which is governed by VCU-BRK-03. The new requirement adds an 80 ms latency constraint for brake commands. The previous evidence does not record timing, so it cannot verify the new latency requirement. The procedure may need updating to include latency measurement.",
+    "evidence": [
+     "Linked to VCU-BRK-03 which added an 80 ms latency requirement",
+     "Procedure verifies torque drops according to brake priority",
+     "No timing measurement in previous evidence"
+    ],
+    "recommended_action": "Update the procedure to include brake command latency measurement and rerun to capture timing data."
+   },
+   {
+    "test_id": "TV-012",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link"
+    ],
+    "reason": "The test verifies ECU wake-up timing, which is unrelated to the changed torque response or brake latency requirements. It does not exercise the changed behaviors.",
+    "evidence": [
+     "No requirement link",
+     "Procedure tests ECU wake-up timing",
+     "Comment notes 'Platform startup only'"
+    ],
+    "recommended_action": "No action required for this change."
+   }
+  ]
+ },
+ "warnings": [],
+ "adjustments": [],
+ "raw_text": "{\"assessments\": [{\"confidence\": \"high\", \"evidence\": [\"Procedure explicitly checks torque response within 100 ms\", \"Previous result recorded 94 ms\", \"Requirement VCU-DR-01 limit tightened from 100 ms to 80 ms\"], \"reason\": \"The test verifies the driver torque response time which is directly altered by the tightening of the limit from 100 ms to 80 ms. The previous evidence of 94 ms no longer meets the new 80 ms requirement, and the test script still references the old 100 ms threshold.\", \"recommended_action\": \"Update the test script threshold to 80 ms and rerun the test to generate new evidence.\", \"related_requirements\": [\"VCU-DR-01\"], \"required_actions\": [\"update_procedure\", \"rerun\"], \"status\": \"directly_affected\", \"test_id\": \"TV-001\"}, {\"confidence\": \"high\", \"evidence\": [\"Linked to VCU-BRK-03 which added an 80 ms latency requirement\", \"Comment states 'Timing not reported in old evidence'\", \"Procedure inspects priorities but does not explicitly measure latency\"], \"reason\": \"The test is linked to VCU-BRK-03, which now includes a specific 80 ms latency requirement for brake commands. The previous evidence does not record timing, so it cannot verify the new requirement. The procedure may need updating to include latency measurement.\", \"recommended_action\": \"Update the procedure to include brake command latency measurement and rerun to capture timing data.\", \"related_requirements\": [\"VCU-BRK-03\"], \"required_actions\": [\"update_procedure\", \"rerun\"], \"status\": \"directly_affected\", \"test_id\": \"TV-002\"}, {\"confidence\": \"medium\", \"evidence\": [\"Procedure sweeps demand 75-95% and records 92 ms\", \"Comment notes 'Legacy suite still checks 95 ms tolerance'\", \"No valid requirement link, but content aligns with VCU-DR-01\"], \"reason\": \"The test content (torque response time under high load) directly relates to the tightened VCU-DR-01 limit. The previous result of 92 ms exceeds the new 80 ms limit, and the legacy script uses an outdated 95 ms tolerance. The missing link prevents definitive confirmation, but the content is clearly relevant.\", \"recommended_action\": \"Clarify the requirement link, update the tolerance to 80 ms, and rerun the test.\", \"related_requirements\": [\"VCU-DR-01\"], \"required_actions\": [\"owner_decision\", \"update_procedure\", \"rerun\"], \"status\": \"needs_human_review\", \"test_id\": \"TV-003\"}, {\"confidence\": \"high\", \"evidence\": [\"Linked to VCU-BRK-03 which added an 80 ms latency requirement\", \"Previous result recorded 88 ms\", \"Comment notes 'Different measurement clock'\"], \"reason\": \"The test verifies brake command latency, which is now explicitly required to be within 80 ms by VCU-BRK-03. The previous result of 88 ms exceeds the new limit. The workshop note warns that brake and torque latencies use different clocks, so the 88 ms value must be re-evaluated against the new 80 ms limit using the correct clock.\", \"recommended_action\": \"Verify the measurement clock alignment, update the procedure threshold to 80 ms, and rerun the test.\", \"related_requirements\": [\"VCU-BRK-03\"], \"required_actions\": [\"update_procedure\", \"rerun\"], \"status\": \"directly_affected\", \"test_id\": \"TV-004\"}, {\"confidence\": \"high\", \"evidence\": [\"Linked to VCU-DGN-04 which is unchanged\", \"Procedure tests wheel-speed sensor failure\", \"No timing or torque response involved\"], \"reason\": \"The test verifies sensor degradation behavior, which is governed by the unchanged requirement VCU-DGN-04. It does not exercise the changed torque response or brake latency behaviors.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-005\"}, {\"confidence\": \"high\", \"evidence\": [\"Linked to VCU-LOG-05 which is unchanged\", \"Procedure tests mode change logging\", \"No timing or torque response involved\"], \"reason\": \"The test verifies audit trail logging for mode changes, which is governed by the unchanged requirement VCU-LOG-05. It does not exercise the changed torque response or brake latency behaviors.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-006\"}, {\"confidence\": \"low\", \"evidence\": [\"Requirement link is TBD\", \"Procedure mentions 80% pedal and torque delivery\", \"Comment states 'Ownership and source link to be clarified'\"], \"reason\": \"The test content (torque delivery at 80% pedal) plausibly relates to the changed VCU-DR-01 requirement, but the TBD link and unclear ownership prevent a definitive assessment. The test has not been run, so no evidence exists to evaluate against the new limit.\", \"recommended_action\": \"Clarify the requirement link and ownership, then determine if the test needs to be run against the new 80 ms limit.\", \"related_requirements\": [], \"required_actions\": [\"owner_decision\"], \"status\": \"needs_human_review\", \"test_id\": \"TV-007\"}, {\"confidence\": \"high\", \"evidence\": [\"Linked to VCU-OLD-88 which is an unknown/removed requirement\", \"Procedure tests diagnostic replay\", \"No relation to torque response or brake latency\"], \"reason\": \"The test is linked to a removed or unknown requirement (VCU-OLD-88) and tests diagnostic replay, which is unrelated to the changed torque response or brake latency requirements. The broken link alone does not make it needs_human_review since the content is clearly unrelated.\", \"recommended_action\": \"No action required for this change; the link issue is handled separately by the application.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-008\"}, {\"confidence\": \"medium\", \"evidence\": [\"Linked to VCU-MOD-06 which is unchanged\", \"Procedure compares Sport vs Comfort torque ramp\", \"Comment notes 'No quantitative response-time assertion'\"], \"reason\": \"The test verifies torque ramp profiles under different modes, which is governed by the unchanged requirement VCU-MOD-06. While it involves torque response, it does not assert a specific timing limit, so the tightened 80 ms limit in VCU-DR-01 does not directly invalidate this test. However, if the ramp profile affects the 80 ms response, it could be indirectly affected.\", \"recommended_action\": \"No immediate action required, but consider if the ramp profile interacts with the new 80 ms limit.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"possibly_affected\", \"test_id\": \"TV-009\"}, {\"confidence\": \"high\", \"evidence\": [\"Linked to VCU-DR-02 which is unchanged\", \"Procedure tests pedal signal spike filtering\", \"No timing or torque response involved\"], \"reason\": \"The test verifies pedal signal filtering, which is governed by the unchanged requirement VCU-DR-02. It does not exercise the changed torque response or brake latency behaviors.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-010\"}, {\"confidence\": \"high\", \"evidence\": [\"Linked to VCU-BRK-03 which added an 80 ms latency requirement\", \"Procedure verifies torque drops according to brake priority\", \"No timing measurement in previous evidence\"], \"reason\": \"The test verifies brake priority over torque, which is governed by VCU-BRK-03. The new requirement adds an 80 ms latency constraint for brake commands. The previous evidence does not record timing, so it cannot verify the new latency requirement. The procedure may need updating to include latency measurement.\", \"recommended_action\": \"Update the procedure to include brake command latency measurement and rerun to capture timing data.\", \"related_requirements\": [\"VCU-BRK-03\"], \"required_actions\": [\"update_procedure\", \"rerun\"], \"status\": \"directly_affected\", \"test_id\": \"TV-011\"}, {\"confidence\": \"high\", \"evidence\": [\"No requirement link\", \"Procedure tests ECU wake-up timing\", \"Comment notes 'Platform startup only'\"], \"reason\": \"The test verifies ECU wake-up timing, which is unrelated to the changed torque response or brake latency requirements. It does not exercise the changed behaviors.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-012\"}], \"change_interpretations\": [{\"engineering_summary\": \"The driver torque response time limit is tightened from 100 ms to 80 ms. This requires re-evaluation of all tests that measure torque response time, as previous evidence may no longer meet the new limit. Test procedures and scripts must be updated to reflect the new threshold.\", \"nature\": \"tightened\", \"requirement_id\": \"VCU-DR-01\"}, {\"engineering_summary\": \"A new 80 ms latency requirement is added for emergency brake commands. This requires re-evaluation of all tests that measure brake command latency, as previous evidence may not include timing data or may not meet the new limit. Test procedures must be updated to include latency measurement.\", \"nature\": \"added\", \"requirement_id\": \"VCU-BRK-03\"}]}"
+}

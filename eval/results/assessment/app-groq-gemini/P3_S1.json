@@ -1,0 +1,7 @@
+{
+ "ok": false,
+ "case": "P3_S1",
+ "scenario": "S1",
+ "kind": "P3",
+ "error": "every configured model failed. groq:qwen/qwen3.8-27b failed: RateLimitError: Error code: 429 - Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_REDACTED` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199634, Requeste gemini:gemini-3.5-flash failed: RateLimitError: Error code: 429"
+}

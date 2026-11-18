@@ -195,32 +195,44 @@ def _norm(t: str) -> str:
 
 
 def grounding(records: dict[str, dict]) -> dict:
+    """Are the facts in the evidence strings present in the model's input?
+
+    Evidence strings are paraphrases, not quotes, so a verbatim match is the wrong test. Checked instead:
+    every number, every requirement ID and every test ID in an evidence string must occur in the input
+    (numbers derived by the model, such as a difference, would count as not found); and a string must not say that a
+    requirement is "unchanged" when the diff changed it, or "changed" when it is unchanged.
+    """
     res = Counter()
     examples = []
     for name, run in records.items():
         case = case_for(name)
         prep = prep_for(case)
         payload = json.loads(prep.user_prompt.split("INPUT (JSON):\n", 1)[1])
-        corpus_raw = " ".join(_flatten(payload)) + " " + json.dumps(payload, ensure_ascii=False)
-        corpus = _norm(corpus_raw)
-        tokens = set(re.findall(r"[a-z0-9.%°-]+", corpus))
+        corpus = _norm(" ".join(_flatten(payload)) + " " + json.dumps(payload, ensure_ascii=False))
+        changed = {c.req_id for c in prep.diff.requirement_changes}
+        all_reqs = set(re.findall(r"VCU-[A-Z]+-\d+", corpus.upper()))
         for a in ev._model_result(run)["assessments"]:
             for e in a.get("evidence", []):
                 res["total"] += 1
                 n = _norm(e)
-                words = re.findall(r"[a-z0-9.%°-]+", n)
                 nums = re.findall(r"\d+(?:\.\d+)?", n)
-                num_ok = all(x in tokens or x in corpus for x in nums)
-                if n and n in corpus:
-                    res["exact"] += 1
-                elif words and sum(w in tokens for w in words) / len(words) >= 0.8 and num_ok:
-                    res["token_grounded"] += 1
-                else:
-                    res["ungrounded"] += 1
-                    if len(examples) < 12:
-                        examples.append(f"{name} {a['test_id']}: {e[:160]}")
-                if not num_ok:
-                    res["number_not_in_input"] += 1
+                ids = re.findall(r"[A-Z]{2,}-[A-Z0-9-]*\d+", e)
+                anchors = len(nums) + len(ids)
+                missing = [x for x in nums if x not in corpus] + [x for x in ids if x.upper() not in corpus.upper()]
+                if anchors:
+                    res["with_anchors"] += 1
+                    if missing:
+                        res["anchor_not_in_input"] += 1
+                        if len(examples) < 12:
+                            examples.append(f"{name} {a['test_id']}: {missing} in: {e[:160]}")
+                for sentence in re.split(r"(?<=[.;])\s+", e):
+                    for rid in re.findall(r"VCU-[A-Z]+-\d+", sentence):
+                        if rid not in all_reqs:
+                            continue
+                        if re.search(r"\bunchanged\b|not changed|has not changed", sentence, re.I) and rid in changed:
+                            res["says_unchanged_but_changed"] += 1
+                            if len(examples) < 12:
+                                examples.append(f"{name} {a['test_id']} (contradicts diff): {sentence[:160]}")
     return {**res, "examples": examples}
 
 
@@ -485,9 +497,39 @@ def main() -> None:
         md.append(f"\n## Evidence grounding (application path, all {len(app)} runs, against the model's input)\n")
         t = g.get("total", 0)
         md.append(
-            f"Evidence strings: {t}; exact text found in input: {rate(g.get('exact', 0), t)}; token-grounded (>=80% of words and all numbers in input): {rate(g.get('token_grounded', 0), t)}; **not grounded: {rate(g.get('ungrounded', 0), t)}**; strings containing a number that is not in the input: {rate(g.get('number_not_in_input', 0), t)}."
+            f"Evidence strings: {t}. With a number or ID to check: {rate(g.get('with_anchors', 0), t)}. Of those, one that is "
+            f"**not in the model's input**: {rate(g.get('anchor_not_in_input', 0), g.get('with_anchors', 0))}. "
+            f"Sentences calling a requirement 'unchanged' that the diff changed: {g.get('says_unchanged_but_changed', 0)}."
         )
         md += [f"- {e}" for e in g["examples"]]
+        pooled = {}
+        v3 = load(SOURCES["v3 frozen: Groq qwen3.8-27b"])
+        runs = {f"v3_{n}": r for n, r in v3.items() if re.fullmatch(r"S1_r\d", n)} | {
+            f"app_{n}": r for n, r in app.items() if re.fullmatch(r"S1_r\d", n)
+        }
+        preds = [statuses(r, case_for("S1_r1"), "raw") for r in runs.values()]
+        tests = sorted(preds[0]) if preds else []
+        pooled = {
+            t: dict(Counter(p[t]["status"] for p in preds)) for t in tests if len({p[t]["status"] for p in preds}) > 1
+        }
+        out["pooled_s1"] = {"runs": len(preds), "sources": list(runs), "unstable_tests": pooled}
+        md.append(
+            f"\n## S1 pooled over {len(preds)} Groq runs of the same input and prompt (3 frozen v3 + {len(preds) - 3} application runs), raw view\n\nTests with more than one status: {len(pooled)}/{len(tests)} {pooled}"
+        )
+        try:
+            from vcu_impact import cache as _cache
+
+            found = _cache.find(prep_for(case_for("S1_r1")).key)
+            if found and "S1_r1" in app:
+                old = {a.test_id: a.status.value for a in found[0].run.result.assessments}
+                new = {a["test_id"]: a["status"] for a in app["S1_r1"]["result"]["assessments"]}
+                diff = {t: (old[t], new[t]) for t in old if old[t] != new.get(t)}
+                out["live_vs_replay_S1"] = diff
+                md.append(
+                    f"\n## Live vs replay for the default inputs (S1)\n\nThe committed recording (made 2026-11-16) and the live run of this assessment differ on {len(diff)} of {len(old)} tests: {diff}"
+                )
+        except Exception as exc:  # noqa: BLE001
+            md.append(f"\nLive vs replay comparison failed: {exc}")
         c = consistency(app)
         out["consistency"] = c
         for view, cv in c.items():

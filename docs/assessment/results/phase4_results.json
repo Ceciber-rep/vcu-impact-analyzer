@@ -1,0 +1,651 @@
+{
+ "accuracy": {
+  "raw": {
+   "app (Groq, Gemini fallback)": {
+    "S1-S10": {
+     "judgments": 97,
+     "ok": 95,
+     "strict": 72,
+     "critical": 27,
+     "critical_ok": 26,
+     "missed": 0,
+     "over_flags": 2,
+     "distinct_cells": 64,
+     "distinct_critical": 27,
+     "distinct_critical_failing": 1
+    },
+    "N1-N6 held out": {
+     "judgments": 59,
+     "ok": 56,
+     "strict": 46,
+     "critical": 7,
+     "critical_ok": 5,
+     "missed": 0,
+     "over_flags": 3,
+     "distinct_cells": 23,
+     "distinct_critical": 7,
+     "distinct_critical_failing": 2
+    },
+    "S8-S10 + N1-N6": {
+     "judgments": 96,
+     "ok": 92,
+     "strict": 73,
+     "critical": 23,
+     "critical_ok": 20,
+     "missed": 0,
+     "over_flags": 4,
+     "distinct_cells": 56,
+     "distinct_critical": 23,
+     "distinct_critical_failing": 3
+    }
+   },
+   "naive baseline (rules)": {
+    "S1-S10": {
+     "judgments": 121,
+     "ok": 99,
+     "strict": 71,
+     "critical": 32,
+     "critical_ok": 22,
+     "missed": 0,
+     "over_flags": 4,
+     "distinct_cells": 69,
+     "distinct_critical": 32,
+     "distinct_critical_failing": 10
+    },
+    "N1-N6 held out": {
+     "judgments": 71,
+     "ok": 62,
+     "strict": 44,
+     "critical": 9,
+     "critical_ok": 6,
+     "missed": 0,
+     "over_flags": 4,
+     "distinct_cells": 29,
+     "distinct_critical": 9,
+     "distinct_critical_failing": 3
+    },
+    "S8-S10 + N1-N6": {
+     "judgments": 108,
+     "ok": 92,
+     "strict": 66,
+     "critical": 25,
+     "critical_ok": 17,
+     "missed": 0,
+     "over_flags": 6,
+     "distinct_cells": 62,
+     "distinct_critical": 25,
+     "distinct_critical_failing": 8
+    }
+   },
+   "v3 frozen: Groq qwen3.8-27b": {
+    "S1-S10": {
+     "judgments": 121,
+     "ok": 119,
+     "strict": 91,
+     "critical": 32,
+     "critical_ok": 30,
+     "missed": 0,
+     "over_flags": 2,
+     "distinct_cells": 69,
+     "distinct_critical": 32,
+     "distinct_critical_failing": 2
+    },
+    "S8-S10 + N1-N6": {
+     "judgments": 37,
+     "ok": 36,
+     "strict": 27,
+     "critical": 16,
+     "critical_ok": 15,
+     "missed": 0,
+     "over_flags": 1,
+     "distinct_cells": 33,
+     "distinct_critical": 16,
+     "distinct_critical_failing": 1
+    }
+   },
+   "v3 frozen: Gemini 3.5 Flash": {
+    "S1-S10": {
+     "judgments": 121,
+     "ok": 118,
+     "strict": 97,
+     "critical": 32,
+     "critical_ok": 31,
+     "missed": 0,
+     "over_flags": 3,
+     "distinct_cells": 69,
+     "distinct_critical": 32,
+     "distinct_critical_failing": 1
+    },
+    "S8-S10 + N1-N6": {
+     "judgments": 37,
+     "ok": 36,
+     "strict": 30,
+     "critical": 16,
+     "critical_ok": 15,
+     "missed": 0,
+     "over_flags": 1,
+     "distinct_cells": 33,
+     "distinct_critical": 16,
+     "distinct_critical_failing": 1
+    }
+   }
+  },
+  "postcheck": {
+   "app (Groq, Gemini fallback)": {
+    "S1-S10": {
+     "judgments": 97,
+     "ok": 95,
+     "strict": 72,
+     "critical": 27,
+     "critical_ok": 26,
+     "missed": 0,
+     "over_flags": 2,
+     "distinct_cells": 64,
+     "distinct_critical": 27,
+     "distinct_critical_failing": 1
+    },
+    "N1-N6 held out": {
+     "judgments": 59,
+     "ok": 57,
+     "strict": 47,
+     "critical": 7,
+     "critical_ok": 6,
+     "missed": 0,
+     "over_flags": 2,
+     "distinct_cells": 23,
+     "distinct_critical": 7,
+     "distinct_critical_failing": 1
+    },
+    "S8-S10 + N1-N6": {
+     "judgments": 96,
+     "ok": 93,
+     "strict": 74,
+     "critical": 23,
+     "critical_ok": 21,
+     "missed": 0,
+     "over_flags": 3,
+     "distinct_cells": 56,
+     "distinct_critical": 23,
+     "distinct_critical_failing": 2
+    }
+   },
+   "naive baseline (rules)": {
+    "S1-S10": {
+     "judgments": 121,
+     "ok": 99,
+     "strict": 71,
+     "critical": 32,
+     "critical_ok": 22,
+     "missed": 0,
+     "over_flags": 4,
+     "distinct_cells": 69,
+     "distinct_critical": 32,
+     "distinct_critical_failing": 10
+    },
+    "N1-N6 held out": {
+     "judgments": 71,
+     "ok": 62,
+     "strict": 44,
+     "critical": 9,
+     "critical_ok": 6,
+     "missed": 0,
+     "over_flags": 4,
+     "distinct_cells": 29,
+     "distinct_critical": 9,
+     "distinct_critical_failing": 3
+    },
+    "S8-S10 + N1-N6": {
+     "judgments": 108,
+     "ok": 92,
+     "strict": 66,
+     "critical": 25,
+     "critical_ok": 17,
+     "missed": 0,
+     "over_flags": 6,
+     "distinct_cells": 62,
+     "distinct_critical": 25,
+     "distinct_critical_failing": 8
+    }
+   },
+   "v3 frozen: Groq qwen3.8-27b": {
+    "S1-S10": {
+     "judgments": 121,
+     "ok": 120,
+     "strict": 92,
+     "critical": 32,
+     "critical_ok": 31,
+     "missed": 0,
+     "over_flags": 1,
+     "distinct_cells": 69,
+     "distinct_critical": 32,
+     "distinct_critical_failing": 1
+    },
+    "S8-S10 + N1-N6": {
+     "judgments": 37,
+     "ok": 36,
+     "strict": 27,
+     "critical": 16,
+     "critical_ok": 15,
+     "missed": 0,
+     "over_flags": 1,
+     "distinct_cells": 33,
+     "distinct_critical": 16,
+     "distinct_critical_failing": 1
+    }
+   },
+   "v3 frozen: Gemini 3.5 Flash": {
+    "S1-S10": {
+     "judgments": 121,
+     "ok": 118,
+     "strict": 97,
+     "critical": 32,
+     "critical_ok": 31,
+     "missed": 0,
+     "over_flags": 3,
+     "distinct_cells": 69,
+     "distinct_critical": 32,
+     "distinct_critical_failing": 1
+    },
+    "S8-S10 + N1-N6": {
+     "judgments": 37,
+     "ok": 36,
+     "strict": 30,
+     "critical": 16,
+     "critical_ok": 15,
+     "missed": 0,
+     "over_flags": 1,
+     "distinct_cells": 33,
+     "distinct_critical": 16,
+     "distinct_critical_failing": 1
+    }
+   }
+  }
+ },
+ "errors": {
+  "raw": {
+   "by_category": {
+    "over-flag": 5
+   },
+   "cells": [
+    "N2 TV-010: got directly_affected (accept ['not_affected', 'possibly_affected'], critical=True, served by groq:qwen/qwen3.8-27b, conf high)",
+    "N4 TV-004: got directly_affected (accept ['not_affected', 'possibly_affected'], critical=False, served by groq:qwen/qwen3.8-27b, conf high)",
+    "N6 TV-006: got directly_affected (accept ['needs_human_review', 'possibly_affected'], critical=True, served by groq:qwen/qwen3.8-27b, conf high)",
+    "S4 TV-003: got directly_affected (accept ['not_affected', 'possibly_affected', 'needs_human_review'], critical=False, served by groq:qwen/qwen3.8-27b, conf medium)",
+    "S8 TV-002: got directly_affected (accept ['not_affected', 'possibly_affected'], critical=True, served by groq:qwen/qwen3.8-27b, conf high)"
+   ],
+   "actions": [
+    19,
+    21
+   ],
+   "related": [
+    9,
+    10
+   ]
+  },
+  "postcheck": {
+   "by_category": {
+    "over-flag": 4
+   },
+   "cells": [
+    "N4 TV-004: got directly_affected (accept ['not_affected', 'possibly_affected'], critical=False, served by groq:qwen/qwen3.8-27b, conf high)",
+    "N6 TV-006: got directly_affected (accept ['needs_human_review', 'possibly_affected'], critical=True, served by groq:qwen/qwen3.8-27b, conf high)",
+    "S4 TV-003: got directly_affected (accept ['not_affected', 'possibly_affected', 'needs_human_review'], critical=False, served by groq:qwen/qwen3.8-27b, conf medium)",
+    "S8 TV-002: got directly_affected (accept ['not_affected', 'possibly_affected'], critical=True, served by groq:qwen/qwen3.8-27b, conf high)"
+   ],
+   "actions": [
+    19,
+    21
+   ],
+   "related": [
+    9,
+    10
+   ]
+  }
+ },
+ "calibration": {
+  "raw": {
+   "high": {
+    "n": 120,
+    "ok": 116,
+    "wrong": 4
+   },
+   "medium": {
+    "n": 26,
+    "ok": 25,
+    "wrong": 1
+   },
+   "low": {
+    "n": 10,
+    "ok": 10,
+    "wrong": 0
+   }
+  },
+  "postcheck": {
+   "high": {
+    "n": 120,
+    "ok": 117,
+    "wrong": 3
+   },
+   "medium": {
+    "n": 26,
+    "ok": 25,
+    "wrong": 1
+   },
+   "low": {
+    "n": 10,
+    "ok": 10,
+    "wrong": 0
+   }
+  }
+ },
+ "grounding": {
+  "total": 428,
+  "with_anchors": 238,
+  "examples": []
+ },
+ "pooled_s1": {
+  "runs": 5,
+  "sources": [
+   "v3_S1_r1",
+   "v3_S1_r2",
+   "v3_S1_r3",
+   "app_S1_r1",
+   "app_S1_r2"
+  ],
+  "unstable_tests": {}
+ },
+ "live_vs_replay_S1": {},
+ "consistency": {
+  "raw": {
+   "repeats": {
+    "S1": {
+     "runs": 2,
+     "served_by": {
+      "groq:qwen/qwen3.8-27b": 2
+     },
+     "unstable_tests": {},
+     "n_unstable": 0,
+     "tests": 12,
+     "unstable_and_sometimes_wrong_critical": {}
+    },
+    "N4": {
+     "runs": 1,
+     "served_by": {
+      "groq:qwen/qwen3.8-27b": 1
+     },
+     "unstable_tests": {},
+     "n_unstable": 0,
+     "tests": 12,
+     "unstable_and_sometimes_wrong_critical": {}
+    }
+   },
+   "perturbations": {
+    "P2_S1": {
+     "served_by": "groq:qwen/qwen3.8-27b",
+     "base_served_by": "groq:qwen/qwen3.8-27b",
+     "changed": {
+      "TV-003": [
+       "possibly_affected",
+       "needs_human_review"
+      ]
+     },
+     "n_changed": 1,
+     "becomes_wrong_critical": {}
+    }
+   }
+  },
+  "postcheck": {
+   "repeats": {
+    "S1": {
+     "runs": 2,
+     "served_by": {
+      "groq:qwen/qwen3.8-27b": 2
+     },
+     "unstable_tests": {},
+     "n_unstable": 0,
+     "tests": 12,
+     "unstable_and_sometimes_wrong_critical": {}
+    },
+    "N4": {
+     "runs": 1,
+     "served_by": {
+      "groq:qwen/qwen3.8-27b": 1
+     },
+     "unstable_tests": {},
+     "n_unstable": 0,
+     "tests": 12,
+     "unstable_and_sometimes_wrong_critical": {}
+    }
+   },
+   "perturbations": {
+    "P2_S1": {
+     "served_by": "groq:qwen/qwen3.8-27b",
+     "base_served_by": "groq:qwen/qwen3.8-27b",
+     "changed": {
+      "TV-003": [
+       "possibly_affected",
+       "needs_human_review"
+      ]
+     },
+     "n_changed": 1,
+     "becomes_wrong_critical": {}
+    }
+   }
+  }
+ },
+ "reliability": {
+  "cases": 32,
+  "answered": 15,
+  "failed_after_retry": 17,
+  "first_attempt_failed": 24,
+  "served_by": {
+   "groq:qwen/qwen3.8-27b": 15
+  },
+  "fallback_used": 0,
+  "valid_first_try": 14,
+  "attempts_gt1": 1,
+  "latency_s": {
+   "groq:qwen/qwen3.8-27b": {
+    "n": 15,
+    "median": 5.28,
+    "p90": 13.03,
+    "max": 18.88
+   }
+  },
+  "warning_counts": {
+   "provider rejected": 1,
+   "invalid output": 1
+  },
+  "approval_hits": 0,
+  "errors": [
+   "every configured model failed. groq:qwen/qwen3.8-27b failed: RateLimitError: Error code: 429 - Request too large for model `qwen/qwen3.8-27b` in organization `org_REDACTED` service tier `on_demand` on output tokens per minute (OTPM): Limit 1000, Requested 191 gemini:gemini-3.5-flash failed: RateLimi",
+   "every configured model failed. groq:qwen/qwen3.8-27b failed: RateLimitError: Error code: 429 - Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_REDACTED` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 197403, Requeste gemini:gemini-3.5-flash failed: RateLimi",
+   "every configured model failed. groq:qwen/qwen3.8-27b failed: RateLimitError: Error code: 429 - Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_REDACTED` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 197031, Requeste gemini:gemini-3.5-flash failed: RateLimi",
+   "every configured model failed. groq:qwen/qwen3.8-27b failed: RateLimitError: Error code: 429 - Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_REDACTED` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 196660, Requeste gemini:gemini-3.5-flash failed: RateLimi",
+   "every configured model failed. groq:qwen/qwen3.8-27b failed: RateLimitError: Error code: 429 - Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_REDACTED` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 196289, Requeste gemini:gemini-3.5-flash failed: RateLimi",
+   "every configured model failed. groq:qwen/qwen3.8-27b failed: RateLimitError: Error code: 429 - Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_REDACTED` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198891, Requeste gemini:gemini-3.5-flash failed: RateLimi",
+   "every configured model failed. groq:qwen/qwen3.8-27b failed: RateLimitError: Error code: 429 - Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_REDACTED` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 195917, Requeste gemini:gemini-3.5-flash failed: RateLimi",
+   "every configured model failed. groq:qwen/qwen3.8-27b failed: RateLimitError: Error code: 429 - Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_REDACTED` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198520, Requeste gemini:gemini-3.5-flash failed: RateLimi",
+   "every configured model failed. groq:qwen/qwen3.8-27b failed: LLMError: No valid structured output after 2 attempts: 1 validation error for LLMImpactResult\n  Invalid JSON: key must be a string at line 1 column 3 [type=json_invalid, input_value='{ Change summary regardi... gemini:gemini-3.5-flash fail",
+   "every configured model failed. groq:qwen/qwen3.8-27b failed: RateLimitError: Error code: 429 - Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_REDACTED` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199634, Requeste gemini:gemini-3.5-flash failed: RateLimi",
+   "every configured model failed. groq:qwen/qwen3.8-27b failed: RateLimitError: Error code: 429 - Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_REDACTED` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199169, Requeste gemini:gemini-3.5-flash failed: RateLimi",
+   "every configured model failed. groq:qwen/qwen3.8-27b failed: RateLimitError: Error code: 429 - Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_REDACTED` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199263, Requeste gemini:gemini-3.5-flash failed: RateLimi",
+   "every configured model failed. groq:qwen/qwen3.8-27b failed: RateLimitError: Error code: 429 - Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_REDACTED` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198515, Requeste gemini:gemini-3.5-flash failed: RateLimi",
+   "every configured model failed. groq:qwen/qwen3.8-27b failed: RateLimitError: Error code: 429 - Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_REDACTED` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198145, Requeste gemini:gemini-3.5-flash failed: RateLimi",
+   "every configured model failed. groq:qwen/qwen3.8-27b failed: RateLimitError: Error code: 429 - Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_REDACTED` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 197774, Requeste gemini:gemini-3.5-flash failed: RateLimi",
+   "every configured model failed. groq:qwen/qwen3.8-27b failed: RateLimitError: Error code: 429 - Request too large for model `qwen/qwen3.8-27b` in organization `org_REDACTED` service tier `on_demand` on output tokens per minute (OTPM): Limit 1000, Requested 178 gemini:gemini-3.5-flash failed: RateLimi",
+   "every configured model failed. groq:qwen/qwen3.8-27b failed: RateLimitError: Error code: 429 - Request too large for model `qwen/qwen3.8-27b` in organization `org_REDACTED` service tier `on_demand` on output tokens per minute (OTPM): Limit 1000, Requested 168 gemini:gemini-3.5-flash failed: RateLimi"
+  ]
+ },
+ "nature": {
+  "scored": 14,
+  "right": 13,
+  "stability": {
+   "S1 VCU-DR-01": {
+    "tightened": 2
+   },
+   "N4 VCU-BRK-03": {
+    "scope_changed": 1
+   }
+  }
+ },
+ "nature_rows": [
+  {
+   "scenario": "N2",
+   "req": "VCU-DR-02",
+   "got": "reworded_same_meaning",
+   "accepted": [
+    "reworded_same_meaning",
+    "other"
+   ],
+   "ok": true,
+   "served_by": "groq:qwen/qwen3.8-27b",
+   "summary_names_new_value": null
+  },
+  {
+   "scenario": "N3",
+   "req": "VCU-THM-07",
+   "got": "added",
+   "accepted": [
+    "added"
+   ],
+   "ok": true,
+   "served_by": "groq:qwen/qwen3.8-27b",
+   "summary_names_new_value": true
+  },
+  {
+   "scenario": "N3",
+   "req": "VCU-LOG-05",
+   "got": "removed",
+   "accepted": [
+    "removed"
+   ],
+   "ok": true,
+   "served_by": "groq:qwen/qwen3.8-27b",
+   "summary_names_new_value": null
+  },
+  {
+   "scenario": "N4",
+   "req": "VCU-BRK-03",
+   "got": "scope_changed",
+   "accepted": [
+    "scope_changed"
+   ],
+   "ok": true,
+   "served_by": "groq:qwen/qwen3.8-27b",
+   "summary_names_new_value": null
+  },
+  {
+   "scenario": "N5",
+   "req": "VCU-LOG-05",
+   "got": "scope_changed",
+   "accepted": [
+    "scope_changed"
+   ],
+   "ok": true,
+   "served_by": "groq:qwen/qwen3.8-27b",
+   "summary_names_new_value": null
+  },
+  {
+   "scenario": "N6",
+   "req": "VCU-LOG-05",
+   "got": "removed",
+   "accepted": [
+    "removed"
+   ],
+   "ok": true,
+   "served_by": "groq:qwen/qwen3.8-27b",
+   "summary_names_new_value": null
+  },
+  {
+   "scenario": "N6",
+   "req": "VCU-LOG-15",
+   "got": "added",
+   "accepted": [
+    "added",
+    "reworded_same_meaning"
+   ],
+   "ok": true,
+   "served_by": "groq:qwen/qwen3.8-27b",
+   "summary_names_new_value": null
+  },
+  {
+   "scenario": "S10",
+   "req": "VCU-DR-01",
+   "got": "tightened",
+   "accepted": [
+    "tightened"
+   ],
+   "ok": true,
+   "served_by": "groq:qwen/qwen3.8-27b",
+   "summary_names_new_value": true
+  },
+  {
+   "scenario": "S1",
+   "req": "VCU-DR-01",
+   "got": "tightened",
+   "accepted": [
+    "tightened"
+   ],
+   "ok": true,
+   "served_by": "groq:qwen/qwen3.8-27b",
+   "summary_names_new_value": true
+  },
+  {
+   "scenario": "S4",
+   "req": "VCU-DR-01",
+   "got": "relaxed",
+   "accepted": [
+    "relaxed"
+   ],
+   "ok": true,
+   "served_by": "groq:qwen/qwen3.8-27b",
+   "summary_names_new_value": true
+  },
+  {
+   "scenario": "S6",
+   "req": "VCU-MOD-06",
+   "got": "removed",
+   "accepted": [
+    "removed"
+   ],
+   "ok": true,
+   "served_by": "groq:qwen/qwen3.8-27b",
+   "summary_names_new_value": null
+  },
+  {
+   "scenario": "S7",
+   "req": "VCU-THM-07",
+   "got": "added",
+   "accepted": [
+    "added"
+   ],
+   "ok": true,
+   "served_by": "groq:qwen/qwen3.8-27b",
+   "summary_names_new_value": null
+  },
+  {
+   "scenario": "S8",
+   "req": "VCU-DR-01",
+   "got": "tightened",
+   "accepted": [
+    "scope_changed",
+    "relaxed"
+   ],
+   "ok": false,
+   "served_by": "groq:qwen/qwen3.8-27b",
+   "summary_names_new_value": true
+  },
+  {
+   "scenario": "S9",
+   "req": "VCU-DR-01",
+   "got": "tightened",
+   "accepted": [
+    "tightened"
+   ],
+   "ok": true,
+   "served_by": "groq:qwen/qwen3.8-27b",
+   "summary_names_new_value": true
+  }
+ ]
+}

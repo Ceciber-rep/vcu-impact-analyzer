@@ -1,0 +1,221 @@
+{
+ "ok": true,
+ "case": "S6_r1",
+ "scenario": "S6",
+ "kind": "base",
+ "served_by": "groq:qwen/qwen3.8-27b",
+ "fallback_used": false,
+ "first_attempt_failed": "",
+ "model_label": "groq:qwen/qwen3.8-27b",
+ "prompt_version": "v3",
+ "created_at": "2026-11-18T13:59:42+00:00",
+ "latency_s": 18.88,
+ "attempts": 2,
+ "prompt_tokens": 4343,
+ "completion_tokens": 1622,
+ "structured_mode": "json_schema",
+ "result": {
+  "change_interpretations": [
+   {
+    "requirement_id": "VCU-MOD-06",
+    "nature": "removed",
+    "engineering_summary": "The requirement for driver-selectable operating modes (Comfort/Sport) and their effect on torque ramp profiles has been removed. Tests specifically verifying mode-dependent behavior are now obsolete. Tests verifying mode-logging or mode-independent behaviors (like brake priority) remain valid."
+   }
+  ],
+  "assessments": [
+   {
+    "test_id": "TV-001",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test verifies driver torque response timing (VCU-DR-01), which is unchanged. It does not exercise operating mode selection or torque ramp profiles.",
+    "evidence": [
+     "Test verifies VCU-DR-01 (unchanged).",
+     "No link to VCU-MOD-06."
+    ],
+    "recommended_action": "No action required."
+   },
+   {
+    "test_id": "TV-002",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test verifies brake override priority (VCU-BRK-03), which is unchanged. The requirement explicitly states that brake priority is independent of the requested driving mode, so the removal of VCU-MOD-06 does not alter the expected behavior.",
+    "evidence": [
+     "Test verifies VCU-BRK-03 (unchanged).",
+     "VCU-BRK-03 explicitly states priority is independent of requested driving mode."
+    ],
+    "recommended_action": "No action required."
+   },
+   {
+    "test_id": "TV-003",
+    "status": "needs_human_review",
+    "confidence": "medium",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link",
+     "owner_decision"
+    ],
+    "reason": "The test has a missing requirement link and exercises torque transients. While it does not explicitly test mode selection, the lack of a link prevents definitive exclusion if the torque profile is mode-dependent. However, the primary change is the removal of the mode requirement, not a change in torque limits.",
+    "evidence": [
+     "Test has no valid requirement link (missing).",
+     "Procedure involves torque transients but no explicit mode selection."
+    ],
+    "recommended_action": "Clarify requirement link with system engineer."
+   },
+   {
+    "test_id": "TV-004",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test verifies brake actuator response (VCU-BRK-03), which is unchanged. The removal of VCU-MOD-06 does not affect brake command latency.",
+    "evidence": [
+     "Test verifies VCU-BRK-03 (unchanged).",
+     "Workshop notes confirm brake latency uses a different clock than torque latency."
+    ],
+    "recommended_action": "No action required."
+   },
+   {
+    "test_id": "TV-005",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test verifies sensor degradation handling (VCU-DGN-04), which is unchanged. It does not exercise operating mode selection.",
+    "evidence": [
+     "Test verifies VCU-DGN-04 (unchanged).",
+     "No link to VCU-MOD-06."
+    ],
+    "recommended_action": "No action required."
+   },
+   {
+    "test_id": "TV-006",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test verifies logging of mode changes (VCU-LOG-05), which is unchanged. Although the procedure involves changing modes, the requirement for logging timestamped mode changes remains valid regardless of the removal of the operating mode requirement itself.",
+    "evidence": [
+     "Test verifies VCU-LOG-05 (unchanged).",
+     "Procedure explicitly involves changing Comfort to Sport."
+    ],
+    "recommended_action": "No action required."
+   },
+   {
+    "test_id": "TV-007",
+    "status": "needs_human_review",
+    "confidence": "low",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link",
+     "owner_decision"
+    ],
+    "reason": "The test has a TBD link and has never been run. It cannot be determined if it relates to the removed requirement or other unchanged requirements. Human review is needed to clarify ownership and scope.",
+    "evidence": [
+     "Test has a TBD requirement link.",
+     "Test has never been run (NOT RUN).",
+     "Comment indicates ownership and source link to be clarified."
+    ],
+    "recommended_action": "Clarify requirement link and ownership."
+   },
+   {
+    "test_id": "TV-008",
+    "status": "needs_human_review",
+    "confidence": "medium",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link",
+     "owner_decision"
+    ],
+    "reason": "The test links to an unknown requirement (VCU-OLD-88). It is unclear if this requirement is related to the removed VCU-MOD-06 or if it is a legacy requirement that should be retired. Human review is needed to determine the test's current validity.",
+    "evidence": [
+     "Test links to VCU-OLD-88 (unknown_requirement).",
+     "Comment indicates requirements catalog changed."
+    ],
+    "recommended_action": "Review test relevance and update requirement link."
+   },
+   {
+    "test_id": "TV-009",
+    "status": "directly_affected",
+    "confidence": "high",
+    "related_requirements": [
+     "VCU-MOD-06"
+    ],
+    "required_actions": [
+     "fix_link",
+     "owner_decision"
+    ],
+    "reason": "The test directly verifies the removed requirement VCU-MOD-06 (Operating mode). Since the requirement is removed, the test's purpose is obsolete. The owner must decide whether to retire or re-scope the test.",
+    "evidence": [
+     "Test directly links to VCU-MOD-06 (removed).",
+     "Procedure compares Sport vs Comfort torque ramps."
+    ],
+    "recommended_action": "Retire or re-scope the test."
+   },
+   {
+    "test_id": "TV-010",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test verifies pedal signal filtering (VCU-DR-02), which is unchanged. It does not exercise operating mode selection.",
+    "evidence": [
+     "Test verifies VCU-DR-02 (unchanged).",
+     "No link to VCU-MOD-06."
+    ],
+    "recommended_action": "No action required."
+   },
+   {
+    "test_id": "TV-011",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test verifies torque cancellation on braking (VCU-BRK-03), which is unchanged. The requirement explicitly states that brake priority is independent of the requested driving mode, so the removal of VCU-MOD-06 does not alter the expected behavior.",
+    "evidence": [
+     "Test verifies VCU-BRK-03 (unchanged).",
+     "VCU-BRK-03 explicitly states priority is independent of requested driving mode."
+    ],
+    "recommended_action": "No action required."
+   },
+   {
+    "test_id": "TV-012",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link"
+    ],
+    "reason": "The test verifies ECU wake-up timing, which is unrelated to the removed operating mode requirement. The missing link is a data quality issue but does not indicate relevance to the change.",
+    "evidence": [
+     "Test has no valid requirement link (missing).",
+     "Procedure involves ECU wake-up timing, unrelated to operating modes."
+    ],
+    "recommended_action": "No action required for this change."
+   }
+  ]
+ },
+ "warnings": [
+  "provider rejected the generated JSON (server-side schema check)",
+  "attempt 1: invalid output (1 validation error for LLMImpactResult\n  Invalid JSON: key must be a string at line 1 column 2 [type=json_invalid, input_value='{Assurance assessment generated successfully}', input_type=str]\n    For )"
+ ],
+ "adjustments": [],
+ "raw_text": "{\"assessments\": [{\"confidence\": \"high\", \"evidence\": [\"Test verifies VCU-DR-01 (unchanged).\", \"No link to VCU-MOD-06.\"], \"reason\": \"The test verifies driver torque response timing (VCU-DR-01), which is unchanged. It does not exercise operating mode selection or torque ramp profiles.\", \"recommended_action\": \"No action required.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-001\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies VCU-BRK-03 (unchanged).\", \"VCU-BRK-03 explicitly states priority is independent of requested driving mode.\"], \"reason\": \"The test verifies brake override priority (VCU-BRK-03), which is unchanged. The requirement explicitly states that brake priority is independent of the requested driving mode, so the removal of VCU-MOD-06 does not alter the expected behavior.\", \"recommended_action\": \"No action required.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-002\"}, {\"confidence\": \"medium\", \"evidence\": [\"Test has no valid requirement link (missing).\", \"Procedure involves torque transients but no explicit mode selection.\"], \"reason\": \"The test has a missing requirement link and exercises torque transients. While it does not explicitly test mode selection, the lack of a link prevents definitive exclusion if the torque profile is mode-dependent. However, the primary change is the removal of the mode requirement, not a change in torque limits.\", \"recommended_action\": \"Clarify requirement link with system engineer.\", \"related_requirements\": [], \"required_actions\": [\"owner_decision\"], \"status\": \"needs_human_review\", \"test_id\": \"TV-003\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies VCU-BRK-03 (unchanged).\", \"Workshop notes confirm brake latency uses a different clock than torque latency.\"], \"reason\": \"The test verifies brake actuator response (VCU-BRK-03), which is unchanged. The removal of VCU-MOD-06 does not affect brake command latency.\", \"recommended_action\": \"No action required.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-004\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies VCU-DGN-04 (unchanged).\", \"No link to VCU-MOD-06.\"], \"reason\": \"The test verifies sensor degradation handling (VCU-DGN-04), which is unchanged. It does not exercise operating mode selection.\", \"recommended_action\": \"No action required.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-005\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies VCU-LOG-05 (unchanged).\", \"Procedure explicitly involves changing Comfort to Sport.\"], \"reason\": \"The test verifies logging of mode changes (VCU-LOG-05), which is unchanged. Although the procedure involves changing modes, the requirement for logging timestamped mode changes remains valid regardless of the removal of the operating mode requirement itself.\", \"recommended_action\": \"No action required.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-006\"}, {\"confidence\": \"low\", \"evidence\": [\"Test has a TBD requirement link.\", \"Test has never been run (NOT RUN).\", \"Comment indicates ownership and source link to be clarified.\"], \"reason\": \"The test has a TBD link and has never been run. It cannot be determined if it relates to the removed requirement or other unchanged requirements. Human review is needed to clarify ownership and scope.\", \"recommended_action\": \"Clarify requirement link and ownership.\", \"related_requirements\": [], \"required_actions\": [\"owner_decision\"], \"status\": \"needs_human_review\", \"test_id\": \"TV-007\"}, {\"confidence\": \"medium\", \"evidence\": [\"Test links to VCU-OLD-88 (unknown_requirement).\", \"Comment indicates requirements catalog changed.\"], \"reason\": \"The test links to an unknown requirement (VCU-OLD-88). It is unclear if this requirement is related to the removed VCU-MOD-06 or if it is a legacy requirement that should be retired. Human review is needed to determine the test's current validity.\", \"recommended_action\": \"Review test relevance and update requirement link.\", \"related_requirements\": [], \"required_actions\": [\"owner_decision\"], \"status\": \"needs_human_review\", \"test_id\": \"TV-008\"}, {\"confidence\": \"high\", \"evidence\": [\"Test directly links to VCU-MOD-06 (removed).\", \"Procedure compares Sport vs Comfort torque ramps.\"], \"reason\": \"The test directly verifies the removed requirement VCU-MOD-06 (Operating mode). Since the requirement is removed, the test's purpose is obsolete. The owner must decide whether to retire or re-scope the test.\", \"recommended_action\": \"Retire or re-scope the test.\", \"related_requirements\": [\"VCU-MOD-06\"], \"required_actions\": [\"owner_decision\"], \"status\": \"directly_affected\", \"test_id\": \"TV-009\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies VCU-DR-02 (unchanged).\", \"No link to VCU-MOD-06.\"], \"reason\": \"The test verifies pedal signal filtering (VCU-DR-02), which is unchanged. It does not exercise operating mode selection.\", \"recommended_action\": \"No action required.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-010\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies VCU-BRK-03 (unchanged).\", \"VCU-BRK-03 explicitly states priority is independent of requested driving mode.\"], \"reason\": \"The test verifies torque cancellation on braking (VCU-BRK-03), which is unchanged. The requirement explicitly states that brake priority is independent of the requested driving mode, so the removal of VCU-MOD-06 does not alter the expected behavior.\", \"recommended_action\": \"No action required.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-011\"}, {\"confidence\": \"high\", \"evidence\": [\"Test has no valid requirement link (missing).\", \"Procedure involves ECU wake-up timing, unrelated to operating modes.\"], \"reason\": \"The test verifies ECU wake-up timing, which is unrelated to the removed operating mode requirement. The missing link is a data quality issue but does not indicate relevance to the change.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-012\"}], \"change_interpretations\": [{\"engineering_summary\": \"The requirement for driver-selectable operating modes (Comfort/Sport) and their effect on torque ramp profiles has been removed. Tests specifically verifying mode-dependent behavior are now obsolete. Tests verifying mode-logging or mode-independent behaviors (like brake priority) remain valid.\", \"nature\": \"removed\", \"requirement_id\": \"VCU-MOD-06\"}]}"
+}

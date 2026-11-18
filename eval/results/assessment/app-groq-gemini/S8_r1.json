@@ -1,0 +1,228 @@
+{
+ "ok": true,
+ "case": "S8_r1",
+ "scenario": "S8",
+ "kind": "base",
+ "served_by": "groq:qwen/qwen3.8-27b",
+ "fallback_used": false,
+ "first_attempt_failed": "every configured model failed. groq:qwen/qwen3.8-27b failed: RateLimitError: Error code: 429 - Request too large for model `qwen/qwen3.8-27b` in organization `org_REDACTED` service tier `on_demand` on output tokens per minute (OTPM): Limit 1000, Requested 162 gemini:gemini-3.5-flash failed: RateLimitError: Error code: 429",
+ "model_label": "groq:qwen/qwen3.8-27b",
+ "prompt_version": "v3",
+ "created_at": "2026-11-18T14:03:43+00:00",
+ "latency_s": 5.01,
+ "attempts": 1,
+ "prompt_tokens": 4310,
+ "completion_tokens": 1940,
+ "structured_mode": "json_schema",
+ "result": {
+  "change_interpretations": [
+   {
+    "requirement_id": "VCU-DR-01",
+    "nature": "tightened",
+    "engineering_summary": "The threshold for triggering the torque response requirement has been raised from 70% to 90% pedal demand. Tests that use pedal demands between 70% and 90% no longer verify the changed requirement and must be updated to use demands above 90%. Tests using demands above 90% may still be valid but should be reviewed to ensure alignment with the new threshold."
+   }
+  ],
+  "assessments": [
+   {
+    "test_id": "TV-001",
+    "status": "directly_affected",
+    "confidence": "high",
+    "related_requirements": [
+     "VCU-DR-01"
+    ],
+    "required_actions": [
+     "rerun",
+     "update_procedure"
+    ],
+    "reason": "The test stimulus (75%) is below the new 90% threshold in VCU-DR-01, so it no longer verifies the changed requirement. The procedure must be updated to use a pedal demand above 90%.",
+    "evidence": [
+     "Procedure steps to 75% pedal demand, which is below the new 90% threshold.",
+     "Previous result PASS (94 ms) is no longer valid evidence for the new requirement as the stimulus does not trigger the specified condition."
+    ],
+    "recommended_action": "Update the test procedure to step the pedal demand to a value above 90% (e.g., 95%) and rerun the test."
+   },
+   {
+    "test_id": "TV-002",
+    "status": "directly_affected",
+    "confidence": "high",
+    "related_requirements": [
+     "VCU-DR-01"
+    ],
+    "required_actions": [
+     "rerun",
+     "update_procedure"
+    ],
+    "reason": "The 85% pedal stimulus is below the new 90% threshold, so the test no longer exercises the changed torque response condition. The brake override aspect remains valid as VCU-BRK-03 is unchanged.",
+    "evidence": [
+     "Procedure applies 85% pedal demand, which is below the new 90% threshold.",
+     "The test also verifies brake override (VCU-BRK-03), which is unchanged."
+    ],
+    "recommended_action": "Update the pedal demand in the procedure to a value above 90% and rerun the test to verify the new torque response condition."
+   },
+   {
+    "test_id": "TV-003",
+    "status": "possibly_affected",
+    "confidence": "medium",
+    "related_requirements": [
+     "VCU-DR-01"
+    ],
+    "required_actions": [
+     "rerun",
+     "fix_link",
+     "owner_decision"
+    ],
+    "reason": "The test sweep includes pedal demands above the new 90% threshold, so it plausibly exercises the changed behavior. However, the missing requirement link and legacy 95 ms tolerance in the comment make it unclear if the test is fully aligned with the new requirement.",
+    "evidence": [
+     "Procedure sweeps demand from 75% to 95%, which includes values above the new 90% threshold.",
+     "No requirement link is provided (missing link).",
+     "Previous result PASS (92 ms) was measured under the old 70% threshold."
+    ],
+    "recommended_action": "Clarify the requirement link and verify if the 95 ms tolerance in the script aligns with the 100 ms requirement. Rerun the test to confirm compliance with the new 90% threshold."
+   },
+   {
+    "test_id": "TV-004",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test is linked to VCU-BRK-03 (unchanged) and measures brake latency, which is a different quantity from the torque response time in VCU-DR-01. The change to VCU-DR-01 does not affect this test.",
+    "evidence": [
+     "Test verifies brake command latency (88 ms) against a 100 ms target.",
+     "Workshop notes state brake and torque latencies use different clocks and should not be conflated."
+    ],
+    "recommended_action": "No action required for this change."
+   },
+   {
+    "test_id": "TV-005",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test verifies sensor degradation behavior, which is unrelated to the driver torque response threshold change in VCU-DR-01.",
+    "evidence": [
+     "Test verifies degraded mode and fault logging for wheel-speed sensor failure.",
+     "Linked to VCU-DGN-04, which is unchanged."
+    ],
+    "recommended_action": "No action required for this change."
+   },
+   {
+    "test_id": "TV-006",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test verifies trace and evidence logging, which is unrelated to the driver torque response threshold change in VCU-DR-01.",
+    "evidence": [
+     "Test verifies logging of mode changes and build identifiers.",
+     "Linked to VCU-LOG-05, which is unchanged."
+    ],
+    "recommended_action": "No action required for this change."
+   },
+   {
+    "test_id": "TV-007",
+    "status": "needs_human_review",
+    "confidence": "low",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link",
+     "owner_decision"
+    ],
+    "reason": "The test content (80% pedal demand) is below the new 90% threshold, but the TBD link and unclear ownership make it impossible to definitively determine its relevance. It might relate to the changed behavior if the TBD link refers to VCU-DR-01.",
+    "evidence": [
+     "Procedure uses 80% pedal demand, which is below the new 90% threshold.",
+     "Requirement link is TBD, and ownership is to be clarified.",
+     "Test has not been run."
+    ],
+    "recommended_action": "Clarify the requirement link and ownership. If linked to VCU-DR-01, update the pedal demand to above 90% and run the test."
+   },
+   {
+    "test_id": "TV-008",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link"
+    ],
+    "reason": "The test is linked to a removed/unknown requirement and its content (diagnostic replay) is clearly unrelated to the driver torque response change in VCU-DR-01.",
+    "evidence": [
+     "Test is linked to VCU-OLD-88, which is an unknown requirement.",
+     "Procedure involves replaying an old diagnostic trace, unrelated to torque response."
+    ],
+    "recommended_action": "No action required for this change. The broken link is flagged separately by the application."
+   },
+   {
+    "test_id": "TV-009",
+    "status": "possibly_affected",
+    "confidence": "medium",
+    "related_requirements": [
+     "VCU-DR-01"
+    ],
+    "required_actions": [
+     "owner_decision"
+    ],
+    "reason": "The test exercises accelerator response, which is related to the changed behavior in VCU-DR-01. However, it is linked to an unchanged requirement (VCU-MOD-06) and lacks quantitative assertions, making the relation indirect.",
+    "evidence": [
+     "Test compares accelerator response under Sport vs Comfort modes.",
+     "Linked to VCU-MOD-06, which is unchanged.",
+     "Comment notes 'No quantitative response-time assertion'."
+    ],
+    "recommended_action": "Review if the test should be updated to include quantitative response-time assertions aligned with the new 90% threshold in VCU-DR-01."
+   },
+   {
+    "test_id": "TV-010",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test verifies pedal signal filtering, which is unrelated to the driver torque response threshold change in VCU-DR-01.",
+    "evidence": [
+     "Test verifies filtering of 7 ms pedal spikes.",
+     "Linked to VCU-DR-02, which is unchanged."
+    ],
+    "recommended_action": "No action required for this change."
+   },
+   {
+    "test_id": "TV-011",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test verifies brake priority over torque, which is unrelated to the driver torque response threshold change in VCU-DR-01.",
+    "evidence": [
+     "Test verifies torque cancellation during emergency braking.",
+     "Linked to VCU-BRK-03, which is unchanged."
+    ],
+    "recommended_action": "No action required for this change."
+   },
+   {
+    "test_id": "TV-012",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link"
+    ],
+    "reason": "The test verifies platform startup timing, which is unrelated to the driver torque response threshold change in VCU-DR-01.",
+    "evidence": [
+     "Test verifies ECU wake-up timing (433 ms vs 500 ms target).",
+     "No requirement link provided.",
+     "Comment notes 'Platform startup only'."
+    ],
+    "recommended_action": "No action required for this change."
+   }
+  ]
+ },
+ "warnings": [],
+ "adjustments": [],
+ "raw_text": "{\"assessments\": [{\"confidence\": \"high\", \"evidence\": [\"Procedure steps to 75% pedal demand, which is below the new 90% threshold.\", \"Previous result PASS (94 ms) is no longer valid evidence for the new requirement as the stimulus does not trigger the specified condition.\"], \"reason\": \"The test stimulus (75%) is below the new 90% threshold in VCU-DR-01, so it no longer verifies the changed requirement. The procedure must be updated to use a pedal demand above 90%.\", \"recommended_action\": \"Update the test procedure to step the pedal demand to a value above 90% (e.g., 95%) and rerun the test.\", \"related_requirements\": [\"VCU-DR-01\"], \"required_actions\": [\"update_procedure\", \"rerun\"], \"status\": \"directly_affected\", \"test_id\": \"TV-001\"}, {\"confidence\": \"high\", \"evidence\": [\"Procedure applies 85% pedal demand, which is below the new 90% threshold.\", \"The test also verifies brake override (VCU-BRK-03), which is unchanged.\"], \"reason\": \"The 85% pedal stimulus is below the new 90% threshold, so the test no longer exercises the changed torque response condition. The brake override aspect remains valid as VCU-BRK-03 is unchanged.\", \"recommended_action\": \"Update the pedal demand in the procedure to a value above 90% and rerun the test to verify the new torque response condition.\", \"related_requirements\": [\"VCU-DR-01\"], \"required_actions\": [\"update_procedure\", \"rerun\"], \"status\": \"directly_affected\", \"test_id\": \"TV-002\"}, {\"confidence\": \"medium\", \"evidence\": [\"Procedure sweeps demand from 75% to 95%, which includes values above the new 90% threshold.\", \"No requirement link is provided (missing link).\", \"Previous result PASS (92 ms) was measured under the old 70% threshold.\"], \"reason\": \"The test sweep includes pedal demands above the new 90% threshold, so it plausibly exercises the changed behavior. However, the missing requirement link and legacy 95 ms tolerance in the comment make it unclear if the test is fully aligned with the new requirement.\", \"recommended_action\": \"Clarify the requirement link and verify if the 95 ms tolerance in the script aligns with the 100 ms requirement. Rerun the test to confirm compliance with the new 90% threshold.\", \"related_requirements\": [\"VCU-DR-01\"], \"required_actions\": [\"rerun\", \"owner_decision\"], \"status\": \"possibly_affected\", \"test_id\": \"TV-003\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies brake command latency (88 ms) against a 100 ms target.\", \"Workshop notes state brake and torque latencies use different clocks and should not be conflated.\"], \"reason\": \"The test is linked to VCU-BRK-03 (unchanged) and measures brake latency, which is a different quantity from the torque response time in VCU-DR-01. The change to VCU-DR-01 does not affect this test.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-004\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies degraded mode and fault logging for wheel-speed sensor failure.\", \"Linked to VCU-DGN-04, which is unchanged.\"], \"reason\": \"The test verifies sensor degradation behavior, which is unrelated to the driver torque response threshold change in VCU-DR-01.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-005\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies logging of mode changes and build identifiers.\", \"Linked to VCU-LOG-05, which is unchanged.\"], \"reason\": \"The test verifies trace and evidence logging, which is unrelated to the driver torque response threshold change in VCU-DR-01.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-006\"}, {\"confidence\": \"low\", \"evidence\": [\"Procedure uses 80% pedal demand, which is below the new 90% threshold.\", \"Requirement link is TBD, and ownership is to be clarified.\", \"Test has not been run.\"], \"reason\": \"The test content (80% pedal demand) is below the new 90% threshold, but the TBD link and unclear ownership make it impossible to definitively determine its relevance. It might relate to the changed behavior if the TBD link refers to VCU-DR-01.\", \"recommended_action\": \"Clarify the requirement link and ownership. If linked to VCU-DR-01, update the pedal demand to above 90% and run the test.\", \"related_requirements\": [], \"required_actions\": [\"owner_decision\"], \"status\": \"needs_human_review\", \"test_id\": \"TV-007\"}, {\"confidence\": \"high\", \"evidence\": [\"Test is linked to VCU-OLD-88, which is an unknown requirement.\", \"Procedure involves replaying an old diagnostic trace, unrelated to torque response.\"], \"reason\": \"The test is linked to a removed/unknown requirement and its content (diagnostic replay) is clearly unrelated to the driver torque response change in VCU-DR-01.\", \"recommended_action\": \"No action required for this change. The broken link is flagged separately by the application.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-008\"}, {\"confidence\": \"medium\", \"evidence\": [\"Test compares accelerator response under Sport vs Comfort modes.\", \"Linked to VCU-MOD-06, which is unchanged.\", \"Comment notes 'No quantitative response-time assertion'.\"], \"reason\": \"The test exercises accelerator response, which is related to the changed behavior in VCU-DR-01. However, it is linked to an unchanged requirement (VCU-MOD-06) and lacks quantitative assertions, making the relation indirect.\", \"recommended_action\": \"Review if the test should be updated to include quantitative response-time assertions aligned with the new 90% threshold in VCU-DR-01.\", \"related_requirements\": [\"VCU-DR-01\"], \"required_actions\": [\"owner_decision\"], \"status\": \"possibly_affected\", \"test_id\": \"TV-009\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies filtering of 7 ms pedal spikes.\", \"Linked to VCU-DR-02, which is unchanged.\"], \"reason\": \"The test verifies pedal signal filtering, which is unrelated to the driver torque response threshold change in VCU-DR-01.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-010\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies torque cancellation during emergency braking.\", \"Linked to VCU-BRK-03, which is unchanged.\"], \"reason\": \"The test verifies brake priority over torque, which is unrelated to the driver torque response threshold change in VCU-DR-01.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-011\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies ECU wake-up timing (433 ms vs 500 ms target).\", \"No requirement link provided.\", \"Comment notes 'Platform startup only'.\"], \"reason\": \"The test verifies platform startup timing, which is unrelated to the driver torque response threshold change in VCU-DR-01.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-012\"}], \"change_interpretations\": [{\"engineering_summary\": \"The threshold for triggering the torque response requirement has been raised from 70% to 90% pedal demand. Tests that use pedal demands between 70% and 90% no longer verify the changed requirement and must be updated to use demands above 90%. Tests using demands above 90% may still be valid but should be reviewed to ensure alignment with the new threshold.\", \"nature\": \"tightened\", \"requirement_id\": \"VCU-DR-01\"}]}"
+}

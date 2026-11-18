@@ -1,0 +1,7 @@
+{
+ "ok": false,
+ "case": "P3_N4",
+ "scenario": "N4",
+ "kind": "P3",
+ "error": "every configured model failed. groq:qwen/qwen3.8-27b failed: LLMError: No valid structured output after 2 attempts: 1 validation error for LLMImpactResult\n  Invalid JSON: key must be a string at line 1 column 3 [type=json_invalid, input_value='{ Change summary regardi... gemini:gemini-3.5-flash failed: RateLimitError: Error code: 429"
+}

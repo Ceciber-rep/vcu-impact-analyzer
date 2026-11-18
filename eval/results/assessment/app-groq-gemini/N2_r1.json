@@ -1,0 +1,211 @@
+{
+ "ok": true,
+ "case": "N2_r1",
+ "scenario": "N2",
+ "kind": "base",
+ "served_by": "groq:qwen/qwen3.8-27b",
+ "fallback_used": false,
+ "first_attempt_failed": "every configured model failed. groq:qwen/qwen3.8-27b failed: RateLimitError: Error code: 429 - Request too large for model `qwen/qwen3.8-27b` in organization `org_REDACTED` service tier `on_demand` on output tokens per minute (OTPM): Limit 1000, Requested 214 gemini:gemini-3.5-flash failed: RateLimitError: Error code: 429",
+ "model_label": "groq:qwen/qwen3.8-27b",
+ "prompt_version": "v3",
+ "created_at": "2026-11-18T14:13:10+00:00",
+ "latency_s": 10.55,
+ "attempts": 1,
+ "prompt_tokens": 4256,
+ "completion_tokens": 1790,
+ "structured_mode": "json_schema",
+ "result": {
+  "change_interpretations": [
+   {
+    "requirement_id": "VCU-DR-02",
+    "nature": "reworded_same_meaning",
+    "engineering_summary": "The requirement title was changed from 'Driver input validation' to 'Pedal input plausibility', but the technical content (filtering implausible signals and ignoring spikes <10 ms) remains identical. This is an editorial change with no impact on verification evidence or test procedures."
+   }
+  ],
+  "assessments": [
+   {
+    "test_id": "TV-001",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test is linked to VCU-DR-01, which is not part of the changed requirements. The change to VCU-DR-02 is an editorial rewording with identical technical content, so no behavioral change affects this test.",
+    "evidence": [
+     "Test TV-001 verifies torque response timing (94 ms) against VCU-DR-01, which is unchanged in this revision."
+    ],
+    "recommended_action": "No action required."
+   },
+   {
+    "test_id": "TV-002",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test exercises brake override and torque response behaviors defined in unchanged requirements. The change to VCU-DR-02 is a title rewording with no change to the filtering logic or thresholds.",
+    "evidence": [
+     "Test TV-002 verifies brake/pedal arbitration against VCU-DR-01 and VCU-BRK-03, both of which are unchanged."
+    ],
+    "recommended_action": "No action required."
+   },
+   {
+    "test_id": "TV-003",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link"
+    ],
+    "reason": "Although the link is missing, the test content (torque transient sweep) does not exercise the pedal signal filtering behavior described in VCU-DR-02. The change to VCU-DR-02 is editorial and does not alter the filtering criteria.",
+    "evidence": [
+     "Test TV-003 has a missing requirement link and tests torque transients, which are unrelated to the pedal spike filtering logic in VCU-DR-02."
+    ],
+    "recommended_action": "No action required for this change; link reconciliation is a separate task."
+   },
+   {
+    "test_id": "TV-004",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test is linked to an unchanged requirement and measures brake command latency, which is distinct from the pedal input validation logic in VCU-DR-02. The workshop notes confirm these are measured by different clocks and should not be conflated.",
+    "evidence": [
+     "Test TV-004 verifies brake actuator latency against VCU-BRK-03, which is unchanged."
+    ],
+    "recommended_action": "No action required."
+   },
+   {
+    "test_id": "TV-005",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test exercises wheel-speed sensor failure behavior, which is unrelated to the pedal input plausibility filtering in VCU-DR-02. The change to VCU-DR-02 is editorial and does not affect sensor degradation logic.",
+    "evidence": [
+     "Test TV-005 verifies sensor degradation handling against VCU-DGN-04, which is unchanged."
+    ],
+    "recommended_action": "No action required."
+   },
+   {
+    "test_id": "TV-006",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test exercises logging of mode changes, which is unrelated to the pedal input validation logic in VCU-DR-02. The change to VCU-DR-02 is a title rewording with no impact on logging requirements.",
+    "evidence": [
+     "Test TV-006 verifies mode event logging against VCU-LOG-05, which is unchanged."
+    ],
+    "recommended_action": "No action required."
+   },
+   {
+    "test_id": "TV-007",
+    "status": "not_affected",
+    "confidence": "medium",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link"
+    ],
+    "reason": "The test content involves pedal demand (80%) and torque delivery, which could plausibly interact with the pedal input validation logic in VCU-DR-02. However, the change to VCU-DR-02 is editorial and does not alter the filtering behavior, so the test is not directly affected. The TBD link requires clarification but does not change the impact assessment for this specific change.",
+    "evidence": [
+     "Test TV-007 has a TBD link and tests acceleration at thermal load, which may indirectly involve pedal input validation."
+    ],
+    "recommended_action": "Clarify the requirement link for TV-007 as part of general register maintenance."
+   },
+   {
+    "test_id": "TV-008",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link"
+    ],
+    "reason": "The test is linked to a removed or unknown requirement and tests diagnostic replay, which is unrelated to the pedal input validation logic in VCU-DR-02. The change to VCU-DR-02 is editorial and does not affect diagnostic replay behavior.",
+    "evidence": [
+     "Test TV-008 is linked to VCU-OLD-88, which is an unknown requirement, and tests diagnostic replay."
+    ],
+    "recommended_action": "No action required for this change; link reconciliation is a separate task."
+   },
+   {
+    "test_id": "TV-009",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test exercises mode-dependent torque ramp behavior, which is unrelated to the pedal input validation logic in VCU-DR-02. The change to VCU-DR-02 is a title rewording with no impact on mode-specific torque profiles.",
+    "evidence": [
+     "Test TV-009 verifies torque ramp profiles under different modes against VCU-MOD-06, which is unchanged."
+    ],
+    "recommended_action": "No action required."
+   },
+   {
+    "test_id": "TV-010",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [
+     "VCU-DR-02"
+    ],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test is directly linked to VCU-DR-02 and verifies the exact behavior described in the requirement (filtering 7 ms spikes). However, the change to VCU-DR-02 is an editorial rewording with identical technical content, so the test's validity and previous PASS evidence remain unchanged.",
+    "evidence": [
+     "Test TV-010 directly verifies the filtering of transient pedal spikes shorter than 10 ms, which is the core behavior of VCU-DR-02."
+    ],
+    "recommended_action": "No action required; the test remains valid for the reworded requirement."
+   },
+   {
+    "test_id": "TV-011",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test exercises brake priority over torque, which is unrelated to the pedal input validation logic in VCU-DR-02. The change to VCU-DR-02 is editorial and does not affect brake override behavior.",
+    "evidence": [
+     "Test TV-011 verifies torque cancellation during braking against VCU-BRK-03, which is unchanged."
+    ],
+    "recommended_action": "No action required."
+   },
+   {
+    "test_id": "TV-012",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link"
+    ],
+    "reason": "The test exercises platform startup timing, which is unrelated to the pedal input validation logic in VCU-DR-02. The change to VCU-DR-02 is editorial and does not affect wake-up behavior.",
+    "evidence": [
+     "Test TV-012 verifies ECU wake-up timing, which is unrelated to pedal input validation."
+    ],
+    "recommended_action": "No action required."
+   }
+  ]
+ },
+ "warnings": [
+  "TV-010: status changed from directly_affected to not_affected by the application's post-check, not by the model. The model read the change to VCU-DR-02 as a rewording with the same meaning, so a test related only to it cannot be directly affected. The model's answer was inconsistent; review manually."
+ ],
+ "adjustments": [
+  {
+   "test_id": "TV-010",
+   "rule": "rewording_contradiction",
+   "original_status": "directly_affected",
+   "new_status": "not_affected",
+   "reason": "The model read the change to VCU-DR-02 as a rewording with the same meaning, so a test related only to it cannot be directly affected."
+  }
+ ],
+ "raw_text": "{\"assessments\": [{\"confidence\": \"high\", \"evidence\": [\"Test TV-001 verifies torque response timing (94 ms) against VCU-DR-01, which is unchanged in this revision.\"], \"reason\": \"The test is linked to VCU-DR-01, which is not part of the changed requirements. The change to VCU-DR-02 is an editorial rewording with identical technical content, so no behavioral change affects this test.\", \"recommended_action\": \"No action required.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-001\"}, {\"confidence\": \"high\", \"evidence\": [\"Test TV-002 verifies brake/pedal arbitration against VCU-DR-01 and VCU-BRK-03, both of which are unchanged.\"], \"reason\": \"The test exercises brake override and torque response behaviors defined in unchanged requirements. The change to VCU-DR-02 is a title rewording with no change to the filtering logic or thresholds.\", \"recommended_action\": \"No action required.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-002\"}, {\"confidence\": \"high\", \"evidence\": [\"Test TV-003 has a missing requirement link and tests torque transients, which are unrelated to the pedal spike filtering logic in VCU-DR-02.\"], \"reason\": \"Although the link is missing, the test content (torque transient sweep) does not exercise the pedal signal filtering behavior described in VCU-DR-02. The change to VCU-DR-02 is editorial and does not alter the filtering criteria.\", \"recommended_action\": \"No action required for this change; link reconciliation is a separate task.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-003\"}, {\"confidence\": \"high\", \"evidence\": [\"Test TV-004 verifies brake actuator latency against VCU-BRK-03, which is unchanged.\"], \"reason\": \"The test is linked to an unchanged requirement and measures brake command latency, which is distinct from the pedal input validation logic in VCU-DR-02. The workshop notes confirm these are measured by different clocks and should not be conflated.\", \"recommended_action\": \"No action required.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-004\"}, {\"confidence\": \"high\", \"evidence\": [\"Test TV-005 verifies sensor degradation handling against VCU-DGN-04, which is unchanged.\"], \"reason\": \"The test exercises wheel-speed sensor failure behavior, which is unrelated to the pedal input plausibility filtering in VCU-DR-02. The change to VCU-DR-02 is editorial and does not affect sensor degradation logic.\", \"recommended_action\": \"No action required.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-005\"}, {\"confidence\": \"high\", \"evidence\": [\"Test TV-006 verifies mode event logging against VCU-LOG-05, which is unchanged.\"], \"reason\": \"The test exercises logging of mode changes, which is unrelated to the pedal input validation logic in VCU-DR-02. The change to VCU-DR-02 is a title rewording with no impact on logging requirements.\", \"recommended_action\": \"No action required.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-006\"}, {\"confidence\": \"medium\", \"evidence\": [\"Test TV-007 has a TBD link and tests acceleration at thermal load, which may indirectly involve pedal input validation.\"], \"reason\": \"The test content involves pedal demand (80%) and torque delivery, which could plausibly interact with the pedal input validation logic in VCU-DR-02. However, the change to VCU-DR-02 is editorial and does not alter the filtering behavior, so the test is not directly affected. The TBD link requires clarification but does not change the impact assessment for this specific change.\", \"recommended_action\": \"Clarify the requirement link for TV-007 as part of general register maintenance.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-007\"}, {\"confidence\": \"high\", \"evidence\": [\"Test TV-008 is linked to VCU-OLD-88, which is an unknown requirement, and tests diagnostic replay.\"], \"reason\": \"The test is linked to a removed or unknown requirement and tests diagnostic replay, which is unrelated to the pedal input validation logic in VCU-DR-02. The change to VCU-DR-02 is editorial and does not affect diagnostic replay behavior.\", \"recommended_action\": \"No action required for this change; link reconciliation is a separate task.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-008\"}, {\"confidence\": \"high\", \"evidence\": [\"Test TV-009 verifies torque ramp profiles under different modes against VCU-MOD-06, which is unchanged.\"], \"reason\": \"The test exercises mode-dependent torque ramp behavior, which is unrelated to the pedal input validation logic in VCU-DR-02. The change to VCU-DR-02 is a title rewording with no impact on mode-specific torque profiles.\", \"recommended_action\": \"No action required.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-009\"}, {\"confidence\": \"high\", \"evidence\": [\"Test TV-010 directly verifies the filtering of transient pedal spikes shorter than 10 ms, which is the core behavior of VCU-DR-02.\"], \"reason\": \"The test is directly linked to VCU-DR-02 and verifies the exact behavior described in the requirement (filtering 7 ms spikes). However, the change to VCU-DR-02 is an editorial rewording with identical technical content, so the test's validity and previous PASS evidence remain unchanged.\", \"recommended_action\": \"No action required; the test remains valid for the reworded requirement.\", \"related_requirements\": [\"VCU-DR-02\"], \"required_actions\": [\"none\"], \"status\": \"directly_affected\", \"test_id\": \"TV-010\"}, {\"confidence\": \"high\", \"evidence\": [\"Test TV-011 verifies torque cancellation during braking against VCU-BRK-03, which is unchanged.\"], \"reason\": \"The test exercises brake priority over torque, which is unrelated to the pedal input validation logic in VCU-DR-02. The change to VCU-DR-02 is editorial and does not affect brake override behavior.\", \"recommended_action\": \"No action required.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-011\"}, {\"confidence\": \"high\", \"evidence\": [\"Test TV-012 verifies ECU wake-up timing, which is unrelated to pedal input validation.\"], \"reason\": \"The test exercises platform startup timing, which is unrelated to the pedal input validation logic in VCU-DR-02. The change to VCU-DR-02 is editorial and does not affect wake-up behavior.\", \"recommended_action\": \"No action required.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-012\"}], \"change_interpretations\": [{\"engineering_summary\": \"The requirement title was changed from 'Driver input validation' to 'Pedal input plausibility', but the technical content (filtering implausible signals and ignoring spikes <10 ms) remains identical. This is an editorial change with no impact on verification evidence or test procedures.\", \"nature\": \"reworded_same_meaning\", \"requirement_id\": \"VCU-DR-02\"}]}"
+}

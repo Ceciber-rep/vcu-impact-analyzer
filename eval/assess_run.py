@@ -138,6 +138,15 @@ def run_case(case: dict) -> dict:
                 **run,
             }
         first_failure = redact(out.reason)[:600]
+        with (OUT / "availability_log.jsonl").open(
+            "a"
+        ) as log:  # every failed attempt, kept even if a later run succeeds
+            log.write(
+                json.dumps(
+                    {"case": case["case"], "attempt": attempt, "at": time.strftime("%F %T"), "error": first_failure}
+                )
+                + "\n"
+            )
         if attempt == 1:
             time.sleep(90)
     return {

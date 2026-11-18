@@ -1,0 +1,223 @@
+{
+ "ok": true,
+ "case": "N6_r1",
+ "scenario": "N6",
+ "kind": "base",
+ "served_by": "groq:qwen/qwen3.8-27b",
+ "fallback_used": false,
+ "first_attempt_failed": "every configured model failed. groq:qwen/qwen3.8-27b failed: RateLimitError: Error code: 429 - Request too large for model `qwen/qwen3.8-27b` in organization `org_REDACTED` service tier `on_demand` on output tokens per minute (OTPM): Limit 1000, Requested 170 gemini:gemini-3.5-flash failed: RateLimitError: Error code: 429",
+ "model_label": "groq:qwen/qwen3.8-27b",
+ "prompt_version": "v3",
+ "created_at": "2026-11-18T14:21:14+00:00",
+ "latency_s": 12.91,
+ "attempts": 1,
+ "prompt_tokens": 4320,
+ "completion_tokens": 2065,
+ "structured_mode": "json_schema",
+ "result": {
+  "change_interpretations": [
+   {
+    "requirement_id": "VCU-LOG-15",
+    "nature": "added",
+    "engineering_summary": "A new requirement mandates that the controller records timestamped mode changes along with the software build identifier. This is a functional addition to the logging scope. Verification must ensure that mode transitions (e.g., Comfort to Sport) are captured with both a timestamp and the build ID. The removed requirement VCU-LOG-05 had identical text, so this is effectively a re-identification of an existing requirement rather than a behavioral change. Existing tests that verify this behavior (like TV-006) remain valid but need their links updated to the new requirement ID."
+   },
+   {
+    "requirement_id": "VCU-LOG-05",
+    "nature": "removed",
+    "engineering_summary": "The requirement for recording timestamped mode changes and software build identifiers has been removed from the specification. However, since VCU-LOG-15 was added with identical text, this removal is likely part of a re-identification or consolidation. Tests linked to this requirement (like TV-006) should be re-linked to VCU-LOG-15 rather than retired, as the behavior is still required under the new ID."
+   }
+  ],
+  "assessments": [
+   {
+    "test_id": "TV-001",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test verifies driver torque response timing (VCU-DR-01), which is not part of the specification change. The change only adds a logging requirement (VCU-LOG-15) and removes its predecessor (VCU-LOG-05), neither of which affects torque timing behavior.",
+    "evidence": [
+     "Test verifies torque response time (94 ms) against VCU-DR-01, which is unchanged.",
+     "No relation to the added logging requirement VCU-LOG-15."
+    ],
+    "recommended_action": "No action required for this change."
+   },
+   {
+    "test_id": "TV-002",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test exercises brake/pedal arbitration and torque response, governed by unchanged requirements VCU-BRK-03 and VCU-DR-01. It does not verify the new logging requirement VCU-LOG-15.",
+    "evidence": [
+     "Test verifies brake override priority (VCU-BRK-03) and torque response (VCU-DR-01), both unchanged.",
+     "No logging of mode changes or build IDs is part of the procedure."
+    ],
+    "recommended_action": "No action required for this change."
+   },
+   {
+    "test_id": "TV-003",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link"
+    ],
+    "reason": "The test verifies torque response timing under high load, which relates to the unchanged requirement VCU-DR-01. It does not exercise the new logging requirement VCU-LOG-15.",
+    "evidence": [
+     "Test measures torque transient response (92 ms), related to VCU-DR-01 (unchanged).",
+     "No logging of mode changes or build IDs is part of the procedure."
+    ],
+    "recommended_action": "No action required for this change."
+   },
+   {
+    "test_id": "TV-004",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test verifies brake actuator response timing, governed by the unchanged requirement VCU-BRK-03. It does not exercise the new logging requirement VCU-LOG-15.",
+    "evidence": [
+     "Test verifies brake command latency (88 ms) against VCU-BRK-03, which is unchanged.",
+     "No logging of mode changes or build IDs is part of the procedure."
+    ],
+    "recommended_action": "No action required for this change."
+   },
+   {
+    "test_id": "TV-005",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test verifies sensor degradation handling and diagnostic event logging (VCU-DGN-04), which is unchanged. The new requirement VCU-LOG-15 specifically concerns timestamped mode changes and software build identifiers, which is distinct from diagnostic fault logging.",
+    "evidence": [
+     "Test verifies degraded mode entry and fault logging for sensor failure (VCU-DGN-04), which is unchanged.",
+     "The fault log is a diagnostic event, not a timestamped mode change with build ID as required by VCU-LOG-15."
+    ],
+    "recommended_action": "No action required for this change."
+   },
+   {
+    "test_id": "TV-006",
+    "status": "directly_affected",
+    "confidence": "high",
+    "related_requirements": [
+     "VCU-LOG-15",
+     "VCU-LOG-05"
+    ],
+    "required_actions": [
+     "update_procedure",
+     "fix_link"
+    ],
+    "reason": "The test directly verifies the behavior specified in the new requirement VCU-LOG-15 (timestamped mode changes and build ID). Although linked to the removed VCU-LOG-05, the content is identical to the new requirement. The previous PASS evidence remains valid for the new requirement, but the link must be updated to VCU-LOG-15.",
+    "evidence": [
+     "Test procedure explicitly logs timestamp and build identifier during mode change.",
+     "Linked to VCU-LOG-05 (removed) which had identical text to new VCU-LOG-15.",
+     "Previous PASS evidence directly verifies the behavior now required by VCU-LOG-15."
+    ],
+    "recommended_action": "Update the requirement link from VCU-LOG-05 to VCU-LOG-15."
+   },
+   {
+    "test_id": "TV-007",
+    "status": "not_affected",
+    "confidence": "medium",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link"
+    ],
+    "reason": "The test verifies torque delivery under thermal load, which relates to the unchanged requirement VCU-DR-01. It does not exercise the new logging requirement VCU-LOG-15. The TBD link is a pre-existing issue unrelated to this change.",
+    "evidence": [
+     "Test link is TBD, so it is not validated.",
+     "Procedure checks torque delivery at 80% pedal, which relates to VCU-DR-01 (unchanged).",
+     "No logging of mode changes or build IDs is part of the procedure."
+    ],
+    "recommended_action": "No action required for this change."
+   },
+   {
+    "test_id": "TV-008",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link"
+    ],
+    "reason": "The test verifies legacy diagnostic behavior linked to an unknown requirement. It does not exercise the new logging requirement VCU-LOG-15 or any other changed requirement.",
+    "evidence": [
+     "Test verifies non-blocking status from an old diagnostic trace.",
+     "Linked to VCU-OLD-88, which is an unknown requirement not in the changed or unchanged lists.",
+     "No relation to mode change logging or build ID recording."
+    ],
+    "recommended_action": "No action required for this change."
+   },
+   {
+    "test_id": "TV-009",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test verifies torque ramp profile differences between operating modes, governed by the unchanged requirement VCU-MOD-06. It does not exercise the new logging requirement VCU-LOG-15.",
+    "evidence": [
+     "Test compares torque ramp profiles under Sport vs Comfort modes (VCU-MOD-06, unchanged).",
+     "No logging of mode changes or build IDs is part of the procedure."
+    ],
+    "recommended_action": "No action required for this change."
+   },
+   {
+    "test_id": "TV-010",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test verifies pedal signal filtering, governed by the unchanged requirement VCU-DR-02. It does not exercise the new logging requirement VCU-LOG-15.",
+    "evidence": [
+     "Test verifies filtering of 7 ms pedal spikes (VCU-DR-02, unchanged).",
+     "No logging of mode changes or build IDs is part of the procedure."
+    ],
+    "recommended_action": "No action required for this change."
+   },
+   {
+    "test_id": "TV-011",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test verifies brake priority over positive torque, governed by the unchanged requirement VCU-BRK-03. It does not exercise the new logging requirement VCU-LOG-15.",
+    "evidence": [
+     "Test verifies torque cancellation during emergency braking (VCU-BRK-03, unchanged).",
+     "No logging of mode changes or build IDs is part of the procedure."
+    ],
+    "recommended_action": "No action required for this change."
+   },
+   {
+    "test_id": "TV-012",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link"
+    ],
+    "reason": "The test verifies platform startup timing, which is unrelated to the new logging requirement VCU-LOG-15 or any other changed requirement.",
+    "evidence": [
+     "Test verifies ECU wake-up timing (433 ms vs 500 ms limit).",
+     "No requirement link, and no relation to mode change logging or build ID recording."
+    ],
+    "recommended_action": "No action required for this change."
+   }
+  ]
+ },
+ "warnings": [],
+ "adjustments": [],
+ "raw_text": "{\"assessments\": [{\"confidence\": \"high\", \"evidence\": [\"Test verifies torque response time (94 ms) against VCU-DR-01, which is unchanged.\", \"No relation to the added logging requirement VCU-LOG-15.\"], \"reason\": \"The test verifies driver torque response timing (VCU-DR-01), which is not part of the specification change. The change only adds a logging requirement (VCU-LOG-15) and removes its predecessor (VCU-LOG-05), neither of which affects torque timing behavior.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-001\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies brake override priority (VCU-BRK-03) and torque response (VCU-DR-01), both unchanged.\", \"No logging of mode changes or build IDs is part of the procedure.\"], \"reason\": \"The test exercises brake/pedal arbitration and torque response, governed by unchanged requirements VCU-BRK-03 and VCU-DR-01. It does not verify the new logging requirement VCU-LOG-15.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-002\"}, {\"confidence\": \"high\", \"evidence\": [\"Test measures torque transient response (92 ms), related to VCU-DR-01 (unchanged).\", \"No logging of mode changes or build IDs is part of the procedure.\"], \"reason\": \"The test verifies torque response timing under high load, which relates to the unchanged requirement VCU-DR-01. It does not exercise the new logging requirement VCU-LOG-15.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-003\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies brake command latency (88 ms) against VCU-BRK-03, which is unchanged.\", \"No logging of mode changes or build IDs is part of the procedure.\"], \"reason\": \"The test verifies brake actuator response timing, governed by the unchanged requirement VCU-BRK-03. It does not exercise the new logging requirement VCU-LOG-15.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-004\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies degraded mode entry and fault logging for sensor failure (VCU-DGN-04), which is unchanged.\", \"The fault log is a diagnostic event, not a timestamped mode change with build ID as required by VCU-LOG-15.\"], \"reason\": \"The test verifies sensor degradation handling and diagnostic event logging (VCU-DGN-04), which is unchanged. The new requirement VCU-LOG-15 specifically concerns timestamped mode changes and software build identifiers, which is distinct from diagnostic fault logging.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-005\"}, {\"confidence\": \"high\", \"evidence\": [\"Test procedure explicitly logs timestamp and build identifier during mode change.\", \"Linked to VCU-LOG-05 (removed) which had identical text to new VCU-LOG-15.\", \"Previous PASS evidence directly verifies the behavior now required by VCU-LOG-15.\"], \"reason\": \"The test directly verifies the behavior specified in the new requirement VCU-LOG-15 (timestamped mode changes and build ID). Although linked to the removed VCU-LOG-05, the content is identical to the new requirement. The previous PASS evidence remains valid for the new requirement, but the link must be updated to VCU-LOG-15.\", \"recommended_action\": \"Update the requirement link from VCU-LOG-05 to VCU-LOG-15.\", \"related_requirements\": [\"VCU-LOG-15\", \"VCU-LOG-05\"], \"required_actions\": [\"update_procedure\"], \"status\": \"directly_affected\", \"test_id\": \"TV-006\"}, {\"confidence\": \"medium\", \"evidence\": [\"Test link is TBD, so it is not validated.\", \"Procedure checks torque delivery at 80% pedal, which relates to VCU-DR-01 (unchanged).\", \"No logging of mode changes or build IDs is part of the procedure.\"], \"reason\": \"The test verifies torque delivery under thermal load, which relates to the unchanged requirement VCU-DR-01. It does not exercise the new logging requirement VCU-LOG-15. The TBD link is a pre-existing issue unrelated to this change.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-007\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies non-blocking status from an old diagnostic trace.\", \"Linked to VCU-OLD-88, which is an unknown requirement not in the changed or unchanged lists.\", \"No relation to mode change logging or build ID recording.\"], \"reason\": \"The test verifies legacy diagnostic behavior linked to an unknown requirement. It does not exercise the new logging requirement VCU-LOG-15 or any other changed requirement.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-008\"}, {\"confidence\": \"high\", \"evidence\": [\"Test compares torque ramp profiles under Sport vs Comfort modes (VCU-MOD-06, unchanged).\", \"No logging of mode changes or build IDs is part of the procedure.\"], \"reason\": \"The test verifies torque ramp profile differences between operating modes, governed by the unchanged requirement VCU-MOD-06. It does not exercise the new logging requirement VCU-LOG-15.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-009\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies filtering of 7 ms pedal spikes (VCU-DR-02, unchanged).\", \"No logging of mode changes or build IDs is part of the procedure.\"], \"reason\": \"The test verifies pedal signal filtering, governed by the unchanged requirement VCU-DR-02. It does not exercise the new logging requirement VCU-LOG-15.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-010\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies torque cancellation during emergency braking (VCU-BRK-03, unchanged).\", \"No logging of mode changes or build IDs is part of the procedure.\"], \"reason\": \"The test verifies brake priority over positive torque, governed by the unchanged requirement VCU-BRK-03. It does not exercise the new logging requirement VCU-LOG-15.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-011\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies ECU wake-up timing (433 ms vs 500 ms limit).\", \"No requirement link, and no relation to mode change logging or build ID recording.\"], \"reason\": \"The test verifies platform startup timing, which is unrelated to the new logging requirement VCU-LOG-15 or any other changed requirement.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-012\"}], \"change_interpretations\": [{\"engineering_summary\": \"A new requirement mandates that the controller records timestamped mode changes along with the software build identifier. This is a functional addition to the logging scope. Verification must ensure that mode transitions (e.g., Comfort to Sport) are captured with both a timestamp and the build ID. The removed requirement VCU-LOG-05 had identical text, so this is effectively a re-identification of an existing requirement rather than a behavioral change. Existing tests that verify this behavior (like TV-006) remain valid but need their links updated to the new requirement ID.\", \"nature\": \"added\", \"requirement_id\": \"VCU-LOG-15\"}, {\"engineering_summary\": \"The requirement for recording timestamped mode changes and software build identifiers has been removed from the specification. However, since VCU-LOG-15 was added with identical text, this removal is likely part of a re-identification or consolidation. Tests linked to this requirement (like TV-006) should be re-linked to VCU-LOG-15 rather than retired, as the behavior is still required under the new ID.\", \"nature\": \"removed\", \"requirement_id\": \"VCU-LOG-05\"}]}"
+}

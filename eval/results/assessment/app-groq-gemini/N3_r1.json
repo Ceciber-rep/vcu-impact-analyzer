@@ -1,0 +1,233 @@
+{
+ "ok": true,
+ "case": "N3_r1",
+ "scenario": "N3",
+ "kind": "base",
+ "served_by": "groq:qwen/qwen3.8-27b",
+ "fallback_used": false,
+ "first_attempt_failed": "",
+ "model_label": "groq:qwen/qwen3.8-27b",
+ "prompt_version": "v3",
+ "created_at": "2026-11-18T14:14:26+00:00",
+ "latency_s": 11.31,
+ "attempts": 1,
+ "prompt_tokens": 4402,
+ "completion_tokens": 1886,
+ "structured_mode": "json_schema",
+ "result": {
+  "change_interpretations": [
+   {
+    "requirement_id": "VCU-THM-07",
+    "nature": "added",
+    "engineering_summary": "New requirement mandates torque derating to 50% when inverter temperature exceeds 85°C. Verification must include thermal conditioning and torque measurement under high-temperature conditions."
+   },
+   {
+    "requirement_id": "VCU-LOG-05",
+    "nature": "removed",
+    "engineering_summary": "Requirement for logging timestamped mode changes and build identifiers is removed. Tests verifying this behavior are obsolete unless re-scoped to other logging requirements."
+   }
+  ],
+  "assessments": [
+   {
+    "test_id": "TV-001",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test verifies driver torque response timing (VCU-DR-01), which is unchanged. It does not exercise the new thermal derating requirement (VCU-THM-07) or the removed logging requirement (VCU-LOG-05).",
+    "evidence": [
+     "Test verifies VCU-DR-01 (unchanged) with a 100 ms limit.",
+     "No thermal conditions or torque derating logic are exercised."
+    ],
+    "recommended_action": "No action required for this change."
+   },
+   {
+    "test_id": "TV-002",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test verifies brake override priority and pedal arbitration, both governed by unchanged requirements. It does not involve inverter temperature or the removed logging requirement.",
+    "evidence": [
+     "Test verifies VCU-BRK-03 and VCU-DR-01 (both unchanged).",
+     "No thermal conditions or logging of mode changes are exercised."
+    ],
+    "recommended_action": "No action required for this change."
+   },
+   {
+    "test_id": "TV-003",
+    "status": "possibly_affected",
+    "confidence": "medium",
+    "related_requirements": [
+     "VCU-THM-07"
+    ],
+    "required_actions": [
+     "fix_link",
+     "owner_decision"
+    ],
+    "reason": "The test exercises high-load torque transients, which could plausibly interact with thermal derating if the inverter heats up during the sweep. However, the procedure does not specify temperature control or monitoring, and the link is missing. The relation to VCU-THM-07 is indirect and unverified.",
+    "evidence": [
+     "Test sweeps high-load torque demand (75-95%).",
+     "No explicit link to VCU-THM-07, but high load could correlate with thermal conditions.",
+     "Previous result was PASS (92 ms) against a 95 ms tolerance in legacy script."
+    ],
+    "recommended_action": "Clarify if the high-load sweep induces temperatures >85°C; if so, update procedure to include thermal monitoring and re-run."
+   },
+   {
+    "test_id": "TV-004",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test verifies brake actuator response latency, which is governed by the unchanged VCU-BRK-03. It does not involve thermal derating or the removed logging requirement.",
+    "evidence": [
+     "Test verifies VCU-BRK-03 (unchanged).",
+     "Workshop notes confirm brake latency uses a different clock than torque latency.",
+     "No thermal or logging aspects are tested."
+    ],
+    "recommended_action": "No action required for this change."
+   },
+   {
+    "test_id": "TV-005",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test verifies sensor degradation handling, which is governed by the unchanged VCU-DGN-04. It does not exercise thermal derating or the removed VCU-LOG-05 requirement.",
+    "evidence": [
+     "Test verifies VCU-DGN-04 (unchanged).",
+     "Focuses on sensor failure and diagnostic logging, not thermal derating or mode change logging."
+    ],
+    "recommended_action": "No action required for this change."
+   },
+   {
+    "test_id": "TV-006",
+    "status": "directly_affected",
+    "confidence": "high",
+    "related_requirements": [
+     "VCU-LOG-05"
+    ],
+    "required_actions": [
+     "fix_link",
+     "owner_decision"
+    ],
+    "reason": "The test verifies the removed requirement VCU-LOG-05 (trace and evidence for mode changes). Since the requirement is removed, the test's purpose is obsolete. A human must decide whether to retire or re-scope the test.",
+    "evidence": [
+     "Test is linked to VCU-LOG-05, which has been removed.",
+     "Procedure explicitly logs timestamp and build identifier for mode changes.",
+     "Previous result was PASS."
+    ],
+    "recommended_action": "Owner to decide whether to retire TV-006 or re-scope it to verify other logging requirements if applicable."
+   },
+   {
+    "test_id": "TV-007",
+    "status": "needs_human_review",
+    "confidence": "low",
+    "related_requirements": [
+     "VCU-THM-07"
+    ],
+    "required_actions": [
+     "rerun",
+     "update_procedure",
+     "fix_link",
+     "owner_decision"
+    ],
+    "reason": "The test name and procedure suggest it may relate to thermal conditions, but the link is TBD and the procedure lacks specific thermal parameters (e.g., 85°C threshold). The relation to VCU-THM-07 is plausible but cannot be settled with available information.",
+    "evidence": [
+     "Test name is 'Acceleration at thermal load'.",
+     "Link is TBD, and ownership is unclear.",
+     "Procedure mentions 'elevated load' but not specific temperature thresholds.",
+     "Previous result was NOT RUN."
+    ],
+    "recommended_action": "Clarify ownership and link; if confirmed to test thermal derating, update procedure to include 85°C threshold and 50% torque limit, then run."
+   },
+   {
+    "test_id": "TV-008",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link"
+    ],
+    "reason": "The test verifies a legacy diagnostic trace linked to an unknown requirement. It does not exercise the new thermal derating requirement or the removed logging requirement. The broken link is flagged separately by the application.",
+    "evidence": [
+     "Test is linked to VCU-OLD-88, which is an unknown requirement.",
+     "Procedure involves diagnostic replay, not thermal derating or mode change logging."
+    ],
+    "recommended_action": "No action required for this change; address the unknown link separately."
+   },
+   {
+    "test_id": "TV-009",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test verifies operating mode torque ramp profiles, which are governed by the unchanged VCU-MOD-06. It does not involve thermal derating or the removed logging requirement.",
+    "evidence": [
+     "Test verifies VCU-MOD-06 (unchanged).",
+     "Focuses on torque ramp profiles in Sport vs Comfort modes, not thermal derating or logging."
+    ],
+    "recommended_action": "No action required for this change."
+   },
+   {
+    "test_id": "TV-010",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test verifies pedal signal spike filtering, which is governed by the unchanged VCU-DR-02. It does not exercise thermal derating or the removed logging requirement.",
+    "evidence": [
+     "Test verifies VCU-DR-02 (unchanged).",
+     "Focuses on pedal signal filtering, not thermal derating or logging."
+    ],
+    "recommended_action": "No action required for this change."
+   },
+   {
+    "test_id": "TV-011",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test verifies torque cancellation on braking, which is governed by the unchanged VCU-BRK-03. It does not involve thermal derating or the removed logging requirement.",
+    "evidence": [
+     "Test verifies VCU-BRK-03 (unchanged).",
+     "Focuses on torque cancellation during braking, not thermal derating or logging."
+    ],
+    "recommended_action": "No action required for this change."
+   },
+   {
+    "test_id": "TV-012",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link"
+    ],
+    "reason": "The test verifies ECU wake-up timing, which is unrelated to the new thermal derating requirement or the removed logging requirement. No changed requirement is exercised.",
+    "evidence": [
+     "Test verifies ECU wake-up timing (500 ms limit).",
+     "No link to any changed requirement.",
+     "Focuses on platform startup, not thermal derating or logging."
+    ],
+    "recommended_action": "No action required for this change."
+   }
+  ]
+ },
+ "warnings": [],
+ "adjustments": [],
+ "raw_text": "{\"assessments\": [{\"confidence\": \"high\", \"evidence\": [\"Test verifies VCU-DR-01 (unchanged) with a 100 ms limit.\", \"No thermal conditions or torque derating logic are exercised.\"], \"reason\": \"The test verifies driver torque response timing (VCU-DR-01), which is unchanged. It does not exercise the new thermal derating requirement (VCU-THM-07) or the removed logging requirement (VCU-LOG-05).\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-001\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies VCU-BRK-03 and VCU-DR-01 (both unchanged).\", \"No thermal conditions or logging of mode changes are exercised.\"], \"reason\": \"The test verifies brake override priority and pedal arbitration, both governed by unchanged requirements. It does not involve inverter temperature or the removed logging requirement.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-002\"}, {\"confidence\": \"medium\", \"evidence\": [\"Test sweeps high-load torque demand (75-95%).\", \"No explicit link to VCU-THM-07, but high load could correlate with thermal conditions.\", \"Previous result was PASS (92 ms) against a 95 ms tolerance in legacy script.\"], \"reason\": \"The test exercises high-load torque transients, which could plausibly interact with thermal derating if the inverter heats up during the sweep. However, the procedure does not specify temperature control or monitoring, and the link is missing. The relation to VCU-THM-07 is indirect and unverified.\", \"recommended_action\": \"Clarify if the high-load sweep induces temperatures >85°C; if so, update procedure to include thermal monitoring and re-run.\", \"related_requirements\": [\"VCU-THM-07\"], \"required_actions\": [\"owner_decision\"], \"status\": \"possibly_affected\", \"test_id\": \"TV-003\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies VCU-BRK-03 (unchanged).\", \"Workshop notes confirm brake latency uses a different clock than torque latency.\", \"No thermal or logging aspects are tested.\"], \"reason\": \"The test verifies brake actuator response latency, which is governed by the unchanged VCU-BRK-03. It does not involve thermal derating or the removed logging requirement.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-004\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies VCU-DGN-04 (unchanged).\", \"Focuses on sensor failure and diagnostic logging, not thermal derating or mode change logging.\"], \"reason\": \"The test verifies sensor degradation handling, which is governed by the unchanged VCU-DGN-04. It does not exercise thermal derating or the removed VCU-LOG-05 requirement.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-005\"}, {\"confidence\": \"high\", \"evidence\": [\"Test is linked to VCU-LOG-05, which has been removed.\", \"Procedure explicitly logs timestamp and build identifier for mode changes.\", \"Previous result was PASS.\"], \"reason\": \"The test verifies the removed requirement VCU-LOG-05 (trace and evidence for mode changes). Since the requirement is removed, the test's purpose is obsolete. A human must decide whether to retire or re-scope the test.\", \"recommended_action\": \"Owner to decide whether to retire TV-006 or re-scope it to verify other logging requirements if applicable.\", \"related_requirements\": [\"VCU-LOG-05\"], \"required_actions\": [\"owner_decision\"], \"status\": \"directly_affected\", \"test_id\": \"TV-006\"}, {\"confidence\": \"low\", \"evidence\": [\"Test name is 'Acceleration at thermal load'.\", \"Link is TBD, and ownership is unclear.\", \"Procedure mentions 'elevated load' but not specific temperature thresholds.\", \"Previous result was NOT RUN.\"], \"reason\": \"The test name and procedure suggest it may relate to thermal conditions, but the link is TBD and the procedure lacks specific thermal parameters (e.g., 85°C threshold). The relation to VCU-THM-07 is plausible but cannot be settled with available information.\", \"recommended_action\": \"Clarify ownership and link; if confirmed to test thermal derating, update procedure to include 85°C threshold and 50% torque limit, then run.\", \"related_requirements\": [\"VCU-THM-07\"], \"required_actions\": [\"owner_decision\", \"update_procedure\", \"rerun\"], \"status\": \"needs_human_review\", \"test_id\": \"TV-007\"}, {\"confidence\": \"high\", \"evidence\": [\"Test is linked to VCU-OLD-88, which is an unknown requirement.\", \"Procedure involves diagnostic replay, not thermal derating or mode change logging.\"], \"reason\": \"The test verifies a legacy diagnostic trace linked to an unknown requirement. It does not exercise the new thermal derating requirement or the removed logging requirement. The broken link is flagged separately by the application.\", \"recommended_action\": \"No action required for this change; address the unknown link separately.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-008\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies VCU-MOD-06 (unchanged).\", \"Focuses on torque ramp profiles in Sport vs Comfort modes, not thermal derating or logging.\"], \"reason\": \"The test verifies operating mode torque ramp profiles, which are governed by the unchanged VCU-MOD-06. It does not involve thermal derating or the removed logging requirement.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-009\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies VCU-DR-02 (unchanged).\", \"Focuses on pedal signal filtering, not thermal derating or logging.\"], \"reason\": \"The test verifies pedal signal spike filtering, which is governed by the unchanged VCU-DR-02. It does not exercise thermal derating or the removed logging requirement.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-010\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies VCU-BRK-03 (unchanged).\", \"Focuses on torque cancellation during braking, not thermal derating or logging.\"], \"reason\": \"The test verifies torque cancellation on braking, which is governed by the unchanged VCU-BRK-03. It does not involve thermal derating or the removed logging requirement.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-011\"}, {\"confidence\": \"high\", \"evidence\": [\"Test verifies ECU wake-up timing (500 ms limit).\", \"No link to any changed requirement.\", \"Focuses on platform startup, not thermal derating or logging.\"], \"reason\": \"The test verifies ECU wake-up timing, which is unrelated to the new thermal derating requirement or the removed logging requirement. No changed requirement is exercised.\", \"recommended_action\": \"No action required for this change.\", \"related_requirements\": [], \"required_actions\": [\"none\"], \"status\": \"not_affected\", \"test_id\": \"TV-012\"}], \"change_interpretations\": [{\"engineering_summary\": \"New requirement mandates torque derating to 50% when inverter temperature exceeds 85°C. Verification must include thermal conditioning and torque measurement under high-temperature conditions.\", \"nature\": \"added\", \"requirement_id\": \"VCU-THM-07\"}, {\"engineering_summary\": \"Requirement for logging timestamped mode changes and build identifiers is removed. Tests verifying this behavior are obsolete unless re-scoped to other logging requirements.\", \"nature\": \"removed\", \"requirement_id\": \"VCU-LOG-05\"}]}"
+}
