@@ -540,9 +540,9 @@ Problem found in section 7: with prompt v3, qwen marks S5 TV-005 `directly_affec
 `change_interpretations` says the change is `reworded_same_meaning`. The review noted that qwen writes the
 JSON keys in alphabetical order, so `assessments` comes **before** `change_interpretations` in its output.
 Checked on all stored runs (every prompt version): qwen writes `assessments` first in 29 of 30 runs, while Gemini
-writes `change_interpretations` first in 21 of 21, the local qwen3:8b in 9 of 9 and gpt-oss-120b in 19 of 21. That is a
-plausible reason why qwen cannot use its own reading of the change; **it was not tested** (the optional field-rename
-experiment was not run, see 8.7).
+writes `change_interpretations` first in 21 of 21, the local qwen3:8b in 9 of 9 and gpt-oss-120b in 19 of 21. That looked like
+a plausible reason why qwen cannot use its own reading of the change. **The experiment in 8.7 tested it and did not
+support it.**
 
 What the application now does, in `analysis.post_check`: if a test is `directly_affected` and **all** of its
 `related_requirements` were interpreted as `reworded_same_meaning`, its status becomes `not_affected`. The change
@@ -718,13 +718,20 @@ cells, one cell is within noise: **the evidence does not separate qwen from Gemi
 
 ### 8.7 What was not done, or not verified
 
-- **The field-order experiment** (renaming the top-level `assessments` so that it sorts after `change_interpretations`,
-  to see whether qwen's S5 behaviour changes) was **not run**. It changes the frozen output schema, so it belongs on a
-  branch and needs the owner's decision first.
+- **The field-order experiment was run on a branch and did not support the hypothesis.** Branch `exp/field-order`
+  (not merged; the frozen schema on `main` is unchanged) renames the JSON field `assessments` to `test_assessments`
+  so that qwen writes `change_interpretations` first. In all 13 runs the key order changed, and qwen still marked S5
+  TV-005 `directly_affected` in 5 of 5 runs while reading the change as `reworded_same_meaning` (identical token counts, so
+  the answer is stable). The schema change also moved the model's own status on 6 of 84 cells, made the S1 outputs
+  non-identical (11/12 consistency) and caused one provider-side JSON rejection. So field order is not the cause, the
+  safety net is still needed, and the cause remains unexplained. It was run on S1 to S7 only, with one model, and the
+  held-out scenarios were not used. The write-up is `docs/field_order_experiment.md` on that branch.
 - Prompt v3 was not re-run for the local qwen3:8b or for Gemini 3.5 Flash-Lite. No paid provider was used.
 - No input-perturbation test (paraphrased requirements, reordered register rows), so qwen's consistency is untested.
 - Held-out scenarios: one run each, one annotator, labels not reviewed by the owner (see S8 TV-002).
 - Latency and rate-limit behaviour come from two sessions on a free tier and can change without notice.
+- The post-check was extended after this review with a guard (it never fires when the diff found a changed number);
+  it remains unvalidated beyond S5 (see 8.2 and `docs/known_issues.md`).
 - The optional UI/report display of `adjustment` was not built: the adjusted status and the warning already appear in
   the detail panel and in the report, and `adjustment` is available on each result row for later use.
 

@@ -14,12 +14,17 @@ marks TV-005 as `directly_affected`, with required actions `["none"]`. This is s
 of the model: the prompt v3 wording meant to prevent it did not (prompt v1 got this case
 right).
 
-**Probable cause (not tested).** Groq `qwen/qwen3.8-27b` writes the JSON keys in
-alphabetical order, so `assessments` is generated **before** `change_interpretations`
-(verified on the stored raw outputs: 29 of 30 qwen runs; Gemini 3.5 Flash writes the
-interpretations first in 21 of 21 runs, the local qwen3:8b in 9 of 9, gpt-oss-120b in 19 of 21). The model therefore cannot use its own
-reading of the change when it writes the statuses. Whether reordering the fields removes
-the contradiction has not been tested (see docs/llm_evaluation.md, section 8).
+**Cause: unexplained. The obvious hypothesis was tested and is not supported.** Groq
+`qwen/qwen3.8-27b` writes the JSON keys in alphabetical order (29 of 30 stored runs), so
+`assessments` is generated **before** `change_interpretations`; the other models write the
+interpretations first (Gemini 21 of 21, the local qwen3:8b 9 of 9, gpt-oss-120b 19 of 21). One
+could therefore expect qwen not to be able to use its own reading of the change. The experiment
+on branch `exp/field-order` (not merged; see `docs/field_order_experiment.md` there) renamed the
+field so that the interpretation comes first in every run. qwen still marked S5 TV-005
+`directly_affected` in 5 of 5 runs while reading the change as `reworded_same_meaning`. Field order
+is not the cause. A candidate that has **not** been tested: the prompt's status definition
+("verifies behaviour that the change alters") can be read as "is linked to the requirement that
+changed".
 
 **Safety net in the application, not an improvement of the model.**
 `analysis.post_check` applies one rule: if a test is `directly_affected` and **all** of its
