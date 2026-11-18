@@ -37,3 +37,7 @@ testpaths = ["tests"]
 
 [project.scripts]
 vcu-impact = "vcu_impact.cli:main"
+
+[tool.ruff.lint.per-file-ignores]
+# Report-generating analysis scripts build long markdown lines.
+"eval/assess_*.py" = ["E501"]
