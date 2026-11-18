@@ -49,4 +49,4 @@ OOXML (tracked changes, text box); they were **not saved by Word**, and the "pas
 
 Also confirmed again: F-001 (E-011, E-013), F-005 (E-051).
 
-Counts so far (phases 1 and 3): S1 1, S2 7 (F-001, F-002, F-007, F-011, F-012, F-015, F-016, F-020: eight, F-007 is a contested model result), S3 9, S4 3.
+Counts so far (phases 1 and 3, 21 findings): S1 1 (F-010), S2 8 (F-001, F-002, F-007, F-011, F-012, F-015, F-016, F-020; F-007 is a contested model reading), S3 9, S4 3.
