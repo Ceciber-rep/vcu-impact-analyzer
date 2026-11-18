@@ -1,0 +1,14 @@
+# Hand-checked reading of each changed requirement (`nature` of change_interpretations), written BEFORE the phase 4
+# results were analysed. Each entry lists every nature that a careful engineer would accept; the first is preferred.
+# S2 and S3 are left out on purpose: whether "add an 80 ms brake latency limit" is scope_changed or tightened, and
+# whether a 10 -> 5 ms spike threshold is tightened or relaxed, depends on the point of view.
+# N1-N6 are read from `expect_nature` in dataset_assessment.yaml (written earlier, reviewed by the project owner).
+# The engineering_summary is checked separately: it must name the new value when a number changed.
+S1:  {VCU-DR-01: [tightened]}
+S4:  {VCU-DR-01: [relaxed]}
+S5:  {VCU-DGN-04: [reworded_same_meaning]}
+S6:  {VCU-MOD-06: [removed]}
+S7:  {VCU-THM-07: [added]}
+S8:  {VCU-DR-01: [scope_changed, relaxed]}      # trigger 70% -> 90% pedal demand: fewer situations are covered
+S9:  {VCU-DR-01: [tightened]}                    # the BRK-03 part is ambiguous (see S2) and not scored
+S10: {VCU-DR-01: [tightened]}
