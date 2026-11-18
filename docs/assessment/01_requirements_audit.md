@@ -50,7 +50,7 @@ No exception in any flow; the banner always states live vs replay and, when the 
 
 - Exact values of the two keys in `.env` (Groq, Gemini): not found in the working tree or in any commit of any branch.
 - Patterns (`gsk_`, `AIza`, `sk-`, `csk-`, bearer tokens, `api_key=` assignments): 0 hits in the tree, 0 in history. No tracked `.env`, key or certificate file. E-mail addresses: none.
-- Found: 8 tracked files under `eval/results/v1/gemini-3.5-flash-lite/` contain Python tracebacks with the absolute local path `/home/cberti/...` (F-006). The provided .docx/.xlsx carry the author "Autonomous Reply France": that comes from the brief's own material.
+- Found: 8 tracked files under `eval/results/v1/gemini-3.5-flash-lite/` contain Python tracebacks with the absolute local path `<home>/...` (F-006). The provided .docx/.xlsx carry the author "Autonomous Reply France": that comes from the brief's own material.
 - Found during this audit (not committed): provider error text includes an organisation id (F-003); the assessment result files redact it.
 
 ## Approval language
@@ -80,7 +80,7 @@ original DR-01 change together with the new one (F-004). Severity S4 unless note
 | F-003 | S3 | Provider error text (including the Groq organisation id) is copied into the UI banner, the local cache and the exported report (`pipeline._live` notes -> `run.warnings` -> report global warnings) | `.cache/analyses/*` warnings |
 | F-004 | S3 | Edits are applied to the revised file and diffed against the **baseline**, so every flow still shows the original DR-01 change and its test impacts; the user cannot see what their own edit changed (no before/after comparison of the assessment) | all flows list DR-01 |
 | F-005 | S3 | Approval detector: misses several approval phrasings and negation heuristic can hide a claim ("owner approved"); scans only test assessments | direct calls |
-| F-006 | S3 | Local absolute path (`/home/cberti/...`) in 8 committed frozen result files | `git grep` |
+| F-006 | S3 | Local absolute path (`<home>/...`) in 8 committed frozen result files | `git grep` |
 | F-007 | S2 | Model-dependent change reading: in F6 Gemini called the removal of "regardless of ... requested driving mode" `reworded_same_meaning` and marked TV-009 / TV-011 not affected with high confidence; the label is debatable (VCU-MOD-06 still says mode must not change the brake priority), so this is recorded as contested, not as a proven miss. To be scored in phase 4 | live cache |
 | F-008 | S4 | README has a TODO comment and a vague screenshot sentence (line 22), `<repository-url>` placeholders, no LICENSE file (decision for the owner) | README |
 | F-009 | S4 | No real-browser check of layout, and the `*`/confidence explanations are thin (see above) | screenshots |
