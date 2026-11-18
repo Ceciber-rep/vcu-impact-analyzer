@@ -149,7 +149,10 @@ def sidebar_summary(prep: Prepared, outcome: AnalysisOutcome) -> None:
         f"{len(prep.register.notes)} notes"
     )
     if len(prep.register.tests) > 60:
-        sb.warning("Large register: the analysis was evaluated with 12 tests; above ~60 tests it is untested.")
+        sb.warning(
+            "Large register: the analysis was only evaluated on registers of 12 and 13 tests; "
+            "above ~60 tests it is untested."
+        )
 
     sb.subheader("Analysis")
     configs, problems = configured_llms()
