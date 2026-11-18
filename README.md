@@ -89,7 +89,7 @@ cp .env.example .env      # then edit .env and add your key(s)
 | `LLM_API_KEY` | Optional; if empty, the provider's own variable is used | empty |
 | `GROQ_API_KEY`, `GEMINI_API_KEY`, … | Provider keys | empty |
 | `LLM_FALLBACK_PROVIDER`, `LLM_FALLBACK_MODEL` | Optional second model, used once if the first fails (rate limit, outage) | `gemini`, `gemini-3.5-flash` |
-| `LLM_TIMEOUT_S`, `LLM_MAX_TOKENS` | Optional tuning | `600`, `16384` |
+| `LLM_TIMEOUT_S`, `LLM_TOTAL_TIMEOUT_S`, `LLM_MAX_TOKENS` | Optional tuning: seconds per request, seconds for a whole analysis, output token budget | `90`, `240`, `16384` |
 
 Free keys: Groq at https://console.groq.com/keys, Google AI Studio at
 https://aistudio.google.com/apikey. A local model also works:

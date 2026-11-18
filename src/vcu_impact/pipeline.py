@@ -18,7 +18,7 @@ from pydantic import BaseModel
 from vcu_impact import cache
 from vcu_impact.analysis import Adjustment, AnalysisRun, post_check, run_analysis
 from vcu_impact.diff import diff_specs
-from vcu_impact.llm import LLMClient, LLMConfig, LLMError, extract_json
+from vcu_impact.llm import LLMClient, LLMConfig, LLMError, describe_failure, extract_json
 from vcu_impact.models import (
     LLMImpactResult,
     RequiredAction,
@@ -180,14 +180,16 @@ def _live(prep: Prepared, configs: list[LLMConfig]) -> AnalysisOutcome:
         try:
             run = run_analysis(LLMClient(config), prep.diff, prep.revised, prep.register)
         except Exception as exc:  # noqa: BLE001 - any provider failure moves on to the fallback
-            notes.append(f"{config.label} failed: {type(exc).__name__}: {str(exc)[:200]}")
+            notes.append(f"{config.label} failed: {type(exc).__name__}: {describe_failure(exc)}")
             continue
         if notes:
             run = run.model_copy(update={"warnings": [*notes, *run.warnings]})
         cache.save(cache.CacheEntry(key=prep.key, prompt_version=PROMPT_VERSION, run=run))
         return AnalysisOutcome(mode="live", run=run, warnings=notes)
     return AnalysisOutcome(
-        mode="not_analysed", reason="every configured model failed. " + " ".join(notes), warnings=notes
+        mode="not_analysed",
+        reason="every configured model failed. " + " ".join(notes) + " The changes and register facts are still shown.",
+        warnings=notes,
     )
 
 

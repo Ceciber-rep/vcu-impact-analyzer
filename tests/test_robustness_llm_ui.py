@@ -124,9 +124,6 @@ def test_fallback_model_is_used_and_the_primary_failure_is_recorded(monkeypatch)
     assert any("groq:m1 failed: RateLimitError" in w for w in out.run.warnings)
 
 
-@pytest.mark.xfail(
-    strict=True, reason="F-003: provider error text (organisation id, request details) is copied to the report"
-)
 def test_provider_error_text_is_not_copied_into_the_report(monkeypatch):  # E-042
     def boom(*a, **k):
         raise openai.RateLimitError(
@@ -465,3 +462,36 @@ def test_live_result_is_shown_again_after_a_browser_refresh(monkeypatch):  # E-0
     assert any(
         "earlier live run" in i.value for i in refreshed.info
     )  # today: still "Not analysed"; a click re-calls the provider
+
+
+def test_failure_messages_are_readable_and_carry_no_organisation_id():  # E-042b
+    from vcu_impact.llm import describe_failure
+
+    daily = openai.RateLimitError(
+        "Error code: 429 - Rate limit reached ... in organization `org_ABC123` on tokens per day (TPD): Limit 200000",
+        response=httpx.Response(429, request=REQ),
+        body=None,
+    )
+    assert "daily token limit" in describe_failure(daily) and "org_ABC123" not in describe_failure(daily)
+    assert "per-minute" in describe_failure(
+        _http(429, openai.RateLimitError).__class__(
+            "x tokens per minute (TPM)", response=httpx.Response(429, request=REQ), body=None
+        )
+    )
+    assert "key was rejected" in describe_failure(_http(401, openai.AuthenticationError))
+
+
+def test_an_analysis_that_exceeds_the_time_budget_stops_with_a_clear_error():  # E-044b
+    import time as _t
+
+    client = _client_with([_resp("not json"), _resp("not json")])
+    client.config.total_timeout_s = 0.05
+    inner = client._client.chat.completions.create
+
+    def slow(**kw):
+        _t.sleep(0.1)
+        return inner(**kw)
+
+    client._client.chat.completions.create = slow
+    with pytest.raises(LLMError, match="time budget"):
+        client.structured("s", "u", LLMImpactResult)

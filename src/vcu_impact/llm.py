@@ -44,8 +44,9 @@ class LLMConfig:
     api_key: str | None = None
     base_url: str | None = None
     temperature: float = 0.0
-    timeout_s: float = 600.0
-    max_retries: int = 2  # SDK-level retries (rate limits, transient errors)
+    timeout_s: float = 90.0  # per HTTP request
+    total_timeout_s: float = 240.0  # whole analysis with this provider, repairs and retries included
+    max_retries: int = 1  # SDK-level retries (rate limits, transient errors)
     # Output budget, including hidden reasoning tokens. Some providers apply a low
     # default cap that truncates reasoning models, so it is always set explicitly.
     max_tokens: int = 16384
@@ -75,7 +76,8 @@ class LLMConfig:
             model=model,
             api_key=api_key,
             base_url=base_url,
-            timeout_s=float(os.getenv("LLM_TIMEOUT_S") or 600),
+            timeout_s=float(os.getenv("LLM_TIMEOUT_S") or 90),
+            total_timeout_s=float(os.getenv("LLM_TOTAL_TIMEOUT_S") or 240),
             max_tokens=int(os.getenv("LLM_MAX_TOKENS") or 16384),
         )
 
@@ -143,9 +145,30 @@ def _is_truncation(msg: str) -> bool:
     return bool(re.search(r"max[_ ]?(completion[_ ])?tokens|truncat|length limit", msg))
 
 
+def describe_failure(exc: BaseException) -> str:
+    """A short, readable reason for a failed provider call, without identifiers from the provider's message."""
+    msg = re.sub(r"org_[A-Za-z0-9]+", "org_…", str(exc))
+    low = msg.lower()
+    if "tokens per day" in low or "(tpd)" in low or "per day" in low:
+        return "daily token limit of the free tier reached; try again later or use the recorded analysis"
+    if "per minute" in low or "(tpm)" in low or "(otpm)" in low:
+        return "per-minute rate limit of the free tier; wait a minute and run again"
+    name = type(exc).__name__
+    if name == "RateLimitError" or "429" in low[:40]:
+        return "rate limit or quota reached (HTTP 429); wait, or use the recorded analysis"
+    if name == "AuthenticationError" or "401" in low[:40]:
+        return "the API key was rejected (HTTP 401); check the key in .env"
+    if "timeout" in name.lower() or "timed out" in low:
+        return "the provider did not answer in time"
+    if "503" in low[:40] or name == "InternalServerError":
+        return "the provider is temporarily unavailable (HTTP 503)"
+    return msg[:160]
+
+
 class LLMClient:
     def __init__(self, config: LLMConfig):
         self.config = config
+        self._deadline = float("inf")
         if config.provider != "ollama":
             self._client = OpenAI(
                 api_key=config.api_key,
@@ -162,12 +185,14 @@ class LLMClient:
         On invalid output the validation error is sent back once for repair.
         """
         schema = strict_schema(schema_model)
+        self._deadline = time.monotonic() + self.config.total_timeout_s
         messages = [{"role": "system", "content": system}, {"role": "user", "content": user}]
         notes: list[str] = []
         total_latency, prompt_tokens, completion_tokens = 0.0, 0, 0
         mode = "json_schema"
         last_error = ""
         for attempt in range(1, max_attempts + 1):
+            self._check_deadline()
             t0 = time.perf_counter()
             text, usage, mode = self._call(messages, schema, schema_model.__name__, mode, notes)
             total_latency += time.perf_counter() - t0
@@ -214,6 +239,7 @@ class LLMClient:
         if self.config.temperature is not None:
             kwargs["temperature"] = self.config.temperature
         while True:
+            self._check_deadline()
             if mode == "json_schema":
                 kwargs["response_format"] = {
                     "type": "json_schema",
@@ -259,6 +285,10 @@ class LLMClient:
         usage = resp.usage
         text = resp.choices[0].message.content or ""
         return text, (getattr(usage, "prompt_tokens", None), getattr(usage, "completion_tokens", None)), mode
+
+    def _check_deadline(self) -> None:
+        if time.monotonic() > self._deadline:
+            raise LLMError(f"no answer within the time budget of {self.config.total_timeout_s:.0f} s")
 
     def _grow_budget(self, kwargs: dict, notes: list[str]) -> bool:
         if kwargs["max_tokens"] >= self.config.max_tokens_ceiling:
