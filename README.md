@@ -19,7 +19,10 @@ recommendations; final approval belongs to the authorized owner.
 > **Sample report:** [reports/example_impact_report.html](reports/example_impact_report.html)
 > (also as [Markdown](reports/example_impact_report.md)), generated from the provided files.
 
-**Screenshots** of the running application (taken before the final fixes; the layout is unchanged apart from one added caption and warning line): [affected tests](docs/screenshots/Screenshot_18-11-2026_1234_localhost.jpeg), [edit tab](docs/screenshots/Screenshot_18-11-2026_12320_localhost.jpeg), and two more in [docs/screenshots/](docs/screenshots/).
+**Screenshots** of the running application: [what changed](docs/screenshots/what_changed_tab.jpeg),
+[affected tests](docs/screenshots/affected_test_general.jpeg), [selected test](docs/screenshots/affected_test_selected.jpeg),
+[edit requirement](docs/screenshots/edit_requirement_tab.jpeg), [use other files](docs/screenshots/use_other_files.jpeg),
+[report](docs/screenshots/report_tab.jpeg).
 
 ## Quick start
 
@@ -64,13 +67,7 @@ Then open http://localhost:8501. `make docker-build` and `make docker-run` do th
 adds `--env-file .env` when a `.env` exists).
 The image never contains `.env` (excluded by `.dockerignore`); keys are passed at run time.
 
-> **"No model configured (LLM_PROVIDER is empty)" in the sidebar, and the Run button is disabled?** That is
-> what the first command (no `--env-file`) shows: the container has no model, so it can only display the recorded
-> analyses. It is expected, not a failure. To re-run the analysis, create `.env` from `.env.example` with a key and
-> start the container with the second command. The same message appears for a local run when `.env` is missing or
-> `LLM_PROVIDER` is empty.
-
-## Model configuration (safe)
+## Model configuration
 
 Configuration is read from environment variables, loaded from a local `.env` file. Only the template `.env.example` is in the
 repository. Keys are never printed, logged or written to reports; the UI only shows
@@ -216,7 +213,7 @@ shows the change next to the test (the original model output is kept). It relies
 model's reading of the change, which is not evaluated and not stable, so it never fires when
 the diff found a changed number in that requirement; a wrong "rewording" on a change without
 numbers could still hide a real impact. The rule is not validated (it was written after seeing
-the failure it fixes).
+the failure it fixes). A field-order experiment ([branch `exp/field-order`](https://github.com/Ceciber-rep/vcu-impact-analyzer/tree/exp/field-order), not merged) tested whether the order of JSON fields explains this; it did not.
 
 The evaluation is small (84 judgments, one register, one annotator), and the prompt was
 refined on the same scenarios. Free-tier latency, rate limits and availability can change
@@ -244,6 +241,8 @@ evaluation harness in [`eval/`](eval/), which needs keys.
 | `reports/` | Example exported report |
 | `eval/` | LLM evaluation (not needed to run the app): datasets, scenarios, harness, stored runs under `eval/results/` (frozen), frozen prompts, UI-flow script, rule-only baseline |
 | `docs/` | Evaluation report, known issues, implementation plan, original exercise brief, [assessment/](docs/assessment/) (audit, edge cases, LLM evaluation of the final app), [demo_script.md](docs/demo_script.md) |
+| `docs/screenshots/` | Screenshots of the application |
+| `docs/claude_code_conversations/` | Claude Code session transcripts (text files) |
 | `tests/` | Offline test suite |
 | `.env.example` | Template for LLM configuration |
 
@@ -252,6 +251,7 @@ evaluation harness in [`eval/`](eval/), which needs keys.
 - **Shared chat (read-only):** https://claude.ai/share/619b1e7d-7a3a-4f80-99a5-8a31000c46a8
   This chat was used by the project owner as an **assistant to Claude Code**: to prepare the step-by-step prompts for
   Claude Code and to think through its proposals and decisions. It did not write the repository code.
-- **Claude Code** (Anthropic's coding agent, running in VS Code) is the assistant that helped **generating the code**. It worked step by
-  step, proposing and waiting for the project owner's decision at each step (model, UI framework, plan, evaluation
+- **Claude Code** (Anthropic's coding agent, running in VS Code) is the assistant that helped **generating the code**. It worked by
+  step (model, UI framework, plan, evaluation
   follow-up); the commits carry its `Co-Authored-By` line. The Claude Code session is not part of the shared chat above.
+  Its conversations are saved as text files in [docs/claude_code_conversations/](docs/claude_code_conversations/).

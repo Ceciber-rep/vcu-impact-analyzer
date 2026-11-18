@@ -1,0 +1,1036 @@
+
+❯ # Task: final assessment of the application (phases 0-6)
+
+  The application is built. I now need an honest, evidence-based assessment of
+  how well it works, then prioritized fixes, then finalization. A reviewer will
+  judge the result against `docs/exercise_brief.docx`, and may ask me to demo
+  a small change that is not in the original files.
+
+  Time budget: 3/4 hours. If time is short, protect in this order: (1) anything
+  that violates the brief, (2) anything that produces a wrong or misleading
+  result, (3) reproducibility and documentation, (4) everything else. Say
+  clearly what you skipped.
+
+  ## Ground rules
+  - Everything in English: code, comments, docs, commit messages, our
+  conversation.
+  - Free-tier models only. Never print or commit API keys. Keys live in `.env`.
+  - Be adversarial toward our own work. Do not simply confirm that things work;
+  try to break them, and report failures plainly. Do not invent results, and
+  mark anything you could not verify as "not verified".
+  - Write findings into `docs/assessment/` (one file per phase, plus a short
+  `docs/assessment/SUMMARY.md` at the end). Number findings (F-001, ...) with a
+  severity:
+    - S1 = violates the brief or could mislead an engineer into a wrong
+  conclusion
+    - S2 = wrong or unstable output, crash, or data loss in a plausible use
+    - S3 = usability or robustness gap
+    - S4 = polish
+  - FROZEN until I approve a change in phase 5: the v3 system prompt, the LLM
+  output schema (`LLMImpactResult` and its parts), the model choice (Groq
+  qwen3.8-27b primary, Gemini 3.5 Flash fallback), and all existing files under
+  `eval/results/`. If you conclude one of them must change, propose it with
+  evidence and wait for my approval. Approved changes get a NEW prompt/schema
+  version (v4); v3 stays as the control.
+  - STOP GATES (report and wait for my answer): after phase 2 (dataset
+  decision), after phase 4 (priority list), and before any change to the
+  prompt, schema or model. Between gates, keep going without asking.
+
+  ## Phase 0: baseline
+  Record, in `docs/assessment/00_baseline.md`: current commit hash, `git
+  status`, test results (`uv run pytest`), lint status, how the app starts
+  (exact command), whether it starts in replay mode with no key, and the list
+  of modules and what each does. Everything later is compared against this.
+
+  ## Phase 1: requirements audit
+  Compare the running application with `docs/exercise_brief.docx`. First
+  extract every requirement, expectation and deliverable from the brief into a
+  traceability table: brief item -> evi
+  ──── (56 lines hidden) ──────────────────────────────────────────────────────
+  NOT add features or visual redesign in this phase; those come later if time
+  remains. Keep a short "ideas parked for later" list instead.
+  - Re-run the full test suite and the demo flows after the last change.
+
+  ## Phase 6: finalization
+  - Clean-clone test: clone into a fresh temporary folder, follow ONLY the
+  README commands, and confirm the app starts in replay mode with no key, shows
+  the example result, and exports a report. Confirm live mode works with a key
+  from `.env`. Fix the README until this works exactly. Record exact commands
+  and output.
+  - Container and Windows: build and run the Docker image if Docker is
+  available here, and say exactly what was and was not verified. Do not claim
+  Windows support that was not tested; give the exact command and mark it "not
+  verified" if so.
+  - README: what it does, architecture in a paragraph or a small diagram,
+  install and run commands, model configuration and safe handling of keys, live
+  vs replay explanation, how to reproduce the example report, how to run the
+  tests and the evaluation, assumptions, known limitations (taken from the
+  assessment, honestly), and where the evaluation results are.
+  - Deliverables: refresh the committed example report from the final code, add
+  a current screenshot (or short demo) of the real UI, check that inputs are
+  included and no secrets are tracked (targeted secrets scan including git
+  history), `.env.example` complete, dependencies pinned and `uv.lock`
+  committed, license decision (ask me).
+  - Remove dead code, stray files, debug output and anything the reviewer would
+  find confusing; keep `eval/` but make clear what it is.
+  - Rehearsal script: write `docs/demo_script.md` with 3 live-change demos I
+  can run in the interview (for example: change DR-01 to 60 ms; reword DR-02
+  without changing meaning; add a new requirement), with the expected result
+  for each and the actual result from a real run, including what to say if the
+  live provider is slow or rate-limited (use replay or the cache).
+  - Final checklist against the brief, with each item marked Done / Partial /
+  Not done. The AI-conversation share link is pending on my side.
+  Output: `docs/assessment/SUMMARY.md` (one page: what was tested, what failed,
+  what was fixed, what remains and why, honest limitations) and a final commit
+  list.
+
+  ## Reporting
+  At each stop gate and at the end, give me: what you did, what you found
+  (counts by severity), what you fixed, what you could not verify, and
+  questions. Keep it short and factual.
+
+  Start with phase 0 now.
+
+● Starting phase 0: I'll collect the baseline facts first.
+
+  Ran 7 shell commands (ctrl+o to expand)
+
+● Phase 0 is done. Next, phase 1: extracting the brief.
+
+  Read 2 files, ran 5 shell commands (ctrl+o to expand)
+
+● Phase 1 is underway. Static checks so far: the baseline passes, and the
+  numeric diff almost certainly isn't unit-aware (to be confirmed by test). Next
+  I'll script the demo flows against the real UI.
+
+  Read 1 file, ran 3 shell commands (ctrl+o to expand)
+
+● Now the flow runner (reusable for phases 1, 3 and 4).
+
+● Write(eval/ui_flows.py)
+  ⎿  Wrote 192 lines to eval/ui_flows.py
+       1 """Scripted end-to-end UI flows (Streamlit AppTest), re-runnable
+          in replay or live mode.
+       2
+       3     uv run python eval/ui_flows.py --mode replay              #
+         no key, no model call
+       4     uv run python eval/ui_flows.py --mode live --flows F1,F3  #
+         calls the configured model (uses the local cache)
+       5
+       6 Each flow starts from a fresh app session, makes one change the
+         way a user would (edit form
+     … +186 lines (ctrl+o to expand)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Replay flows work. Next I'm running the live flows against the primary model,
+  which makes 7 free-tier calls, in the background.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● While that runs, I'll scan the repo and its git history for secrets.
+
+  Ran 6 shell commands · 1 failed (ctrl+o to expand)
+
+● Phase 0 is done, and phase 1's 7 live UI flows are running. So far I've
+  spotted unit-unaware numeric diffs, some missed approval phrasings, and local
+  username paths leaking into eval traceback files — waiting on the flows to
+  finish before continuing. · summary
+
+  Read 2 files, ran 13 shell commands (ctrl+o to expand)
+
+● Stop gate 1 (dataset decision). Phases 0 to 2 are committed locally and
+  nothing is pushed.
+
+  Done
+  - Phase 0: baseline recorded in docs/assessment/00_baseline.md.
+    - Commit a3ceb64, tree clean, 48 tests pass, lint clean.
+    - It starts in replay mode with no key.
+  - Phase 1: docs/assessment/01_requirements_audit.md, built from 7 flows driven
+    through the real UI (eval/ui_flows.py).
+    - Replay mode: all 7 flows give the right diff and a clear "not analysed"
+      state.
+    - Live mode: all 7 ran without an exception, and the report matched the
+      table every time.
+  - Phase 2: docs/assessment/02_dataset_design.md, the dataset design, awaiting
+    your approval.
+
+  Findings so far (9 in total)
+  - S1: 0. I found no violation of the brief.
+  - S2: 3.
+    - F-001: the numeric diff isn't unit-aware. 100 ms → 0.1 s shows up as two
+      separate changes.
+    - F-002: Groq returned 429 (output-tokens-per-minute limit) on 4 of 7
+      back-to-back live runs. Those runs fell back to Gemini and took 40–66 s
+      instead of 5–12 s.
+    - F-007: Gemini read "remove 'regardless of requested driving mode'" from
+      BRK-03 as reworded_same_meaning and marked TV-009 and TV-011 not affected
+      with high confidence. The label is debatable, so I recorded it as
+      contested and will score it in phase 4.
+  - S3: 4.
+    - F-003: provider error text, including the Groq organisation id, ends up in
+      the banner, the cache and the exported report.
+    - F-004: edits are diffed against the baseline, so the original DR-01 change
+      appears in every flow. A user can't see the effect of their own edit
+      alone.
+    - F-005: the approval-language detector misses phrasings such as "owner
+      approved", "authorised" and "cleared for release".
+    - F-006: 8 frozen files under eval/results contain the local path
+      /home/cberti/....
+  - S4: 2, README placeholders (no LICENSE yet) and the missing real-browser
+    check.
+
+  Scans
+  - Secrets: your two key values aren't in the working tree or any commit.
+    Key-pattern scans (Groq, Google, OpenAI-style, Cerebras, bearer tokens)
+    found 0 hits in the tree and 0 in history.
+  - Approval language: 0 hits across 10,484 strings in 110 JSON files, plus the
+    example reports and README.
+
+  Not verified
+  - Visual judgements come from your 4 screenshots and the element tree, not
+    from a real browser.
+  - The AI-conversation share link is pending on your side, and I haven't opened
+    it.
+  - Docker and Windows haven't been checked yet (phase 6).
+
+  Dataset recommendation
+  Your plan stands, with four corrections:
+  - S1, S9 and S10 are near-copies (they share DR-01 100→80), so I'll report
+    distinct cells next to cell counts.
+  - S8–S10 have been seen and used in the tie-break, so only the new scenarios
+    count as held-out.
+  - Their labels were written by me and you haven't reviewed them. The new
+    labels will have the same weakness unless you review them.
+  - Unit equivalence is a software defect (F-001), so the unit scenario tests
+    how the LLM copes with a false numeric alarm.
+
+  Questions
+  1. Approve six new held-out scenarios?
+     - N1: 100 ms → 0.1 s.
+     - N2: title-only change.
+     - N3: add and remove in one revision.
+     - N4: multi-paragraph edit.
+     - N5: change to a requirement no test references.
+     - N6: ID rename.
+
+     If time is short, N1, N3 and N6 only.
+  2. Add the rule-only baseline? It's about 40 minutes and scores through the
+     existing harness. I recommend yes.
+  3. Will you review the new labels before any model runs on them?
+  4. Time: the 45-minute budget is already exceeded by phases 0–2. Phase 4 will
+     be slower because of the Groq limits. Should I reduce it to 3 repeats and
+     one perturbation type?
+
+  I haven't touched anything frozen. eval/results/ is unchanged.
+
+❯ 1. Use the 6 held-out scenarios for final assessment; I will review your
+  labels manually. Make sure they include the edge cases.
+  2. You might add the rule only baseline, explain however what you're doing
+  for each step
+  3. yes, before running the models, ask explicitly for my confirmation on the
+  labels.
+  4. yes, reduce it if possible but keep it robust
+
+● Approved. I'll start with step 1, the six scenario files and their labels.
+  I'll commit them before any model touches them. First I'm reading how the
+  existing scenarios define their edits.
+
+  Ran 7 shell commands · 1 failed (ctrl+o to expand)
+  ⎿  Error: No such tool available: bash. Tool names are case-sensitive: call
+     Bash instead.
+
+  Ran 5 shell commands (ctrl+o to expand)
+
+● The six held-out scenarios and the fixed rule-only baseline are committed,
+  with no model or scorer having touched the labels yet. I'll start phase 3
+  (offline, no model involved) and ask you to confirm the labels once it's done.
+  · summary
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● Phase 3 begins with a shared builder for synthetic .docx and .xlsx inputs,
+  then a probe of how the parsers behave on awkward files.
+
+  Ran 15 shell commands (ctrl+o to expand)
+
+❯ Continue
+
+● Next is the live prompt-injection probe against the real model, with 3 calls.
+
+  Ran 7 shell commands (ctrl+o to expand)
+
+● Phase 3 is done and committed locally. I'm now waiting on your confirmation of
+  the labels before phase 4.
+
+  What I did
+  - New tests: I added 131 offline tests covering spec files, register files,
+    provider failures, injection, export and the UI. The suite now gives 99
+    passed and 32 xfail(strict). Each xfail is a documented defect and turns red
+    once it's fixed.
+  - Injection probe: I ran 3 live calls through eval/injection_probe.py.
+  - Not verified: double-clicks and refresh during a run, a real Word-saved
+    tracked-changes file, a real encrypted file, a live 200-test run, and
+    real-browser rendering. Details are in docs/assessment/03_edge_cases.md.
+
+  New findings (F-010 to F-021)
+  - S1, F-010: text inside Word tracked changes is silently ignored. A revision
+    saved with tracked changes loses both the old and the new limit, and the
+    diff shows only a deletion with no warning. A reviewer who edits the spec
+    with Track Changes on would hit this.
+  - S2:
+    - F-011: requirements in text boxes or tables are dropped without a warning.
+    - F-012: a heading with an unrecognised ID format is merged into the
+      previous requirement. VCU-A-01.2 is truncated to VCU-A-01.
+    - F-015: duplicate test IDs in the register are accepted silently.
+    - F-016: a link cell with several IDs separated by newline or space keeps
+      only the first.
+    - F-020: after a browser refresh, an earlier live result is not shown. The
+      sidebar button then says "Run", so one click calls the provider again and
+      wastes quota.
+  - S3:
+    - F-013: corrupt, empty, old-format or encrypted uploads give raw library
+      errors.
+    - F-014: merged cells and uncached formulas become empty values silently.
+    - F-017: lowercase IDs in link cells are treated as unknown requirements.
+    - F-018: markdown in untrusted text is rendered, so a remote image could be
+      fetched.
+    - F-021: concurrent clicks may start duplicate provider calls (not
+      verified).
+  - S4, F-019: reports carry a generation timestamp, so they aren't
+    byte-identical.
+
+  What held up
+  - Provider failures: 401, 429, 413, timeout, 503, empty and truncated answers
+    all give a visible "not analysed" state with the cause. Nothing is cached
+    and no assessments are invented. Fallback to Gemini works.
+  - Model output integrity: omitted tests, invented test IDs and invented
+    requirement IDs are handled with warnings.
+  - Escaping: hostile text (<script>, <img onerror>) is escaped in the HTML
+    report and in every HTML element of the UI.
+  - Injection (3 samples): the primary model was not steered in any of the three
+    (register cell, requirement text, both). That is one model and one sample
+    each, not proof of resistance.
+  - Provider outage: during the probe, Groq returned 429 and Gemini returned 503
+    in the same call, giving "every configured model failed". The UI handled
+    it.
+
+  Totals so far (21 findings): S1 1, S2 8, S3 9, S4 3. Nothing has been fixed
+  yet.
+
+  Datasets
+  - N1–N6 and the rule-only baseline are committed
+    (eval/dataset_assessment.yaml, eval/naive_baseline.py). No model has run on
+    N1–N6, and I haven't scored the baseline on them either.
+  - How the baseline works:
+    a. A test is directly affected if its link points to a changed requirement.
+    b. It needs human review if its link points to a removed requirement.
+    c. It is possibly affected if its text has a number with the same unit as a
+       changed number.
+    d. It needs human review if its link is missing, TBD or unknown.
+    e. Otherwise it is not affected.
+
+    Its rules are fixed and won't be tuned.
+
+  Please confirm the labels. Each cell has accept, preferred, critical and a why
+  in eval/dataset_assessment.yaml. These are the judgments most worth checking:
+  - N1: TV-001 accepts not affected or possibly affected. Directly affected
+    counts as an over-flag, because 100 ms equals 0.1 s.
+  - N2: TV-010 accepts not affected or possibly affected for a title-only
+    change.
+  - N3: TV-006 (link to the removed requirement) accepts review, possibly or
+    directly affected, with review preferred. It must give owner_decision and
+    must not relate to THM-07. TV-007 accepts possibly affected or review and
+    must relate to THM-07.
+  - N4: TV-002 and TV-011 accept directly or possibly affected. TV-005 (fault
+    injection) accepts possibly affected, not affected or review, with possibly
+    affected preferred.
+  - N5: all tests should be not affected. TV-009 is the over-flag trap, and the
+    label for that cell is not affected or possibly affected.
+  - N6: TV-006 accepts review or possibly affected, with review preferred.
+    Directly affected is wrong, and it must relate to VCU-LOG-15.
+
+  Questions
+  1. Do you confirm these labels, or want changes? Once you confirm, I'll score
+     the baseline and run the models on N1–N6. Phase 4 will use the reduced
+     plan: 3 repeats on 2 scenarios, plus shuffled test order, shuffled notes,
+     whitespace and renamed IDs.
+  2. Phase 4 will make roughly 30 live calls, each rate-limited to about one per
+     minute on Groq. I expect it to take well over an hour, and Gemini 503s may
+     add retries. Is that acceptable, or should I cut it to the primary model
+     only?
+
+❯ I checked and I confirm you're labelling? Regarding phase 4: what do you mean
+  "should I cut it to the primary model only?" --> You should test the final
+  application, so Groq with fallback to Gemini. The application should be
+  tested as it was working in production/ the final version
+
+● Labels confirmed, and I'll test the application as shipped: Groq primary with
+  automatic Gemini fallback. I'm reading the scorer's output structure before
+  writing the runner.
+
+  Ran 4 shell commands (ctrl+o to expand)
+
+● While the runs go (~45 min), I'm committing the hand-checked change-nature
+  labels before any result is analysed.
+
+  Ran 1 shell command (ctrl+o to expand)
+● Background command "cd /home/cberti/vcu-impact-analyzer; sed -i '3s|.*| uv run
+  python eval/assess_run.py [--pause 65] [--only S1,N4] # resumable; ->
+  eval/results/assessment/app-groq-gemini/|' eval/assess_run.py; uv run ruff
+  check eval | tail -1; git add -A eval; git commit -qm "Phase 4 runner for the
+  application path (Groq with Gemini fallback) Co-Authored-By: Claude Sonnet 5.5
+  <noreply@anthropic.com>"; nohup uv run python eval/assess_run.py >
+  /tmp/p0/assess_run.log 2>&1 & sleep 1; echo started" completed (exit code 0)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The runner didn't survive the launch shell. I'm relaunching it as a proper
+  background task.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Now the analysis script. I'll develop it against the frozen v3 results and the
+  baseline while the live runs accumulate.
+
+  Ran 6 shell commands (ctrl+o to expand)
+
+● The live run is progressing (1 of 32 cases done, ~80s/case, ~40 min
+  remaining), so I'll let it continue while checking the first result to confirm
+  the runner is recording things correctly. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The full 32-case run is under way through the real application path, Groq with
+  fallback to Gemini. It started at 14:40. The first case came back from Groq
+  on the first try in 4.9 s.
+
+  - Cases: each of the 16 scenarios once, 4 more repeats each of S1 and N4, and
+    4 perturbations each of S1 and N4. The perturbations are shuffled test rows,
+    shuffled notes, harmless formatting, and renamed test IDs.
+  - Pacing: calls are 65 s apart so the Groq per-minute limit (F-002) doesn't
+    dominate. Unpaced behaviour was measured in phase 1: 4 of 7 runs fell back.
+  - Failed cases: a failed case is retried once after 90 s, and both outcomes
+    are recorded.
+  - Time: about 40 minutes left.
+  - Next: when it finishes, I'll run the analysis (accuracy with Wilson
+    intervals, error categories, evidence grounding, consistency, reliability,
+    confidence calibration, change nature) and write
+    docs/assessment/04_llm_evaluation.md. That is the stop gate with the
+    prioritized fix list.
+
+  Early baseline numbers, on the frozen v3 runs plus the rule-only baseline:
+  - Rule-only baseline: it gets 82% of S1–S10 cells acceptable but only 22/32
+    critical cells (69%).
+  - Frozen Groq qwen: 30/32 critical cells (94%).
+  - Frozen Gemini: 31/32 critical cells (97%).
+
+  The application-path numbers will come from this run.
+
+● Background command "cd /home/cberti/vcu-impact-analyzer; mkdir -p .cache; uv
+  run python -u eval/assess_run.py 2>&1 | grep -v -E "WARNING|ScriptRunContext"
+  | tee .cache/assess_run.log" completed (exit code 0)
+
+  Ran 4 shell commands (ctrl+o to expand)
+
+● Both Groq and Gemini hit their free-tier rate limits during the run. I'll
+  update the runner to log failed attempts so resuming won't erase that
+  evidence, then analyze the data that was collected. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Only 15 of 32 cases completed before quotas ran out. I'm also fixing my
+  evidence check—it wrongly expected verbatim quotes instead of paraphrases—by
+  switching to a fact-based check (numbers, IDs, and contradicted "unchanged"
+  claims), and adding a pooled S1 consistency count plus a live-vs-replay
+  comparison. · summary
+
+  Ran 8 shell commands (ctrl+o to expand)
+
+● Stop gate 2 (priority list). Phase 4 is committed locally and incomplete: both
+  providers ran out of free-tier quota during the run.
+
+  What ran
+  - Setup: the application path, Groq with Gemini fallback, prompt v3, 65 s
+    pacing.
+  - Answered: 15 of 32 planned runs. 17 failed even after a retry.
+    - Groq: the per-minute limit (1,000 output tokens) for 3 early cases, then
+      the 200,000 tokens-per-day cap.
+    - Gemini: a bare 429 on every attempt. The fallback rescued 0 of 17
+      failures, and I haven't determined why.
+  - Missing: S2, S5 and N1; most S1 and N4 repeats; and 7 of 8 perturbations.
+    Only shuffled notes on S1 ran.
+  - Resume: uv run python eval/assess_run.py runs only what's missing. It needs
+    about 105,000 Groq tokens, so it has to wait for the quota to refill or for
+    a new day.
+
+  Results on the 13 scenarios that ran (156 judgments):
+
+  ┌───────────────────────────────────┬─────────────────────────────────────┐
+  │              Measure              │               Result                │
+  ├───────────────────────────────────┼─────────────────────────────────────┤
+  │ Missed impacts                    │ 0                                   │
+  ├───────────────────────────────────┼─────────────────────────────────────┤
+  │ S set, acceptable                 │ 95/97                               │
+  ├───────────────────────────────────┼─────────────────────────────────────┤
+  │ S set, critical cells             │ 26/27                               │
+  ├───────────────────────────────────┼─────────────────────────────────────┤
+  │ N set (held out), acceptable      │ 56/59 raw, 57/59 after the          │
+  │                                   │ post-check                          │
+  ├───────────────────────────────────┼─────────────────────────────────────┤
+  │ N set, critical cells             │ 5/7 raw, 6/7 after the post-check   │
+  ├───────────────────────────────────┼─────────────────────────────────────┤
+  │ Rule-only baseline, critical      │ 22/32 on S, 6/9 on N                │
+  │ cells                             │                                     │
+  └───────────────────────────────────┴─────────────────────────────────────┘
+
+  - LLM vs baseline: the LLM's advantage is clear on S1–S10. It isn't
+    demonstrated on N1–N6, where the sample is only 7 critical cells and the
+    intervals overlap.
+  - Five wrong cells, all over-flags:
+    - Three were high-confidence on critical cells (N2 TV-010, N6 TV-006, S8
+      TV-002).
+    - Two (S5 earlier, N2 now) are "the reason says nothing changed, the status
+      says directly affected". The post-check corrected N2, but only because the
+      model's own nature reading was right.
+    - N6 (renaming a requirement) has a similar contradiction that no check
+      catches.
+  - Evidence: 0 of 238 checkable evidence strings cite a number or ID that isn't
+    in the input. 44% of strings contain nothing checkable, so this doesn't
+    prove the reasoning is right.
+  - Change nature: 13/14 readings correct.
+  - Live vs replay: the default S1 run is identical to the committed recording
+    on all 12 tests.
+  - Calibration: "high" confidence is no more reliable than "medium" (3% vs 4%
+    wrong).
+
+  New findings (F-022 to F-026)
+  - F-022 (S2): free-tier ceilings make the app unusable after about 30 analyses
+    a day, and the fallback didn't help.
+  - F-023 (S2): one failing call blocked the UI for 3,618 s, because of 600 s
+    timeouts plus retries.
+  - F-024 (S2): the rewording contradiction is systematic.
+  - F-025 (S3): confidence doesn't separate right from wrong.
+  - F-026 (S3): the plan was incomplete for lack of quota.
+
+  Totals are 26 findings: S1 1, S2 11, S3 10, S4 3.
+
+  Proposed fix list (severity, likelihood in the reviewer's demo, effort).
+  Nothing touches the frozen prompt, schema or model.
+
+  #: 1
+  Finding: F-010 (S1)
+  Fix: Read text inside Word tracked changes (keep insertions, drop deletions)
+    and warn when revision marks are present
+  Effort: ~45 min
+  ────────────────────────────────────────
+  #: 2
+  Finding: F-020
+  Fix: Don't let st.cache_data keep "not analysed", so a refresh shows the
+    earlier live result
+  Effort: ~15 min
+  ────────────────────────────────────────
+  #: 3
+  Finding: F-022, F-023, F-002, F-003
+  Fix: Timeout of about 90 s with a single SDK retry; wait out a short 429
+    once; clear messages for daily limits ("use replay or try tomorrow");
+    scrub the organisation id and cut error text sensibly
+  Effort: ~1 h
+  ────────────────────────────────────────
+  #: 4
+  Finding: F-016, F-015
+  Fix: Keep all IDs separated by newline or space in link cells; reject
+    duplicate test IDs with a clear error
+  Effort: ~30 min
+  ────────────────────────────────────────
+  #: 5
+  Finding: F-001
+  Fix: Make the numeric diff unit-aware (ms and s; 100 ms equals 0.1 s), and
+    ignore numbers inside IDs
+  Effort: ~30 min
+  ────────────────────────────────────────
+  #: 6
+  Finding: F-013, F-017, F-005
+  Fix: Readable upload errors; match lowercase IDs in link cells; extend the
+    approval detector and scan engineering_summary
+  Effort: ~45 min
+  ────────────────────────────────────────
+  #: 7
+  Finding: F-011, F-012, F-014
+  Fix: Warn instead of silently dropping text boxes, tables, unrecognised ID
+    headings, merged cells and uncached formulas
+  Effort: ~1.5 h
+  ────────────────────────────────────────
+  #: 8
+  Finding: F-025
+  Fix: A one-line UI note that confidence is not a reliability measure
+  Effort: ~10 min
+
+  Parked: F-004, F-018, F-019, F-021, F-024 beyond a visible caveat, and the
+  local path in frozen results (F-006, needs your approval to edit frozen
+  files).
+
+  Recommended cut line: items 1–5, about 3 hours, plus item 8 and the phase 6
+  finalization. Items 6 and 7 become documented limitations in the README. I
+  recommend this because 1 is the only S1 and a demo with Track Changes on is
+  plausible, 2–3 are the likeliest ways a live demo fails, and 4–5 are cheap and
+  unambiguous.
+
+  Questions
+  1. Do you approve this list and cut line, or want items moved?
+  2. For the remaining runs: resume later when quota is back and keep this
+     partial report as the interim record, or finish phase 5 and 6 first? I
+     suggest finishing 5 and 6 first. Re-running phase 4 after the fixes is the
+     better use of the quota, but it needs a fresh Groq day, so I'd do it last.
+  3. The fixes change parsing, so phase 4 numbers would shift slightly. Is that
+     fine, with the report stating the code version for each run?
+
+❯ 1. I approve the list: implement fix for items 1-5, 8 and document only items
+  6, 7.  Due to time constraint, prioritize the important fixes and try to
+  optimize the time you have. You should run this in less than 2 hours.
+  2. We will not resume the runs, we do not have enough time. Write the report
+  with the partial results you have, but highlight that we would need a new
+  run.
+  3. If phase 4 shift slightly is fine, just make sure the application
+  continues to work and that you do not change anything substantial.
+
+● Approved. I'm implementing items 1–5 and 8 now. The failing tests already
+  exist as strict xfails from phase 3, so each fix removes its marker. I'm
+  starting with item 1 (tracked changes) and reading the parser and models.
+
+  Ran 6 shell commands (ctrl+o to expand)
+
+● I committed too early: the test file has a syntax error from my line deletion.
+  Fixing it now.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Line numbers were off by one after the earlier edit. Removing the two orphaned
+  lines.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Item 1 is done. Next is item 2, the refresh bug: the cached "not analysed"
+  outcome.
+
+  Ran 3 shell commands (ctrl+o to expand)
+
+● Next is item 3: shorter timeouts, an overall deadline, readable limit messages
+  and no organisation id in the text.
+
+  Ran 4 shell commands (ctrl+o to expand)
+
+● The fix works (the strict xfail now passes), but my regex missed the marker.
+  Removing it by hand.
+
+  Ran 3 shell commands (ctrl+o to expand)
+
+● Item 4 is next: multiple IDs per link cell, and duplicate test IDs.
+
+  Ran 5 shell commands (ctrl+o to expand)
+
+● Replay flows still work. A quick live smoke check after the code changes comes
+  next. It needs quota, so it may fail.
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● Phase 5 is committed. Now phase 6. I'm starting the live runs for the demo
+  script (F2 and F3, paced) in the background and meanwhile doing the
+  clean-clone test.
+
+  Ran 3 shell commands · 1 failed (ctrl+o to expand)
+
+● The clean clone works with only the README commands. Now the Docker build.
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● Docker is verified. Now the README. I'm reading the remaining sections before
+  editing.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Background command "cd /home/cberti/vcu-impact-analyzer; (uv run python
+  eval/ui_flows.py --mode live --flows F2 --out
+  docs/assessment/results/ui_flows_live_final_F2.json; sleep 80; uv run python
+  eval/ui_flows.py --mode live --flows F3 --out
+  docs/assessment/results/ui_flows_live_final_F3.json) > .cache/final_flows.log
+  2>&1" completed (exit code 0)
+  Ran 1 shell command (ctrl+o to expand)
+
+● F3 worked live after the fixes (5.5 s). F2 hit the per-minute limit and showed
+  the new readable messages. I'll retry F2 after a pause and edit the README in
+  the meantime.
+
+  Ran 5 shell commands (ctrl+o to expand)
+
+● Background command "cd /home/cberti/vcu-impact-analyzer; mv
+  docs/assessment/results/ui_flows_live_final_F2.json
+  docs/assessment/results/ui_flows_live_final_F2_ratelimited.json; (uv run
+  python -c "import time; time.sleep(75)"; uv run python eval/ui_flows.py --mode
+  live --flows F2 --out docs/assessment/results/ui_flows_live_final_F2.json) >
+  .cache/final_f2.log 2>&1" completed (exit code 0)
+
+  Ran 3 shell commands (ctrl+o to expand)
+
+● The scan found an organisation-id pattern. I'm checking what it is.
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● Phases 0 to 6 are done and committed locally (21 commits since a3ceb64).
+  Nothing is pushed, and the sections below say what I couldn't verify.
+
+  What I did
+
+  - Fixes: items 1–5 and 8 from your list are in, each with a test that failed
+    first. The suite is now 113 passed and 21 xfail, with lint clean. The 21 are
+    the documented, unfixed defects.
+  - Frozen items: the v3 prompt, the LLM schema, the model choice and
+    eval/results/v1–v3 are untouched. There is no v4.
+  - Live checks after the fixes: three flows ran live. F1 (Groq) and F3 (Groq)
+    worked, and F2 was served by the Gemini fallback after Groq's per-minute
+    limit. F4–F7 were not re-run live.
+  - Clean clone: a fresh clone with only the README commands started in replay
+    mode with no key. The app showed the recorded result, the run button was
+    disabled, the CLI report worked, and the tests passed.
+  - Docker: the image built here and ran. Health, replay, the disabled run
+    button and a CLI report all worked.
+  - Documents: docs/assessment/ (files 00–05 plus SUMMARY.md),
+    docs/demo_script.md, an updated README, a regenerated example report and a
+    new section 9 in docs/llm_evaluation.md.
+
+  What was fixed (8 findings)
+
+  ┌─────────────┬───────────────────────────────────────────────────────────┐
+  │   Finding   │                            Fix                            │
+  ├─────────────┼───────────────────────────────────────────────────────────┤
+  │             │ Word tracked changes were silently lost. They are now     │
+  │ F-010 (S1)  │ read as accepted, with a warning in the UI and the        │
+  │             │ report.                                                   │
+  ├─────────────┼───────────────────────────────────────────────────────────┤
+  │             │ A refresh hid an earlier live result, and a click would   │
+  │ F-020       │ re-call the provider. The saved result now shows again as │
+  │             │  "Cached".                                                │
+  ├─────────────┼───────────────────────────────────────────────────────────┤
+  │ F-002,      │ One failing call once blocked for 3,618 s. Timeouts are   │
+  │ F-003,      │ now 90 s per request and 240 s per provider. Failure      │
+  │ F-022,      │ messages are readable ("daily token limit… reached") and  │
+  │ F-023       │ no longer contain the organisation id.                    │
+  ├─────────────┼───────────────────────────────────────────────────────────┤
+  │ F-015,      │ A link cell keeps every ID, whether separated by newline, │
+  │ F-016       │  space or "and". Duplicate test IDs now give a clear      │
+  │             │ error.                                                    │
+  ├─────────────┼───────────────────────────────────────────────────────────┤
+  │ F-001       │ The numeric diff treats 100 ms and 0.1 s as equal and     │
+  │             │ ignores numbers inside IDs.                               │
+  ├─────────────┼───────────────────────────────────────────────────────────┤
+  │ F-025       │ A one-line note in the UI and report that confidence is   │
+  │             │ not a reliability measure.                                │
+  └─────────────┴───────────────────────────────────────────────────────────┘
+
+  Final state
+
+  - Findings: 27 in total. The S1 is fixed. Of 11 S2s, 6 are fixed. The rest are
+    documented limitations.
+  - Phase 4 is partial. Both free tiers ran out, so only 15 of 32 runs answered.
+    The report says so, and a new run on fresh quota is needed (uv run python
+    eval/assess_run.py).
+  - Results on the runs that completed:
+    - No missed impacts, and 5 wrong cells out of 156, all over-flags.
+    - On S1–S10 critical cells the LLM scored 26/27 against 22/32 for the
+      rule-only baseline.
+    - On the new scenarios the advantage isn't demonstrated: 6/7 against 6/9,
+      with wide intervals.
+  - Not verified:
+    - Windows commands.
+    - Docker with a live key.
+    - A real browser.
+    - Real Word-saved tracked-change files and real encrypted files.
+    - Duplicate clicks during a run.
+    - A 200-test register.
+    - Why Gemini returned 429.
+    - Live flows F4–F7 after the fixes.
+
+  Questions for you
+
+  1. License: no LICENSE file exists. Which one do you want (MIT is the usual
+     choice for a take-home), or none?
+  2. AI-conversation link: it's in the README but I haven't opened it. Please
+     confirm it opens read-only.
+  3. Screenshots: the four in the repo predate the last fixes; the UI differs
+     only by one caption and one warning line. Do you want to retake them? You
+     take them yourself.
+  4. Frozen files: may I redact the organisation id in
+     eval/results/v3/groq-gpt-oss-120b/availability_log.jsonl and the local path
+     in 8 v1 result files? It would be a new commit, and the old values stay in
+     git history, so a history rewrite is only worth it if you care.
+  5. Push: shall I push main now?
+
+❯ - There's no need for a license.
+  - You can open the the ai conversation link to make sure it's accessable and
+  readable.
+  - I will retake the screenshot myself at the end.
+  - You can redact the frozen files: make sure we are keeping only useful files
+  (useful to the current application and to the explanation of why certain
+  choices were made).
+  - You can push to main.
+
+  After that, I want to run (myself) a live demo of the application. Tell me
+  all the cases I should test (e.g. initial phase with the starter files,
+  trying to change a spec file, try to add/remove specs, and what the outcome
+  of the tests should be
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Fetch(https://claude.ai/share/619b1e7d-7a3a-4f80-99a5-8a31000c46a8)
+  ⎿  Received 272 bytes (0 Not Fetched)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The share link can't be verified here since claude.ai renders it
+  client-side—I'll note that in the summary. Moving on to the redaction and
+  checking for any files that are now unused. · summary
+
+  Pushed to main, ran 2 shell commands (ctrl+o to expand)
+
+● Pushed to main. Before writing the demo guide, I'll check the recorded
+  analyses for the offline scenario files to make sure the expected outcomes I
+  document are accurate. · summary
+
+  Ran 2 shell commands, wrote 1 memory (ctrl+o to expand)
+
+● main is pushed at b806c2f. I couldn't check the AI-conversation link, so
+  please open it yourself.
+
+  What I did with your decisions
+
+  - Link: claude.ai renders shared chats in the browser, so a fetch returns only
+    the app shell. Please open it in a private window and confirm it's readable
+    without logging in.
+  - License: none added.
+  - Redaction: I redacted the Groq organisation id and the /home/cberti paths in
+    10 stored result files. Only identifiers in error text and tracebacks
+    changed. The phase 4 tables regenerate identically, and the 113 tests still
+    pass. The old values remain in git history. The remaining stored files are
+    all cited by llm_evaluation.md or the assessment, so I removed nothing else.
+
+  Live demo: cases to run
+
+  Start with uv run streamlit run app/streamlit_app.py (key in .env for the live
+  cases). The edit form is tab 3 and the Run button is in the sidebar.
+
+  Free-tier limits. Groq allows about 1 analysis per minute and about 30 per
+  day. A second click within a minute usually falls back to Gemini and takes
+  40–65 s, or shows "Not analysed" with the reason. Run each case once and wait
+  about 70 s between cases.
+
+  The DR-01 change in every edit case. The revised file already contains DR-01
+  100 → 80 ms. Your edit is diffed against the baseline, so tab 1 always shows
+  DR-01 as well as your change (F-004), and TV-001 stays directly affected.
+
+  A. Starter files (no model call)
+
+  Step: Open the app
+  Expected: Blue banner "Replayed: real output of groq:qwen/qwen3.8-27b
+    recorded 2026-11-16… No model was called now."
+  ────────────────────────────────────────
+  Step: Tab 1
+  Expected: 1 modified (VCU-DR-01, 100 milliseconds → 80 milliseconds,
+    interpretation "tightened"), 5 unchanged. An expander lists the
+    revision-label and notes changes.
+  ────────────────────────────────────────
+  Step: Tab 2
+  Expected: Directly affected 1 (TV-001). Possibly affected 2 (TV-002,
+    TV-003). Needs human review 1 (TV-007). Not affected 8.
+  ────────────────────────────────────────
+  Step: Tab 2, detail panel
+  Expected: TV-003: "Fix requirement link *" (no link in the register,
+    relevance judged from content). TV-004: not affected (88 ms is brake
+    latency on another clock). TV-007: review, not "80 ms" (its 80% is pedal
+    demand). TV-008 and TV-012: not affected, with a link fix.
+  ────────────────────────────────────────
+  Step: Filters
+  Expected: The Status, Requires action and "Only with warnings" filters
+    narrow the table. Selecting a row shows reason, evidence and "From the
+    LLM" versus "From the register data".
+  ────────────────────────────────────────
+  Step: Tab 4
+  Expected: HTML and Markdown downloads. The preview shows source, inputs,
+    changes, work list and every test, with the "recommendations, not
+    approval" line and the confidence note.
+  ────────────────────────────────────────
+  Step: Sidebar
+  Expected: Shows "Re-run analysis with the LLM". With no key it is disabled
+    and a caption says how to enable it.
+
+  B. Offline uploads (replay)
+
+  Sidebar → "Use other files" → upload one of eval/scenarios/S2.docx … S7.docx
+  as the Revised spec. Uploading a revised spec clears your edits, and the
+  banner stays "Replayed".
+
+  ┌──────┬──────────────────┬───────────────────────────────────────────────┐
+  │ File │   Change shown   │              Expected (recorded)              │
+  ├──────┼──────────────────┼───────────────────────────────────────────────┤
+  │      │ BRK-03 gains an  │ TV-004, TV-002 and TV-011 directly affected.  │
+  │ S2   │ 80 ms brake      │ TV-001 (94 ms torque) not affected.           │
+  │      │ latency limit    │                                               │
+  ├──────┼──────────────────┼───────────────────────────────────────────────┤
+  │      │ DR-02 spike      │                                               │
+  │ S3   │ threshold 10 → 5 │ TV-010 directly affected.                     │
+  │      │  ms              │                                               │
+  ├──────┼──────────────────┼───────────────────────────────────────────────┤
+  │      │                  │ The recording marks TV-001 directly affected  │
+  │ S4   │ DR-01 relaxed    │ with high confidence, although its 94 ms      │
+  │      │ 100 → 120 ms     │ evidence still passes. This is a known        │
+  │      │                  │ over-flag, so say so if it comes up.          │
+  ├──────┼──────────────────┼───────────────────────────────────────────────┤
+  │      │ DGN-04 reworded, │ TV-005 not affected, showing the original     │
+  │ S5   │  same meaning    │ status "directly affected" and a post-check   │
+  │      │                  │ correction note. This is the safety net.      │
+  ├──────┼──────────────────┼───────────────────────────────────────────────┤
+  │      │                  │ TV-009 directly affected, TV-006 possibly     │
+  │ S6   │ MOD-06 removed   │ affected. The removed requirement's link is   │
+  │      │                  │ flagged.                                      │
+  ├──────┼──────────────────┼───────────────────────────────────────────────┤
+  │ S7   │ New VCU-THM-07   │ TV-007 directly affected, TV-003 and TV-008   │
+  │      │                  │ review.                                       │
+  └──────┴──────────────────┴───────────────────────────────────────────────┘
+
+  Use Restore the provided files to go back.
+
+  C. Live edits (tab 3, then Run)
+
+  #: C1
+  Edit: DR-01: 80 → 60 milliseconds
+  Expected: Chip 100 milliseconds → 60 milliseconds, "tightened". TV-001
+    directly affected (re-run and update procedure). TV-003 directly or
+    possibly affected. TV-004 not affected. TV-007 review. (Actual: 6.8 s on
+    Groq.)
+  ────────────────────────────────────────
+  #: C2
+  Edit: DR-01 relaxed to 120 milliseconds
+  Expected: "relaxed". TV-001 should be not or possibly affected, update
+    procedure without re-run. The model may over-flag, as in S4.
+  ────────────────────────────────────────
+  #: C3
+  Edit: DR-02 reworded: shall disregard brief spikes that last less than 10
+    milliseconds
+  Expected: "reworded same meaning". TV-010 not affected. If the model first
+    says "directly affected" you'll see a "changed by the application's
+    post-check" note, which is the known failure plus the safety net.
+  ────────────────────────────────────────
+  #: C4
+  Edit: DR-02 title only (change the Title field)
+  Expected: "reworded"/"other". TV-010 should be not affected. This also
+    triggers the safety net sometimes.
+  ────────────────────────────────────────
+  #: C5
+  Edit: DGN-04: add and the vehicle is moving to the condition
+  Expected: "scope changed". TV-005 directly affected (high).
+  ────────────────────────────────────────
+  #: C6
+  Edit: DR-01: 70% → 90%
+  Expected: Contested. TV-001 directly or possibly affected. TV-002 (85%
+    pedal) is below the new trigger, so not or possibly affected, but the
+    model may call it directly affected.
+  ────────────────────────────────────────
+  #: C7
+  Edit: DR-01: 100 ms → 0.08 seconds, then → 0.1 seconds
+  Expected: The first shows a numeric change of 100 → 80 ms. The second shows
+    no numeric chip (equivalent units), and nothing should be directly
+    affected beyond DR-01's existing effects.
+  ────────────────────────────────────────
+  #: C8
+  Edit: Add VCU-THM-07 "Thermal torque derating" after VCU-MOD-06 (When the
+    inverter temperature exceeds 85 °C… 50%…)
+  Expected: Green "Added", interpretation "added". TV-007 review or possibly
+    affected. TV-004 and TV-006 not affected.
+  ────────────────────────────────────────
+  #: C9
+  Edit: Remove VCU-LOG-05
+  Expected: Red "Removed". TV-006 directly affected or review, with "Fix
+    requirement link" and "Owner decision".
+  ────────────────────────────────────────
+  #: C10
+  Edit: Remove LOG-05 and add VCU-LOG-15 with the same text
+  Expected: TV-006 should be review or possibly affected: re-link, not
+    re-test. The model may over-flag as directly affected (N6 did, with a
+    contradictory reason).
+  ────────────────────────────────────────
+  #: C11
+  Edit: Edit, then Undo or Reset
+  Expected: The banner returns to "Replayed". Reverting by hand to the
+    original text also returns to "Replayed".
+  ────────────────────────────────────────
+  #: C12
+  Edit: After any live run, refresh the browser (F5)
+  Expected: The banner says "From an earlier live run…" and no provider call
+    is made.
+
+  D. Uploads of your own files
+
+  ┌─────┬───────────────────────────────────┬───────────────────────────────┐
+  │  #  │               Test                │           Expected            │
+  ├─────┼───────────────────────────────────┼───────────────────────────────┤
+  │     │ Edit a copy of                    │                               │
+  │ D1  │ VCU_Spec_Revised.docx in Word     │ Correct diff. Live run needed │
+  │     │ (change a limit) and upload it as │  (a new input).               │
+  │     │  Revised                          │                               │
+  ├─────┼───────────────────────────────────┼───────────────────────────────┤
+  │     │                                   │ A yellow banner "contains     │
+  │ D2  │ Same, with Track Changes on (80 → │ tracked changes… read as if   │
+  │     │  75 ms)                           │ all were accepted". The diff  │
+  │     │                                   │ shows the accepted text.      │
+  ├─────┼───────────────────────────────────┼───────────────────────────────┤
+  │     │                                   │ Sidebar still says 12 tests.  │
+  │ D3  │ Upload a register copy with       │ After a live run TV-003 is    │
+  │     │ TV-003's link set to VCU-DR-01    │ directly affected and no      │
+  │     │                                   │ longer has a link fix.        │
+  ├─────┼───────────────────────────────────┼───────────────────────────────┤
+  │ D4  │ A register link cell with two IDs │ Both IDs appear in the        │
+  │     │  on separate lines                │ "Requirement link" column.    │
+  ├─────┼───────────────────────────────────┼───────────────────────────────┤
+  │     │ Upload the same spec as baseline  │ "No requirement was added,    │
+  │ D5  │ and revised                       │ removed or modified", and the │
+  │     │                                   │  Run button is disabled.      │
+  ├─────┼───────────────────────────────────┼───────────────────────────────┤
+  │ D6  │ Swap baseline and revised         │ The change inverts (80 → 100  │
+  │     │                                   │ ms).                          │
+  └─────┴───────────────────────────────────┴───────────────────────────────┘
+
+  E. Error handling
+
+  #: E1
+  Test: Add a requirement with ID thermal
+  Expected: Red "Use an ID like VCU-THM-07…".
+  ────────────────────────────────────────
+  #: E2
+  Test: Add an ID that already exists, or apply the edit form unchanged
+  Expected: "already exists" or "Nothing changed".
+  ────────────────────────────────────────
+  #: E3
+  Test: Rename a text file to .docx and upload it
+  Expected: "was not loaded: File is not a zip file". This is a known
+    limitation (the message is raw), and nothing breaks.
+  ────────────────────────────────────────
+  #: E4
+  Test: A requirement written inside a Word text box or table
+  Expected: It is silently ignored (documented, F-011). Avoid this in the
+    demo.
+  ────────────────────────────────────────
+  #: E5
+  Test: Click Run twice quickly
+  Expected: Avoid. It may start two provider calls (F-021, not verified).
+  ────────────────────────────────────────
+  #: E6
+  Test: Provider limit reached
+  Expected: A "Not analysed" banner with a plain reason, e.g. "daily token
+    limit… try again later or use the recorded analysis". The diff and
+    register facts stay visible. Switch to section A or B.
+
+  What to say about limits during the demo
+
+  - Confidence is the model's own estimate and isn't a reliability measure.
+  - The "re-analysed" results come from a free-tier model and vary between runs.
+  - The LLM evaluation of the final app is partial: 15 of 32 planned runs
+    answered because the free-tier quotas ran out.
