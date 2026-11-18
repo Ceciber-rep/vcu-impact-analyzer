@@ -1,0 +1,380 @@
+{
+ "original": {
+  "gemini-3.5-flash": {
+   "provider": "gemini",
+   "model": "gemini-3.5-flash",
+   "action_total": 0,
+   "action_correct": 0,
+   "action_failures": [],
+   "related_total": 0,
+   "related_correct": 0,
+   "related_failures": [],
+   "review_noise": 6,
+   "runs": 9,
+   "failed_runs": 0,
+   "valid_first_attempt": 9,
+   "judgments": 84,
+   "lenient_correct": 81,
+   "strict_correct": 71,
+   "critical_cells": 16,
+   "critical_total": 16,
+   "critical_correct": 14,
+   "missed_impacts": 0,
+   "missed_impact_cells": [],
+   "over_flags": 3,
+   "omitted_tests": 0,
+   "approval_hits": 0,
+   "adjustments": [],
+   "latencies": [
+    213.03,
+    97.18,
+    136.74,
+    145.49,
+    99.69,
+    64.64,
+    134.86,
+    341.42,
+    252.85
+   ],
+   "completion_tokens": [
+    2183,
+    2156,
+    1620,
+    2040,
+    2023,
+    2096,
+    1288,
+    1370,
+    1898
+   ],
+   "errors": [],
+   "per_scenario": {
+    "S1": "12/12",
+    "S2": "12/12",
+    "S3": "12/12",
+    "S4": "10/12",
+    "S5": "12/12",
+    "S6": "12/12",
+    "S7": "11/12"
+   },
+   "critical_failures": [
+    "S4 TV-001: got D, expected P/N",
+    "S7 TV-007: got D, expected P/R"
+   ],
+   "consistency": "11/12 over 3 runs",
+   "structured_modes": [
+    "json_schema"
+   ],
+   "valid_scenarios": [
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "S6",
+    "S7"
+   ],
+   "service_errors": 0,
+   "complete": true
+  },
+  "gemini-3.5-flash-lite": {
+   "provider": "gemini",
+   "model": "gemini-3.5-flash-lite",
+   "action_total": 0,
+   "action_correct": 0,
+   "action_failures": [],
+   "related_total": 0,
+   "related_correct": 0,
+   "related_failures": [],
+   "review_noise": 0,
+   "runs": 9,
+   "failed_runs": 8,
+   "valid_first_attempt": 1,
+   "judgments": 12,
+   "lenient_correct": 11,
+   "strict_correct": 9,
+   "critical_cells": 16,
+   "critical_total": 6,
+   "critical_correct": 5,
+   "missed_impacts": 1,
+   "missed_impact_cells": [
+    "S1 TV-002"
+   ],
+   "over_flags": 0,
+   "omitted_tests": 0,
+   "approval_hits": 0,
+   "adjustments": [],
+   "latencies": [
+    7.42
+   ],
+   "completion_tokens": [
+    1721
+   ],
+   "errors": [
+    "S1 r2: InternalServerError: Error code: 503",
+    "S1 r3: InternalServerError: Error code: 503",
+    "S2 r1: InternalServerError: Error code: 503",
+    "S3 r1: InternalServerError: Error code: 503",
+    "S4 r1: InternalServerError: Error code: 503",
+    "S5 r1: InternalServerError: Error code: 503",
+    "S6 r1: InternalServerError: Error code: 503",
+    "S7 r1: InternalServerError: Error code: 503"
+   ],
+   "per_scenario": {
+    "S1": "11/12",
+    "S2": "failed",
+    "S3": "failed",
+    "S4": "failed",
+    "S5": "failed",
+    "S6": "failed",
+    "S7": "failed"
+   },
+   "critical_failures": [
+    "S1 TV-002: got N, expected D/P"
+   ],
+   "consistency": null,
+   "structured_modes": [
+    "json_schema"
+   ],
+   "valid_scenarios": [
+    "S1"
+   ],
+   "service_errors": 10,
+   "complete": false
+  },
+  "groq-gpt-oss-120b": {
+   "provider": "groq",
+   "model": "openai/gpt-oss-120b",
+   "action_total": 0,
+   "action_correct": 0,
+   "action_failures": [],
+   "related_total": 0,
+   "related_correct": 0,
+   "related_failures": [],
+   "review_noise": 6,
+   "runs": 9,
+   "failed_runs": 0,
+   "valid_first_attempt": 9,
+   "judgments": 84,
+   "lenient_correct": 80,
+   "strict_correct": 68,
+   "critical_cells": 16,
+   "critical_total": 16,
+   "critical_correct": 14,
+   "missed_impacts": 0,
+   "missed_impact_cells": [],
+   "over_flags": 2,
+   "omitted_tests": 4,
+   "approval_hits": 0,
+   "adjustments": [],
+   "latencies": [
+    14.02,
+    23.97,
+    64.61,
+    46.17,
+    51.64,
+    14.14,
+    54.09,
+    43.72,
+    61.06
+   ],
+   "completion_tokens": [
+    2855,
+    2180,
+    3072,
+    1987,
+    2367,
+    3624,
+    1880,
+    3072,
+    2697
+   ],
+   "errors": [],
+   "per_scenario": {
+    "S1": "12/12",
+    "S2": "12/12",
+    "S3": "12/12",
+    "S4": "11/12",
+    "S5": "12/12",
+    "S6": "10/12",
+    "S7": "11/12"
+   },
+   "critical_failures": [
+    "S4 TV-001: got D, expected P/N",
+    "S7 TV-007: got D, expected P/R"
+   ],
+   "consistency": "9/12 over 3 runs",
+   "structured_modes": [
+    "json_schema"
+   ],
+   "valid_scenarios": [
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "S6",
+    "S7"
+   ],
+   "service_errors": 0,
+   "complete": true
+  },
+  "groq-qwen3.8-27b": {
+   "provider": "groq",
+   "model": "qwen/qwen3.8-27b",
+   "action_total": 0,
+   "action_correct": 0,
+   "action_failures": [],
+   "related_total": 0,
+   "related_correct": 0,
+   "related_failures": [],
+   "review_noise": 5,
+   "runs": 9,
+   "failed_runs": 0,
+   "valid_first_attempt": 9,
+   "judgments": 84,
+   "lenient_correct": 81,
+   "strict_correct": 69,
+   "critical_cells": 16,
+   "critical_total": 16,
+   "critical_correct": 15,
+   "missed_impacts": 0,
+   "missed_impact_cells": [],
+   "over_flags": 1,
+   "omitted_tests": 0,
+   "approval_hits": 0,
+   "adjustments": [],
+   "latencies": [
+    6.74,
+    18.08,
+    40.69,
+    5.68,
+    11.41,
+    5.46,
+    5.51,
+    4.63,
+    15.83
+   ],
+   "completion_tokens": [
+    1669,
+    1669,
+    1669,
+    1709,
+    1906,
+    1699,
+    1868,
+    1677,
+    1936
+   ],
+   "errors": [],
+   "per_scenario": {
+    "S1": "12/12",
+    "S2": "12/12",
+    "S3": "11/12",
+    "S4": "11/12",
+    "S5": "12/12",
+    "S6": "11/12",
+    "S7": "12/12"
+   },
+   "critical_failures": [
+    "S4 TV-001: got D, expected P/N"
+   ],
+   "consistency": "12/12 over 3 runs",
+   "structured_modes": [
+    "json_schema"
+   ],
+   "valid_scenarios": [
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "S6",
+    "S7"
+   ],
+   "service_errors": 2,
+   "complete": true
+  },
+  "ollama-qwen3-8b": {
+   "provider": "ollama",
+   "model": "qwen3:8b",
+   "action_total": 0,
+   "action_correct": 0,
+   "action_failures": [],
+   "related_total": 0,
+   "related_correct": 0,
+   "related_failures": [],
+   "review_noise": 3,
+   "runs": 9,
+   "failed_runs": 0,
+   "valid_first_attempt": 9,
+   "judgments": 84,
+   "lenient_correct": 79,
+   "strict_correct": 72,
+   "critical_cells": 16,
+   "critical_total": 16,
+   "critical_correct": 12,
+   "missed_impacts": 1,
+   "missed_impact_cells": [
+    "S1 TV-002"
+   ],
+   "over_flags": 4,
+   "omitted_tests": 0,
+   "approval_hits": 0,
+   "adjustments": [],
+   "latencies": [
+    586.26,
+    490.2,
+    510.15,
+    505.31,
+    729.32,
+    762.9,
+    487.59,
+    511.84,
+    473.13
+   ],
+   "completion_tokens": [
+    3134,
+    3067,
+    3067,
+    2759,
+    3914,
+    3907,
+    2466,
+    2790,
+    2661
+   ],
+   "errors": [],
+   "per_scenario": {
+    "S1": "11/12",
+    "S2": "12/12",
+    "S3": "12/12",
+    "S4": "10/12",
+    "S5": "11/12",
+    "S6": "12/12",
+    "S7": "11/12"
+   },
+   "critical_failures": [
+    "S1 TV-002: got N, expected D/P",
+    "S4 TV-001: got D, expected P/N",
+    "S5 TV-005: got D, expected N/P",
+    "S7 TV-007: got D, expected P/R"
+   ],
+   "consistency": "9/12 over 3 runs",
+   "structured_modes": [
+    "ollama_format_schema"
+   ],
+   "valid_scenarios": [
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "S6",
+    "S7"
+   ],
+   "service_errors": 0,
+   "complete": true
+  }
+ }
+}

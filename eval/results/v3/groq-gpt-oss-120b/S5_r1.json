@@ -1,0 +1,229 @@
+{
+ "ok": true,
+ "model_label": "groq:openai/gpt-oss-120b",
+ "prompt_version": "v3",
+ "created_at": "2026-11-17T18:29:23+00:00",
+ "latency_s": 9.15,
+ "attempts": 1,
+ "prompt_tokens": 4249,
+ "completion_tokens": 3544,
+ "structured_mode": "json_schema",
+ "result": {
+  "change_interpretations": [
+   {
+    "requirement_id": "VCU-DGN-04",
+    "nature": "reworded_same_meaning",
+    "engineering_summary": "The wording of the wheel\u2011speed sensor loss requirement was changed but the functional intent (enter degraded mode and record a diagnostic event) remains identical, so verification evidence does not need to be altered."
+   }
+  ],
+  "assessments": [
+   {
+    "test_id": "TV-001",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test validates accelerator pedal step response timing (VCU-DR-01) which is unchanged; the modified requirement VCU-DGN-04 concerns wheel\u2011speed sensor loss and is unrelated.",
+    "evidence": [
+     "name: Pedal step response",
+     "procedure: Step validated accelerator demand to 75%; confirm requested positive torque no later than 100 ms after pedal validation.",
+     "requirement_reference_raw: VCU-DR-01",
+     "previous_result: PASS (94 ms)"
+    ],
+    "recommended_action": "No action required."
+   },
+   {
+    "test_id": "TV-002",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test checks brake/pedal arbitration against VCU-DR-01 and VCU-BRK-03, neither of which changed; VCU-DGN-04 is unrelated.",
+    "evidence": [
+     "name: Brake / pedal arbitration",
+     "procedure: Apply 85% pedal with emergency-brake input; inspect torque and pressure command priorities.",
+     "requirement_reference_raw: VCU-DR-01; VCU-BRK-03",
+     "comment: Timing not reported in old evidence"
+    ],
+    "recommended_action": "No action required."
+   },
+   {
+    "test_id": "TV-003",
+    "status": "not_affected",
+    "confidence": "medium",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link"
+    ],
+    "reason": "The test measures high\u2011load torque transient timing and has no link to the wheel\u2011speed sensor degradation requirement.",
+    "evidence": [
+     "name: High load torque transient",
+     "procedure: Sweep demand 75\u201395% at nominal and high-load cases; recorded maximum 92 ms.",
+     "comment: Legacy suite still checks 95 ms tolerance"
+    ],
+    "recommended_action": "No action required."
+   },
+   {
+    "test_id": "TV-004",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test validates emergency\u2011brake actuator latency (VCU-BRK-03) which is unchanged; VCU-DGN-04 is unrelated.",
+    "evidence": [
+     "name: Brake actuator response",
+     "procedure: Trigger emergency brake alone; target brake command latency within 100 ms.",
+     "requirement_reference_raw: VCU-BRK-03",
+     "previous_result: PASS (88 ms)"
+    ],
+    "recommended_action": "No action required."
+   },
+   {
+    "test_id": "TV-005",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [
+     "VCU-DGN-04"
+    ],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test confirms degraded mode entry and diagnostic logging when the wheel\u2011speed sensor is lost, which matches both the old and new wording of VCU-DGN-04.",
+    "evidence": [
+     "name: Sensor failure: wheel speed",
+     "procedure: Unplug simulated wheel-speed sensor and confirm degraded mode + fault log.",
+     "requirement_reference_raw: VCU-DGN-04",
+     "previous_result: PASS"
+    ],
+    "recommended_action": "No action required; keep the test as\u2011is."
+   },
+   {
+    "test_id": "TV-006",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test records mode\u2011change timestamps and build IDs for VCU-LOG-05, which is unchanged and unrelated to the sensor\u2011degradation change.",
+    "evidence": [
+     "name: Mode event audit trail",
+     "procedure: Change Comfort to Sport; log timestamp and build identifier.",
+     "requirement_reference_raw: VCU-LOG-05",
+     "previous_result: PASS"
+    ],
+    "recommended_action": "No action required."
+   },
+   {
+    "test_id": "TV-007",
+    "status": "needs_human_review",
+    "confidence": "low",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link",
+     "owner_decision"
+    ],
+    "reason": "The test has a TBD requirement link and unclear ownership, so its relevance to the changed requirement cannot be determined.",
+    "evidence": [
+     "name: Acceleration at thermal load",
+     "requirement_reference_raw: TBD",
+     "comment: Ownership and source link to be clarified"
+    ],
+    "recommended_action": "Clarify the requirement link and test ownership before assessing impact."
+   },
+   {
+    "test_id": "TV-008",
+    "status": "not_affected",
+    "confidence": "medium",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link"
+    ],
+    "reason": "The test replays a legacy diagnostic trace linked to an unknown requirement VCU-OLD-88, which does not involve the modified VCU-DGN-04.",
+    "evidence": [
+     "name: Legacy diagnostic replay",
+     "procedure: Re-run old diagnostic trace; verify expected non-blocking status.",
+     "requirement_reference_raw: VCU-OLD-88",
+     "previous_result: PASS"
+    ],
+    "recommended_action": "No action required."
+   },
+   {
+    "test_id": "TV-009",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test compares torque ramp profiles for Comfort vs Sport (VCU-MOD-06), which is unchanged and unrelated to wheel\u2011speed sensor degradation.",
+    "evidence": [
+     "name: Sport profile torque ramp",
+     "procedure: Compare accelerator response under Sport vs Comfort during ramp and release.",
+     "requirement_reference_raw: VCU-MOD-06",
+     "previous_result: PASS (trend)"
+    ],
+    "recommended_action": "No action required."
+   },
+   {
+    "test_id": "TV-010",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test validates filtering of short pedal spikes per VCU-DR-02, which is unchanged and unrelated to the modified requirement.",
+    "evidence": [
+     "name: Pedal signal spike",
+     "procedure: Inject 7 ms false pedal pulse and verify no propagated torque request.",
+     "requirement_reference_raw: VCU-DR-02",
+     "previous_result: PASS"
+    ],
+    "recommended_action": "No action required."
+   },
+   {
+    "test_id": "TV-011",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test checks torque cancellation during emergency braking (VCU-BRK-03), which is unchanged and unrelated to VCU-DGN-04.",
+    "evidence": [
+     "name: Torque cancellation on braking",
+     "procedure: While demand is high, request emergency braking and verify positive torque drops according to brake priority.",
+     "requirement_reference_raw: VCU-BRK-03",
+     "previous_result: PASS"
+    ],
+    "recommended_action": "No action required."
+   },
+   {
+    "test_id": "TV-012",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link"
+    ],
+    "reason": "The test measures ECU wake\u2011up timing with no linked requirement; it does not involve wheel\u2011speed sensor behavior.",
+    "evidence": [
+     "name: Wake-up timing",
+     "procedure: Power cycle the ECU; verify readiness within 500 ms.",
+     "previous_result: PASS (433 ms)"
+    ],
+    "recommended_action": "No action required."
+   }
+  ]
+ },
+ "warnings": [],
+ "adjustments": [],
+ "raw_text": "{\n  \"change_interpretations\": [\n    {\n      \"requirement_id\": \"VCU-DGN-04\",\n      \"nature\": \"reworded_same_meaning\",\n      \"engineering_summary\": \"The wording of the wheel\u2011speed sensor loss requirement was changed but the functional intent (enter degraded mode and record a diagnostic event) remains identical, so verification evidence does not need to be altered.\"\n    }\n  ],\n  \"assessments\": [\n    {\n      \"test_id\": \"TV-001\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"required_actions\": [\"none\"],\n      \"reason\": \"The test validates accelerator pedal step response timing (VCU-DR-01) which is unchanged; the modified requirement VCU-DGN-04 concerns wheel\u2011speed sensor loss and is unrelated.\",\n      \"evidence\": [\n        \"name: Pedal step response\",\n        \"procedure: Step validated accelerator demand to 75%; confirm requested positive torque no later than 100 ms after pedal validation.\",\n        \"requirement_reference_raw: VCU-DR-01\",\n        \"previous_result: PASS (94 ms)\"\n      ],\n      \"recommended_action\": \"No action required.\"\n    },\n    {\n      \"test_id\": \"TV-002\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"required_actions\": [\"none\"],\n      \"reason\": \"The test checks brake/pedal arbitration against VCU-DR-01 and VCU-BRK-03, neither of which changed; VCU-DGN-04 is unrelated.\",\n      \"evidence\": [\n        \"name: Brake / pedal arbitration\",\n        \"procedure: Apply 85% pedal with emergency-brake input; inspect torque and pressure command priorities.\",\n        \"requirement_reference_raw: VCU-DR-01; VCU-BRK-03\",\n        \"comment: Timing not reported in old evidence\"\n      ],\n      \"recommended_action\": \"No action required.\"\n    },\n    {\n      \"test_id\": \"TV-003\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"medium\",\n      \"related_requirements\": [],\n      \"required_actions\": [\"none\"],\n      \"reason\": \"The test measures high\u2011load torque transient timing and has no link to the wheel\u2011speed sensor degradation requirement.\",\n      \"evidence\": [\n        \"name: High load torque transient\",\n        \"procedure: Sweep demand 75\u201395% at nominal and high-load cases; recorded maximum 92 ms.\",\n        \"comment: Legacy suite still checks 95 ms tolerance\"\n      ],\n      \"recommended_action\": \"No action required.\"\n    },\n    {\n      \"test_id\": \"TV-004\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"required_actions\": [\"none\"],\n      \"reason\": \"The test validates emergency\u2011brake actuator latency (VCU-BRK-03) which is unchanged; VCU-DGN-04 is unrelated.\",\n      \"evidence\": [\n        \"name: Brake actuator response\",\n        \"procedure: Trigger emergency brake alone; target brake command latency within 100 ms.\",\n        \"requirement_reference_raw: VCU-BRK-03\",\n        \"previous_result: PASS (88 ms)\"\n      ],\n      \"recommended_action\": \"No action required.\"\n    },\n    {\n      \"test_id\": \"TV-005\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [\"VCU-DGN-04\"],\n      \"required_actions\": [\"none\"],\n      \"reason\": \"The test confirms degraded mode entry and diagnostic logging when the wheel\u2011speed sensor is lost, which matches both the old and new wording of VCU-DGN-04.\",\n      \"evidence\": [\n        \"name: Sensor failure: wheel speed\",\n        \"procedure: Unplug simulated wheel-speed sensor and confirm degraded mode + fault log.\",\n        \"requirement_reference_raw: VCU-DGN-04\",\n        \"previous_result: PASS\"\n      ],\n      \"recommended_action\": \"No action required; keep the test as\u2011is.\"\n    },\n    {\n      \"test_id\": \"TV-006\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"required_actions\": [\"none\"],\n      \"reason\": \"The test records mode\u2011change timestamps and build IDs for VCU-LOG-05, which is unchanged and unrelated to the sensor\u2011degradation change.\",\n      \"evidence\": [\n        \"name: Mode event audit trail\",\n        \"procedure: Change Comfort to Sport; log timestamp and build identifier.\",\n        \"requirement_reference_raw: VCU-LOG-05\",\n        \"previous_result: PASS\"\n      ],\n      \"recommended_action\": \"No action required.\"\n    },\n    {\n      \"test_id\": \"TV-007\",\n      \"status\": \"needs_human_review\",\n      \"confidence\": \"low\",\n      \"related_requirements\": [],\n      \"required_actions\": [\"owner_decision\"],\n      \"reason\": \"The test has a TBD requirement link and unclear ownership, so its relevance to the changed requirement cannot be determined.\",\n      \"evidence\": [\n        \"name: Acceleration at thermal load\",\n        \"requirement_reference_raw: TBD\",\n        \"comment: Ownership and source link to be clarified\"\n      ],\n      \"recommended_action\": \"Clarify the requirement link and test ownership before assessing impact.\"\n    },\n    {\n      \"test_id\": \"TV-008\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"medium\",\n      \"related_requirements\": [],\n      \"required_actions\": [\"none\"],\n      \"reason\": \"The test replays a legacy diagnostic trace linked to an unknown requirement VCU-OLD-88, which does not involve the modified VCU-DGN-04.\",\n      \"evidence\": [\n        \"name: Legacy diagnostic replay\",\n        \"procedure: Re-run old diagnostic trace; verify expected non-blocking status.\",\n        \"requirement_reference_raw: VCU-OLD-88\",\n        \"previous_result: PASS\"\n      ],\n      \"recommended_action\": \"No action required.\"\n    },\n    {\n      \"test_id\": \"TV-009\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"required_actions\": [\"none\"],\n      \"reason\": \"The test compares torque ramp profiles for Comfort vs Sport (VCU-MOD-06), which is unchanged and unrelated to wheel\u2011speed sensor degradation.\",\n      \"evidence\": [\n        \"name: Sport profile torque ramp\",\n        \"procedure: Compare accelerator response under Sport vs Comfort during ramp and release.\",\n        \"requirement_reference_raw: VCU-MOD-06\",\n        \"previous_result: PASS (trend)\"\n      ],\n      \"recommended_action\": \"No action required.\"\n    },\n    {\n      \"test_id\": \"TV-010\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"required_actions\": [\"none\"],\n      \"reason\": \"The test validates filtering of short pedal spikes per VCU-DR-02, which is unchanged and unrelated to the modified requirement.\",\n      \"evidence\": [\n        \"name: Pedal signal spike\",\n        \"procedure: Inject 7 ms false pedal pulse and verify no propagated torque request.\",\n        \"requirement_reference_raw: VCU-DR-02\",\n        \"previous_result: PASS\"\n      ],\n      \"recommended_action\": \"No action required.\"\n    },\n    {\n      \"test_id\": \"TV-011\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"required_actions\": [\"none\"],\n      \"reason\": \"The test checks torque cancellation during emergency braking (VCU-BRK-03), which is unchanged and unrelated to VCU-DGN-04.\",\n      \"evidence\": [\n        \"name: Torque cancellation on braking\",\n        \"procedure: While demand is high, request emergency braking and verify positive torque drops according to brake priority.\",\n        \"requirement_reference_raw: VCU-BRK-03\",\n        \"previous_result: PASS\"\n      ],\n      \"recommended_action\": \"No action required.\"\n    },\n    {\n      \"test_id\": \"TV-012\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"required_actions\": [\"none\"],\n      \"reason\": \"The test measures ECU wake\u2011up timing with no linked requirement; it does not involve wheel\u2011speed sensor behavior.\",\n      \"evidence\": [\n        \"name: Wake-up timing\",\n        \"procedure: Power cycle the ECU; verify readiness within 500 ms.\",\n        \"previous_result: PASS (433 ms)\"\n      ],\n      \"recommended_action\": \"No action required.\"\n    }\n  ]\n}"
+}

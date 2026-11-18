@@ -1,0 +1,421 @@
+{
+ "original": {
+  "gemini-3.5-flash": {
+   "provider": "gemini",
+   "model": "gemini-3.5-flash",
+   "action_total": 16,
+   "action_correct": 16,
+   "action_failures": [],
+   "related_total": 0,
+   "related_correct": 0,
+   "related_failures": [],
+   "review_noise": 0,
+   "runs": 9,
+   "failed_runs": 0,
+   "valid_first_attempt": 9,
+   "judgments": 84,
+   "lenient_correct": 82,
+   "strict_correct": 67,
+   "critical_cells": 16,
+   "critical_total": 16,
+   "critical_correct": 16,
+   "missed_impacts": 0,
+   "missed_impact_cells": [],
+   "over_flags": 2,
+   "omitted_tests": 0,
+   "approval_hits": 0,
+   "adjustments": [],
+   "latencies": [
+    103.35,
+    229.17,
+    39.11,
+    29.39,
+    623.2,
+    68.42,
+    97.16,
+    127.67,
+    63.53
+   ],
+   "completion_tokens": [
+    1509,
+    1316,
+    2082,
+    2152,
+    2006,
+    2220,
+    1958,
+    1865,
+    1245
+   ],
+   "errors": [],
+   "per_scenario": {
+    "S1": "12/12",
+    "S2": "12/12",
+    "S3": "12/12",
+    "S4": "11/12",
+    "S5": "12/12",
+    "S6": "11/12",
+    "S7": "12/12"
+   },
+   "critical_failures": [],
+   "consistency": "10/12 over 3 runs",
+   "structured_modes": [
+    "json_schema"
+   ],
+   "valid_scenarios": [
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "S6",
+    "S7"
+   ],
+   "service_errors": 0,
+   "complete": true
+  },
+  "groq-gpt-oss-120b": {
+   "provider": "groq",
+   "model": "openai/gpt-oss-120b",
+   "action_total": 16,
+   "action_correct": 15,
+   "action_failures": [
+    "S1 TV-003: got ['fix_link', 'owner_decision'], rule {'must': ['rerun']}"
+   ],
+   "related_total": 0,
+   "related_correct": 0,
+   "related_failures": [],
+   "review_noise": 3,
+   "runs": 9,
+   "failed_runs": 0,
+   "valid_first_attempt": 9,
+   "judgments": 84,
+   "lenient_correct": 83,
+   "strict_correct": 68,
+   "critical_cells": 16,
+   "critical_total": 16,
+   "critical_correct": 15,
+   "missed_impacts": 1,
+   "missed_impact_cells": [
+    "S1 TV-007"
+   ],
+   "over_flags": 0,
+   "omitted_tests": 0,
+   "approval_hits": 0,
+   "adjustments": [],
+   "latencies": [
+    10.73,
+    35.07,
+    8.57,
+    7.28,
+    57.13,
+    7.97,
+    9.15,
+    6.41,
+    54.87
+   ],
+   "completion_tokens": [
+    3911,
+    3918,
+    3426,
+    2720,
+    2637,
+    3092,
+    3544,
+    2404,
+    3056
+   ],
+   "errors": [],
+   "per_scenario": {
+    "S1": "11/12",
+    "S2": "12/12",
+    "S3": "12/12",
+    "S4": "12/12",
+    "S5": "12/12",
+    "S6": "12/12",
+    "S7": "12/12"
+   },
+   "critical_failures": [
+    "S1 TV-007: got N, expected P/R"
+   ],
+   "consistency": "11/12 over 3 runs",
+   "structured_modes": [
+    "json_schema"
+   ],
+   "valid_scenarios": [
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "S6",
+    "S7"
+   ],
+   "service_errors": 2,
+   "complete": true
+  },
+  "groq-qwen3.8-27b": {
+   "provider": "groq",
+   "model": "qwen/qwen3.8-27b",
+   "action_total": 16,
+   "action_correct": 15,
+   "action_failures": [
+    "S1 TV-002: got ['owner_decision'], rule {'must': ['rerun']}"
+   ],
+   "related_total": 0,
+   "related_correct": 0,
+   "related_failures": [],
+   "review_noise": 5,
+   "runs": 9,
+   "failed_runs": 0,
+   "valid_first_attempt": 9,
+   "judgments": 84,
+   "lenient_correct": 84,
+   "strict_correct": 65,
+   "critical_cells": 16,
+   "critical_total": 16,
+   "critical_correct": 16,
+   "missed_impacts": 0,
+   "missed_impact_cells": [],
+   "over_flags": 0,
+   "omitted_tests": 0,
+   "approval_hits": 0,
+   "adjustments": [
+    "S5 TV-005"
+   ],
+   "latencies": [
+    5.28,
+    5.17,
+    21.71,
+    41.81,
+    5.86,
+    5.13,
+    21.24,
+    5.88,
+    5.22
+   ],
+   "completion_tokens": [
+    1781,
+    1781,
+    1781,
+    1912,
+    1991,
+    1758,
+    1644,
+    1808,
+    2030
+   ],
+   "errors": [],
+   "per_scenario": {
+    "S1": "12/12",
+    "S2": "12/12",
+    "S3": "12/12",
+    "S4": "12/12",
+    "S5": "12/12",
+    "S6": "12/12",
+    "S7": "12/12"
+   },
+   "critical_failures": [],
+   "consistency": "12/12 over 3 runs",
+   "structured_modes": [
+    "json_schema"
+   ],
+   "valid_scenarios": [
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "S6",
+    "S7"
+   ],
+   "service_errors": 0,
+   "complete": true
+  }
+ },
+ "held_out": {
+  "gemini-3.5-flash": {
+   "provider": "gemini",
+   "model": "gemini-3.5-flash",
+   "action_total": 7,
+   "action_correct": 7,
+   "action_failures": [],
+   "related_total": 7,
+   "related_correct": 6,
+   "related_failures": [
+    "S9 TV-011: got ['VCU-BRK-03', 'VCU-DR-01'], rule {'must': ['VCU-BRK-03'], 'must_not': ['VCU-DR-01']}"
+   ],
+   "review_noise": 0,
+   "runs": 3,
+   "failed_runs": 0,
+   "valid_first_attempt": 3,
+   "judgments": 37,
+   "lenient_correct": 36,
+   "strict_correct": 30,
+   "critical_cells": 16,
+   "critical_total": 16,
+   "critical_correct": 15,
+   "missed_impacts": 0,
+   "missed_impact_cells": [],
+   "over_flags": 1,
+   "omitted_tests": 0,
+   "approval_hits": 0,
+   "adjustments": [],
+   "latencies": [
+    94.01,
+    30.51,
+    166.27
+   ],
+   "completion_tokens": [
+    1451,
+    2212,
+    2298
+   ],
+   "errors": [],
+   "per_scenario": {
+    "S8": "11/12",
+    "S9": "12/12",
+    "S10": "13/13"
+   },
+   "critical_failures": [
+    "S8 TV-002: got D, expected N/P"
+   ],
+   "consistency": null,
+   "structured_modes": [
+    "json_schema"
+   ],
+   "valid_scenarios": [
+    "S8",
+    "S9",
+    "S10"
+   ],
+   "service_errors": 0,
+   "complete": true
+  },
+  "groq-gpt-oss-120b": {
+   "provider": "groq",
+   "model": "openai/gpt-oss-120b",
+   "action_total": 7,
+   "action_correct": 4,
+   "action_failures": [
+    "S8 TV-001: got ['none'], rule {'must': ['update_procedure']}",
+    "S9 TV-002: got ['owner_decision'], rule {'must': ['rerun']}",
+    "S10 TV-013: got ['rerun', 'update_procedure'], rule {'must_not': ['rerun', 'update_procedure']}"
+   ],
+   "related_total": 7,
+   "related_correct": 6,
+   "related_failures": [
+    "S8 TV-001: got [], rule {'must': ['VCU-DR-01']}"
+   ],
+   "review_noise": 1,
+   "runs": 3,
+   "failed_runs": 0,
+   "valid_first_attempt": 3,
+   "judgments": 37,
+   "lenient_correct": 33,
+   "strict_correct": 25,
+   "critical_cells": 16,
+   "critical_total": 16,
+   "critical_correct": 13,
+   "missed_impacts": 2,
+   "missed_impact_cells": [
+    "S8 TV-001",
+    "S10 TV-007"
+   ],
+   "over_flags": 2,
+   "omitted_tests": 0,
+   "approval_hits": 0,
+   "adjustments": [],
+   "latencies": [
+    10.1,
+    56.3,
+    23.75
+   ],
+   "completion_tokens": [
+    3944,
+    4021,
+    3845
+   ],
+   "errors": [],
+   "per_scenario": {
+    "S8": "10/12",
+    "S9": "12/12",
+    "S10": "11/13"
+   },
+   "critical_failures": [
+    "S8 TV-001: got N, expected D/P",
+    "S10 TV-007: got N, expected P/R",
+    "S10 TV-013: got D, expected N/P"
+   ],
+   "consistency": null,
+   "structured_modes": [
+    "json_schema"
+   ],
+   "valid_scenarios": [
+    "S8",
+    "S9",
+    "S10"
+   ],
+   "service_errors": 2,
+   "complete": true
+  },
+  "groq-qwen3.8-27b": {
+   "provider": "groq",
+   "model": "qwen/qwen3.8-27b",
+   "action_total": 7,
+   "action_correct": 7,
+   "action_failures": [],
+   "related_total": 7,
+   "related_correct": 6,
+   "related_failures": [
+    "S9 TV-002: got ['VCU-BRK-03'], rule {'must': ['VCU-DR-01', 'VCU-BRK-03']}"
+   ],
+   "review_noise": 2,
+   "runs": 3,
+   "failed_runs": 0,
+   "valid_first_attempt": 3,
+   "judgments": 37,
+   "lenient_correct": 36,
+   "strict_correct": 27,
+   "critical_cells": 16,
+   "critical_total": 16,
+   "critical_correct": 15,
+   "missed_impacts": 0,
+   "missed_impact_cells": [],
+   "over_flags": 1,
+   "omitted_tests": 0,
+   "approval_hits": 0,
+   "adjustments": [],
+   "latencies": [
+    4.36,
+    6.89,
+    46.08
+   ],
+   "completion_tokens": [
+    1940,
+    2140,
+    1918
+   ],
+   "errors": [],
+   "per_scenario": {
+    "S8": "11/12",
+    "S9": "12/12",
+    "S10": "13/13"
+   },
+   "critical_failures": [
+    "S8 TV-002: got D, expected N/P"
+   ],
+   "consistency": null,
+   "structured_modes": [
+    "json_schema"
+   ],
+   "valid_scenarios": [
+    "S8",
+    "S9",
+    "S10"
+   ],
+   "service_errors": 0,
+   "complete": true
+  }
+ }
+}

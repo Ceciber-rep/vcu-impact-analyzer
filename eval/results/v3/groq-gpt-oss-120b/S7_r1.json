@@ -1,0 +1,212 @@
+{
+ "ok": true,
+ "model_label": "groq:openai/gpt-oss-120b",
+ "prompt_version": "v3",
+ "created_at": "2026-11-17T18:32:08+00:00",
+ "latency_s": 54.87,
+ "attempts": 1,
+ "prompt_tokens": 4285,
+ "completion_tokens": 3056,
+ "structured_mode": "json_schema",
+ "result": {
+  "change_interpretations": [
+   {
+    "requirement_id": "VCU-THM-07",
+    "nature": "added",
+    "engineering_summary": "A new requirement introduces thermal torque derating; the controller must limit positive propulsion torque under elevated thermal load and log a diagnostic event. Verification must add or adapt tests to provoke high thermal conditions, verify torque limit compliance, and confirm the diagnostic logging."
+   }
+  ],
+  "assessments": [
+   {
+    "test_id": "TV-001",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test validates VCU-DR-01 response time (100\u202fms) and does not involve torque limits or thermal conditions addressed by VCU-THM-07.",
+    "evidence": [
+     "Procedure checks step to 75% pedal and 100\u202fms latency.",
+     "New requirement limits torque under elevated thermal load, unrelated to response time."
+    ],
+    "recommended_action": "No action required."
+   },
+   {
+    "test_id": "TV-002",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test exercises brake/pedal arbitration per VCU-DR-01 and VCU-BRK-03, not the thermal derating behavior.",
+    "evidence": [
+     "Procedure applies 85% pedal with emergency brake and checks priority.",
+     "VCU-THM-07 concerns torque limiting under thermal load, which this test does not address."
+    ],
+    "recommended_action": "No action required."
+   },
+   {
+    "test_id": "TV-003",
+    "status": "possibly_affected",
+    "confidence": "medium",
+    "related_requirements": [
+     "VCU-THM-07"
+    ],
+    "required_actions": [
+     "fix_link",
+     "owner_decision"
+    ],
+    "reason": "The test runs high\u2011load torque transients, which could generate elevated thermal conditions, but it only measures response time (92\u202fms) and does not verify torque derating or diagnostic logging required by the new requirement.",
+    "evidence": [
+     "Procedure sweeps demand 75\u201395% at nominal and high\u2011load cases.",
+     "Extracted value 92\u202fms is a timing metric, not a torque limit check."
+    ],
+    "recommended_action": "The test owner should decide whether to extend the test to check torque limits and logging for thermal derating."
+   },
+   {
+    "test_id": "TV-004",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "This test validates brake actuator latency per VCU-BRK-03 and does not involve thermal load or torque limiting.",
+    "evidence": [
+     "Procedure targets emergency brake latency within 100\u202fms.",
+     "VCU-THM-07 is about torque derating under thermal stress."
+    ],
+    "recommended_action": "No action required."
+   },
+   {
+    "test_id": "TV-005",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test checks wheel\u2011speed sensor failure handling (VCU-DGN-04) and does not relate to thermal torque derating.",
+    "evidence": [
+     "Procedure unplugs wheel\u2011speed sensor and verifies degraded mode.",
+     "Thermal load considerations are absent."
+    ],
+    "recommended_action": "No action required."
+   },
+   {
+    "test_id": "TV-006",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test audits mode change logging per VCU-LOG-05; it does not assess torque limits or thermal conditions.",
+    "evidence": [
+     "Procedure changes Comfort to Sport and logs timestamp/build ID.",
+     "VCU-THM-07 requires torque derating, not logging of mode changes."
+    ],
+    "recommended_action": "No action required."
+   },
+   {
+    "test_id": "TV-007",
+    "status": "possibly_affected",
+    "confidence": "medium",
+    "related_requirements": [
+     "VCU-THM-07"
+    ],
+    "required_actions": [
+     "update_procedure",
+     "fix_link",
+     "owner_decision"
+    ],
+    "reason": "The test mentions elevated load and checks torque delivery, but it does not explicitly verify the torque limit or the required diagnostic event defined in VCU-THM-07.",
+    "evidence": [
+     "Procedure: At 80% pedal and elevated load, check torque delivery consistency.",
+     "No measurement of torque ceiling or diagnostic logging is recorded."
+    ],
+    "recommended_action": "Clarify the requirement link and modify the procedure to include torque\u2011limit verification and diagnostic event checking."
+   },
+   {
+    "test_id": "TV-008",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link"
+    ],
+    "reason": "The test replays a legacy diagnostic trace unrelated to thermal torque derating; its requirement link is unknown.",
+    "evidence": [
+     "Requirement reference VCU-OLD-88 is unknown.",
+     "Procedure verifies non\u2011blocking status of an old diagnostic trace."
+    ],
+    "recommended_action": "No action required."
+   },
+   {
+    "test_id": "TV-009",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test compares torque ramps between Sport and Comfort modes (VCU-MOD-06) and does not involve thermal load or torque derating.",
+    "evidence": [
+     "Procedure compares accelerator response during ramp and release.",
+     "VCU-THM-07 concerns torque limiting under elevated thermal conditions."
+    ],
+    "recommended_action": "No action required."
+   },
+   {
+    "test_id": "TV-010",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test validates pedal\u2011signal spike filtering per VCU-DR-02 and does not address thermal torque derating.",
+    "evidence": [
+     "Procedure injects 7\u202fms false pedal pulse and checks no torque request.",
+     "Thermal load considerations are absent."
+    ],
+    "recommended_action": "No action required."
+   },
+   {
+    "test_id": "TV-011",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test verifies brake\u2011override torque cancellation (VCU-BRK-03) without involving thermal conditions or torque limits.",
+    "evidence": [
+     "Procedure requests emergency braking while torque demand is high and checks torque drop.",
+     "VCU-THM-07 is about limiting torque under thermal stress."
+    ],
+    "recommended_action": "No action required."
+   },
+   {
+    "test_id": "TV-012",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link"
+    ],
+    "reason": "The test measures ECU wake\u2011up timing, unrelated to torque derating or thermal load.",
+    "evidence": [
+     "Procedure verifies readiness within 500\u202fms after power\u2011cycle.",
+     "No torque or thermal aspects are exercised."
+    ],
+    "recommended_action": "No action required."
+   }
+  ]
+ },
+ "warnings": [],
+ "adjustments": [],
+ "raw_text": "{\n  \"change_interpretations\": [\n    {\n      \"requirement_id\": \"VCU-THM-07\",\n      \"nature\": \"added\",\n      \"engineering_summary\": \"A new requirement introduces thermal torque derating; the controller must limit positive propulsion torque under elevated thermal load and log a diagnostic event. Verification must add or adapt tests to provoke high thermal conditions, verify torque limit compliance, and confirm the diagnostic logging.\"\n    }\n  ],\n  \"assessments\": [\n    {\n      \"test_id\": \"TV-001\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"required_actions\": [\"none\"],\n      \"reason\": \"The test validates VCU-DR-01 response time (100\u202fms) and does not involve torque limits or thermal conditions addressed by VCU-THM-07.\",\n      \"evidence\": [\n        \"Procedure checks step to 75% pedal and 100\u202fms latency.\",\n        \"New requirement limits torque under elevated thermal load, unrelated to response time.\"\n      ],\n      \"recommended_action\": \"No action required.\"\n    },\n    {\n      \"test_id\": \"TV-002\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"required_actions\": [\"none\"],\n      \"reason\": \"The test exercises brake/pedal arbitration per VCU-DR-01 and VCU-BRK-03, not the thermal derating behavior.\",\n      \"evidence\": [\n        \"Procedure applies 85% pedal with emergency brake and checks priority.\",\n        \"VCU-THM-07 concerns torque limiting under thermal load, which this test does not address.\"\n      ],\n      \"recommended_action\": \"No action required.\"\n    },\n    {\n      \"test_id\": \"TV-003\",\n      \"status\": \"possibly_affected\",\n      \"confidence\": \"medium\",\n      \"related_requirements\": [\"VCU-THM-07\"],\n      \"required_actions\": [\"owner_decision\"],\n      \"reason\": \"The test runs high\u2011load torque transients, which could generate elevated thermal conditions, but it only measures response time (92\u202fms) and does not verify torque derating or diagnostic logging required by the new requirement.\",\n      \"evidence\": [\n        \"Procedure sweeps demand 75\u201395% at nominal and high\u2011load cases.\",\n        \"Extracted value 92\u202fms is a timing metric, not a torque limit check.\"\n      ],\n      \"recommended_action\": \"The test owner should decide whether to extend the test to check torque limits and logging for thermal derating.\"\n    },\n    {\n      \"test_id\": \"TV-004\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"required_actions\": [\"none\"],\n      \"reason\": \"This test validates brake actuator latency per VCU-BRK-03 and does not involve thermal load or torque limiting.\",\n      \"evidence\": [\n        \"Procedure targets emergency brake latency within 100\u202fms.\",\n        \"VCU-THM-07 is about torque derating under thermal stress.\"\n      ],\n      \"recommended_action\": \"No action required.\"\n    },\n    {\n      \"test_id\": \"TV-005\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"required_actions\": [\"none\"],\n      \"reason\": \"The test checks wheel\u2011speed sensor failure handling (VCU-DGN-04) and does not relate to thermal torque derating.\",\n      \"evidence\": [\n        \"Procedure unplugs wheel\u2011speed sensor and verifies degraded mode.\",\n        \"Thermal load considerations are absent.\"\n      ],\n      \"recommended_action\": \"No action required.\"\n    },\n    {\n      \"test_id\": \"TV-006\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"required_actions\": [\"none\"],\n      \"reason\": \"The test audits mode change logging per VCU-LOG-05; it does not assess torque limits or thermal conditions.\",\n      \"evidence\": [\n        \"Procedure changes Comfort to Sport and logs timestamp/build ID.\",\n        \"VCU-THM-07 requires torque derating, not logging of mode changes.\"\n      ],\n      \"recommended_action\": \"No action required.\"\n    },\n    {\n      \"test_id\": \"TV-007\",\n      \"status\": \"possibly_affected\",\n      \"confidence\": \"medium\",\n      \"related_requirements\": [\"VCU-THM-07\"],\n      \"required_actions\": [\"owner_decision\", \"update_procedure\"],\n      \"reason\": \"The test mentions elevated load and checks torque delivery, but it does not explicitly verify the torque limit or the required diagnostic event defined in VCU-THM-07.\",\n      \"evidence\": [\n        \"Procedure: At 80% pedal and elevated load, check torque delivery consistency.\",\n        \"No measurement of torque ceiling or diagnostic logging is recorded.\"\n      ],\n      \"recommended_action\": \"Clarify the requirement link and modify the procedure to include torque\u2011limit verification and diagnostic event checking.\"\n    },\n    {\n      \"test_id\": \"TV-008\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"required_actions\": [\"none\"],\n      \"reason\": \"The test replays a legacy diagnostic trace unrelated to thermal torque derating; its requirement link is unknown.\",\n      \"evidence\": [\n        \"Requirement reference VCU-OLD-88 is unknown.\",\n        \"Procedure verifies non\u2011blocking status of an old diagnostic trace.\"\n      ],\n      \"recommended_action\": \"No action required.\"\n    },\n    {\n      \"test_id\": \"TV-009\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"required_actions\": [\"none\"],\n      \"reason\": \"The test compares torque ramps between Sport and Comfort modes (VCU-MOD-06) and does not involve thermal load or torque derating.\",\n      \"evidence\": [\n        \"Procedure compares accelerator response during ramp and release.\",\n        \"VCU-THM-07 concerns torque limiting under elevated thermal conditions.\"\n      ],\n      \"recommended_action\": \"No action required.\"\n    },\n    {\n      \"test_id\": \"TV-010\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"required_actions\": [\"none\"],\n      \"reason\": \"The test validates pedal\u2011signal spike filtering per VCU-DR-02 and does not address thermal torque derating.\",\n      \"evidence\": [\n        \"Procedure injects 7\u202fms false pedal pulse and checks no torque request.\",\n        \"Thermal load considerations are absent.\"\n      ],\n      \"recommended_action\": \"No action required.\"\n    },\n    {\n      \"test_id\": \"TV-011\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"required_actions\": [\"none\"],\n      \"reason\": \"The test verifies brake\u2011override torque cancellation (VCU-BRK-03) without involving thermal conditions or torque limits.\",\n      \"evidence\": [\n        \"Procedure requests emergency braking while torque demand is high and checks torque drop.\",\n        \"VCU-THM-07 is about limiting torque under thermal stress.\"\n      ],\n      \"recommended_action\": \"No action required.\"\n    },\n    {\n      \"test_id\": \"TV-012\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"required_actions\": [\"none\"],\n      \"reason\": \"The test measures ECU wake\u2011up timing, unrelated to torque derating or thermal load.\",\n      \"evidence\": [\n        \"Procedure verifies readiness within 500\u202fms after power\u2011cycle.\",\n        \"No torque or thermal aspects are exercised.\"\n      ],\n      \"recommended_action\": \"No action required.\"\n    }\n  ]\n}"
+}

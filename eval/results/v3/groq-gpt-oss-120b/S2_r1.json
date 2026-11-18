@@ -1,0 +1,217 @@
+{
+ "ok": true,
+ "model_label": "groq:openai/gpt-oss-120b",
+ "prompt_version": "v3",
+ "created_at": "2026-11-17T18:17:21+00:00",
+ "latency_s": 7.28,
+ "attempts": 1,
+ "prompt_tokens": 4289,
+ "completion_tokens": 2720,
+ "structured_mode": "json_schema",
+ "result": {
+  "change_interpretations": [
+   {
+    "requirement_id": "VCU-BRK-03",
+    "nature": "tightened",
+    "engineering_summary": "The brake override now must issue the brake command within 80\u202fms of an emergency brake input, adding a latency constraint to the existing priority rule."
+   }
+  ],
+  "assessments": [
+   {
+    "test_id": "TV-001",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test validates accelerator torque response (VCU-DR-01) and does not involve brake commands or the new 80\u202fms brake latency.",
+    "evidence": [
+     "procedure references accelerator demand to 75% and 100\u202fms torque deadline",
+     "requirement_reference_raw is VCU-DR-01 only"
+    ],
+    "recommended_action": "No action needed."
+   },
+   {
+    "test_id": "TV-002",
+    "status": "possibly_affected",
+    "confidence": "medium",
+    "related_requirements": [
+     "VCU-BRK-03"
+    ],
+    "required_actions": [
+     "rerun",
+     "update_procedure"
+    ],
+    "reason": "The test checks brake/pedal arbitration with emergency\u2011brake input, but it does not record the brake command latency required by the new 80\u202fms limit.",
+    "evidence": [
+     "procedure applies emergency\u2011brake input with 85\u202f% pedal",
+     "comment notes timing not reported in old evidence",
+     "requirement_reference_raw includes VCU-BRK-03"
+    ],
+    "recommended_action": "Update the test procedure to measure brake command latency and rerun the test."
+   },
+   {
+    "test_id": "TV-003",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link"
+    ],
+    "reason": "The test exercises high\u2011load torque transients and has no brake\u2011related steps or references.",
+    "evidence": [
+     "procedure sweeps accelerator demand 75\u201395\u202f% and records 92\u202fms response",
+     "requirement_reference_raw is empty"
+    ],
+    "recommended_action": "No action needed."
+   },
+   {
+    "test_id": "TV-004",
+    "status": "directly_affected",
+    "confidence": "high",
+    "related_requirements": [
+     "VCU-BRK-03"
+    ],
+    "required_actions": [
+     "rerun",
+     "update_procedure"
+    ],
+    "reason": "The test measures brake command latency (88\u202fms) against a 100\u202fms threshold, but the new requirement tightens the limit to 80\u202fms, making the existing PASS evidence non\u2011compliant.",
+    "evidence": [
+     "procedure targets brake latency within 100\u202fms",
+     "previous_result PASS (88\u202fms)",
+     "new requirement sets 80\u202fms limit"
+    ],
+    "recommended_action": "Update the latency threshold to 80\u202fms and rerun the test to verify compliance."
+   },
+   {
+    "test_id": "TV-005",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test validates wheel\u2011speed sensor failure handling (VCU-DGN-04) and does not involve brake override timing.",
+    "evidence": [
+     "procedure disconnects wheel\u2011speed sensor and checks degraded mode",
+     "requirement_reference_raw is VCU-DGN-04"
+    ],
+    "recommended_action": "No action needed."
+   },
+   {
+    "test_id": "TV-006",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test audits mode\u2011change logging (VCU-LOG-05) and is unrelated to brake command latency.",
+    "evidence": [
+     "procedure changes Comfort to Sport and logs timestamp",
+     "requirement_reference_raw is VCU-LOG-05"
+    ],
+    "recommended_action": "No action needed."
+   },
+   {
+    "test_id": "TV-007",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link"
+    ],
+    "reason": "The test concerns acceleration at thermal load with a TBD requirement; it does not address brake override or timing.",
+    "evidence": [
+     "procedure mentions 80\u202f% pedal under load",
+     "requirement_reference_raw is TBD"
+    ],
+    "recommended_action": "No action needed."
+   },
+   {
+    "test_id": "TV-008",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link"
+    ],
+    "reason": "Legacy diagnostic replay targets an unknown old requirement and does not involve brake command latency.",
+    "evidence": [
+     "procedure re\u2011runs old diagnostic trace",
+     "parsed_links status unknown_requirement"
+    ],
+    "recommended_action": "No action needed."
+   },
+   {
+    "test_id": "TV-009",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test compares torque ramps between Sport and Comfort modes (VCU-MOD-06) and contains no brake timing checks.",
+    "evidence": [
+     "procedure compares accelerator response under different modes",
+     "requirement_reference_raw is VCU-MOD-06"
+    ],
+    "recommended_action": "No action needed."
+   },
+   {
+    "test_id": "TV-010",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "none"
+    ],
+    "reason": "The test validates pedal\u2011signal spike filtering (VCU-DR-02) and does not involve brake override latency.",
+    "evidence": [
+     "procedure injects 7\u202fms false pedal pulse",
+     "requirement_reference_raw is VCU-DR-02"
+    ],
+    "recommended_action": "No action needed."
+   },
+   {
+    "test_id": "TV-011",
+    "status": "possibly_affected",
+    "confidence": "medium",
+    "related_requirements": [
+     "VCU-BRK-03"
+    ],
+    "required_actions": [
+     "rerun",
+     "update_procedure"
+    ],
+    "reason": "The test verifies torque cancellation during emergency braking, but it does not capture the 80\u202fms brake command latency introduced by the change.",
+    "evidence": [
+     "procedure requests emergency braking while torque demand is high",
+     "comment notes review of interaction at speed",
+     "requirement_reference_raw is VCU-BRK-03"
+    ],
+    "recommended_action": "Add latency measurement to the procedure and rerun the test."
+   },
+   {
+    "test_id": "TV-012",
+    "status": "not_affected",
+    "confidence": "high",
+    "related_requirements": [],
+    "required_actions": [
+     "fix_link"
+    ],
+    "reason": "The wake\u2011up timing test (500\u202fms) is unrelated to brake override latency.",
+    "evidence": [
+     "procedure verifies ECU readiness within 500\u202fms",
+     "requirement_reference_raw is empty"
+    ],
+    "recommended_action": "No action needed."
+   }
+  ]
+ },
+ "warnings": [],
+ "adjustments": [],
+ "raw_text": "{\n  \"change_interpretations\": [\n    {\n      \"requirement_id\": \"VCU-BRK-03\",\n      \"nature\": \"tightened\",\n      \"engineering_summary\": \"The brake override now must issue the brake command within 80\u202fms of an emergency brake input, adding a latency constraint to the existing priority rule.\"\n    }\n  ],\n  \"assessments\": [\n    {\n      \"test_id\": \"TV-001\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"required_actions\": [\"none\"],\n      \"reason\": \"The test validates accelerator torque response (VCU-DR-01) and does not involve brake commands or the new 80\u202fms brake latency.\",\n      \"evidence\": [\n        \"procedure references accelerator demand to 75% and 100\u202fms torque deadline\",\n        \"requirement_reference_raw is VCU-DR-01 only\"\n      ],\n      \"recommended_action\": \"No action needed.\"\n    },\n    {\n      \"test_id\": \"TV-002\",\n      \"status\": \"possibly_affected\",\n      \"confidence\": \"medium\",\n      \"related_requirements\": [\"VCU-BRK-03\"],\n      \"required_actions\": [\"update_procedure\", \"rerun\"],\n      \"reason\": \"The test checks brake/pedal arbitration with emergency\u2011brake input, but it does not record the brake command latency required by the new 80\u202fms limit.\",\n      \"evidence\": [\n        \"procedure applies emergency\u2011brake input with 85\u202f% pedal\",\n        \"comment notes timing not reported in old evidence\",\n        \"requirement_reference_raw includes VCU-BRK-03\"\n      ],\n      \"recommended_action\": \"Update the test procedure to measure brake command latency and rerun the test.\"\n    },\n    {\n      \"test_id\": \"TV-003\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"required_actions\": [\"none\"],\n      \"reason\": \"The test exercises high\u2011load torque transients and has no brake\u2011related steps or references.\",\n      \"evidence\": [\n        \"procedure sweeps accelerator demand 75\u201395\u202f% and records 92\u202fms response\",\n        \"requirement_reference_raw is empty\"\n      ],\n      \"recommended_action\": \"No action needed.\"\n    },\n    {\n      \"test_id\": \"TV-004\",\n      \"status\": \"directly_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [\"VCU-BRK-03\"],\n      \"required_actions\": [\"update_procedure\", \"rerun\"],\n      \"reason\": \"The test measures brake command latency (88\u202fms) against a 100\u202fms threshold, but the new requirement tightens the limit to 80\u202fms, making the existing PASS evidence non\u2011compliant.\",\n      \"evidence\": [\n        \"procedure targets brake latency within 100\u202fms\",\n        \"previous_result PASS (88\u202fms)\",\n        \"new requirement sets 80\u202fms limit\"\n      ],\n      \"recommended_action\": \"Update the latency threshold to 80\u202fms and rerun the test to verify compliance.\"\n    },\n    {\n      \"test_id\": \"TV-005\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"required_actions\": [\"none\"],\n      \"reason\": \"The test validates wheel\u2011speed sensor failure handling (VCU-DGN-04) and does not involve brake override timing.\",\n      \"evidence\": [\n        \"procedure disconnects wheel\u2011speed sensor and checks degraded mode\",\n        \"requirement_reference_raw is VCU-DGN-04\"\n      ],\n      \"recommended_action\": \"No action needed.\"\n    },\n    {\n      \"test_id\": \"TV-006\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"required_actions\": [\"none\"],\n      \"reason\": \"The test audits mode\u2011change logging (VCU-LOG-05) and is unrelated to brake command latency.\",\n      \"evidence\": [\n        \"procedure changes Comfort to Sport and logs timestamp\",\n        \"requirement_reference_raw is VCU-LOG-05\"\n      ],\n      \"recommended_action\": \"No action needed.\"\n    },\n    {\n      \"test_id\": \"TV-007\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"required_actions\": [\"none\"],\n      \"reason\": \"The test concerns acceleration at thermal load with a TBD requirement; it does not address brake override or timing.\",\n      \"evidence\": [\n        \"procedure mentions 80\u202f% pedal under load\",\n        \"requirement_reference_raw is TBD\"\n      ],\n      \"recommended_action\": \"No action needed.\"\n    },\n    {\n      \"test_id\": \"TV-008\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"required_actions\": [\"none\"],\n      \"reason\": \"Legacy diagnostic replay targets an unknown old requirement and does not involve brake command latency.\",\n      \"evidence\": [\n        \"procedure re\u2011runs old diagnostic trace\",\n        \"parsed_links status unknown_requirement\"\n      ],\n      \"recommended_action\": \"No action needed.\"\n    },\n    {\n      \"test_id\": \"TV-009\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"required_actions\": [\"none\"],\n      \"reason\": \"The test compares torque ramps between Sport and Comfort modes (VCU-MOD-06) and contains no brake timing checks.\",\n      \"evidence\": [\n        \"procedure compares accelerator response under different modes\",\n        \"requirement_reference_raw is VCU-MOD-06\"\n      ],\n      \"recommended_action\": \"No action needed.\"\n    },\n    {\n      \"test_id\": \"TV-010\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"required_actions\": [\"none\"],\n      \"reason\": \"The test validates pedal\u2011signal spike filtering (VCU-DR-02) and does not involve brake override latency.\",\n      \"evidence\": [\n        \"procedure injects 7\u202fms false pedal pulse\",\n        \"requirement_reference_raw is VCU-DR-02\"\n      ],\n      \"recommended_action\": \"No action needed.\"\n    },\n    {\n      \"test_id\": \"TV-011\",\n      \"status\": \"possibly_affected\",\n      \"confidence\": \"medium\",\n      \"related_requirements\": [\"VCU-BRK-03\"],\n      \"required_actions\": [\"update_procedure\", \"rerun\"],\n      \"reason\": \"The test verifies torque cancellation during emergency braking, but it does not capture the 80\u202fms brake command latency introduced by the change.\",\n      \"evidence\": [\n        \"procedure requests emergency braking while torque demand is high\",\n        \"comment notes review of interaction at speed\",\n        \"requirement_reference_raw is VCU-BRK-03\"\n      ],\n      \"recommended_action\": \"Add latency measurement to the procedure and rerun the test.\"\n    },\n    {\n      \"test_id\": \"TV-012\",\n      \"status\": \"not_affected\",\n      \"confidence\": \"high\",\n      \"related_requirements\": [],\n      \"required_actions\": [\"none\"],\n      \"reason\": \"The wake\u2011up timing test (500\u202fms) is unrelated to brake override latency.\",\n      \"evidence\": [\n        \"procedure verifies ECU readiness within 500\u202fms\",\n        \"requirement_reference_raw is empty\"\n      ],\n      \"recommended_action\": \"No action needed.\"\n    }\n  ]\n}"
+}
