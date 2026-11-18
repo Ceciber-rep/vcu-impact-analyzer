@@ -333,6 +333,8 @@ def main() -> None:
     st.title("Specification change impact")
     _show_notice()
     ui.provenance_banner(outcome)
+    for w in prep.input_warnings:
+        st.warning(w, icon="📝")
     st.caption(
         "The register is treated as evidence, not approval. Results are recommendations for engineering review; "
         "final approval belongs to the authorized owner."

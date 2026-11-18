@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import BinaryIO
 
 from docx import Document
+from docx.oxml.ns import qn
 from docx.table import Table
 from docx.text.paragraph import Paragraph
 
@@ -30,6 +31,36 @@ DOCUMENT_RECORD = "Document record"
 
 def _normalize(text: str) -> str:
     return re.sub(r"[ \t ]+", " ", text).strip()
+
+
+def _paragraph_text(p: Paragraph) -> str:
+    """Paragraph text as if all tracked changes were accepted.
+
+    python-docx ignores runs inside ``w:ins`` and ``w:del``; reading them would lose an inserted limit entirely.
+    Insertions are kept, deletions (``w:del``, ``w:moveFrom``) are dropped, text boxes are left out (they would be
+    duplicated by Word's fallback copies).
+    """
+    parts: list[str] = []
+    for node in p._p.iter():
+        if node.tag == qn("w:t"):
+            if not node.xpath("ancestor::w:del | ancestor::w:moveFrom | ancestor::w:txbxContent"):
+                parts.append(node.text or "")
+        elif node.tag == qn("w:tab"):
+            parts.append("\t")
+        elif node.tag in (qn("w:br"), qn("w:cr")):
+            parts.append("\n")
+    return "".join(parts)
+
+
+def _tracked_changes_warning(doc, source_name: str) -> list[str]:
+    n_ins = len(doc.element.body.xpath(".//w:ins[w:r]"))
+    n_del = len(doc.element.body.xpath(".//w:del[w:r]"))
+    if not (n_ins or n_del):
+        return []
+    return [
+        f"{source_name} contains tracked changes ({n_ins} insertion(s), {n_del} deletion(s)). It is read as if all "
+        "of them were accepted; accept or reject them in Word if that is not what you want."
+    ]
 
 
 def _style_name(p: Paragraph) -> str:
@@ -82,7 +113,7 @@ def parse_spec(source: str | Path | BinaryIO | bytes, source_name: str | None = 
             sections.setdefault(DOCUMENT_RECORD, []).extend(rows)
             continue
 
-        text = _normalize(block.text)
+        text = _normalize(_paragraph_text(block))
         if not text:
             continue
         style = _style_name(block).lower()
@@ -126,6 +157,7 @@ def parse_spec(source: str | Path | BinaryIO | bytes, source_name: str | None = 
         revision=revision,
         requirements=requirements,
         sections=[SpecSection(name=k, text="\n".join(v)) for k, v in sections.items()],
+        warnings=_tracked_changes_warning(doc, source_name),
     )
 
 

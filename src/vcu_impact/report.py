@@ -173,7 +173,7 @@ def build_report(
 
     test_ids = {t.test_id for t in prep.register.tests}
     all_warnings = (run.warnings if run else []) + outcome.warnings
-    global_warnings = [w for w in all_warnings if not any(t in w for t in test_ids)]
+    global_warnings = [*prep.input_warnings, *[w for w in all_warnings if not any(t in w for t in test_ids)]]
 
     return ReportData(
         generated_at=datetime.now(UTC).strftime("%Y-%m-%d %H:%M UTC"),

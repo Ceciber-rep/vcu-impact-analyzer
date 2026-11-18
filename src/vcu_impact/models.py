@@ -34,6 +34,7 @@ class SpecDocument(BaseModel):
     revision: str = ""
     requirements: list[Requirement]
     sections: list[SpecSection] = Field(default_factory=list)
+    warnings: list[str] = Field(default_factory=list)  # input quality notes (e.g. tracked changes), shown to the user
 
     def requirement(self, req_id: str) -> Requirement | None:
         return next((r for r in self.requirements if r.req_id == req_id), None)

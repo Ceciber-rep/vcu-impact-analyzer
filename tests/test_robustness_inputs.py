@@ -135,22 +135,19 @@ def test_numbers_inside_ids_are_not_numeric_changes():  # E-013
 
 
 # ---- Word documents --------------------------------------------------------------------------------
-
-
-@pytest.mark.xfail(
     strict=True, reason="F-010: text inside tracked changes (w:ins / w:del) is ignored without a warning"
 )
 def test_tracked_change_in_a_requirement_is_seen():  # E-014
     tracked = with_tracked_change(BASE, "VCU-A-01", "100 ms", "80 ms")
     text = parse_spec(tracked).requirements[0].text
-    assert "80 ms" in text or "100 ms" in text  # today: "The value is" only, both numbers vanish
+    assert "80 ms" in text and "100 ms" not in text  # read as if accepted: insertion kept, deletion dropped
 
 
-@pytest.mark.xfail(strict=True, reason="F-010: a tracked change that alters a limit produces no diff at all")
 def test_tracked_change_does_not_hide_the_change_from_the_diff():  # E-015
     tracked = with_tracked_change(BASE, "VCU-A-01", "100 ms", "80 ms")
     change = _prep(BASE, tracked).diff.requirement_changes[0]
-    assert "80 ms" in change.new.text  # today the diff shows 100 ms deleted and nothing inserted
+    assert "80 ms" in change.new.text and change.numeric_changes[0].new_value == 80
+    assert any("tracked changes" in w for w in _prep(BASE, tracked).input_warnings)  # and the user is told
 
 
 @pytest.mark.xfail(strict=True, reason="F-011: requirements in text boxes or in tables are ignored without a warning")

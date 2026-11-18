@@ -82,6 +82,7 @@ class Prepared:
     register: TestRegister
     user_prompt: str
     key: str
+    input_warnings: list[str] = field(default_factory=list)  # e.g. tracked changes in a specification
 
 
 def prepare(inputs: Inputs) -> Prepared:
@@ -93,7 +94,16 @@ def prepare(inputs: Inputs) -> Prepared:
     register = parse_register(inputs.register.data, revised, baseline, inputs.register.name)
     diff = diff_specs(baseline, revised)
     user_prompt = build_user_prompt(diff, revised, register)
-    return Prepared(inputs, baseline, revised, diff, register, user_prompt, cache.analysis_key(user_prompt))
+    return Prepared(
+        inputs,
+        baseline,
+        revised,
+        diff,
+        register,
+        user_prompt,
+        cache.analysis_key(user_prompt),
+        [*baseline.warnings, *revised.warnings],
+    )
 
 
 # ---------------------------------------------------------------------------
