@@ -96,6 +96,21 @@ def add_requirement(doc: DocxDocument, after_id: str, req_id: str, title: str, t
     _set_text(Paragraph(new_body, anchor._parent), text)
 
 
+def append_paragraph(doc: DocxDocument, req_id: str, text: str) -> None:
+    """Add a further body paragraph to a requirement (a multi-paragraph requirement)."""
+    heading, body = _locate(doc, req_id)
+    anchor = body[-1] if body else heading
+    new_body = copy.deepcopy((body[-1] if body else heading)._p)
+    anchor._p.addnext(new_body)
+    _set_text(Paragraph(new_body, anchor._parent), text)
+
+
+def rename_requirement(doc: DocxDocument, old_id: str, new_id: str) -> None:
+    """Change a requirement ID in its heading, keeping title and body."""
+    heading, _ = _locate(doc, old_id)
+    _set_text(heading, heading.text.replace(old_id, new_id, 1))
+
+
 def replace_everywhere(doc: DocxDocument, old: str, new: str) -> int:
     """Replace text in all paragraphs and table cells (e.g. the revision label)."""
     count = 0

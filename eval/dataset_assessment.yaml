@@ -1,0 +1,167 @@
+# Assessment scenarios N1 to N6 (held out: labels written and committed BEFORE any model ran on them).
+#
+# Select with:  VCU_EVAL_DATASET=dataset_assessment.yaml uv run python eval/evaluate.py ...
+# Same structure and status codes as dataset.yaml (D/P/R/N, accept/preferred/critical/why/actions/related).
+# Extra key per scenario, `expect_nature`: the reading of each changed requirement that a correct
+# `change_interpretations` entry should have (used only by the assessment's own nature scoring).
+#
+# Labels were written by the assistant from the documents and are reviewed by the project owner
+# before any model run. If a result looks surprising, the label is NOT changed afterwards; a
+# correction would be a separate, dated commit.
+#
+# Every scenario is the BASELINE specification plus one revision change (the real revised spec
+# is not used), analysed against the provided register unless `register_edits` says otherwise.
+
+defaults:
+  unrelated: {accept: [N], preferred: N}
+  broken_link_unrelated: {accept: [N, R], preferred: N}
+  orphan: {accept: [R, N], preferred: R}
+
+scenarios:
+  # -- N1: same value, other unit. The diff reports a numeric change; the meaning is identical. --
+  - id: N1
+    held_out: true
+    title: "DR-01 limit written as 0.1 seconds instead of 100 milliseconds (same value)"
+    expect_nature: {VCU-DR-01: [reworded_same_meaning]}
+    edits:
+      - {op: replace, req: VCU-DR-01, old: "within 100 milliseconds", new: "within 0.1 seconds"}
+    tests:
+      TV-001: {accept: [N, P], preferred: N, critical: true,
+               why: "FALSE ALARM TRAP: the script threshold is 100 ms = 0.1 s and the old result is 94 ms, so the evidence still meets the unchanged limit. The diff shows a numeric change only because the unit differs. Directly affected would be an over-flag.",
+               actions: {must_not: [rerun, update_procedure]}}
+      TV-002: {accept: [N, P], preferred: N, why: "Linked to DR-01 but the requirement has the same meaning; nothing to redo."}
+      TV-003: {accept: [N, P, R], preferred: N, why: "No link; torque transient with a recorded 92 ms, below the unchanged 0.1 s limit."}
+      TV-004: {accept: [N], preferred: N, critical: true,
+               why: "Brake clock trap (88 ms is brake command latency); BRK-03 unchanged."}
+      TV-005: unrelated
+      TV-006: unrelated
+      TV-007: {accept: [N, P, R], preferred: N, why: "TBD link, NOT RUN; the requirement did not change in meaning."}
+      TV-008: orphan
+      TV-009: {accept: [N, P], preferred: N, why: "Accelerator response comparison without a timing assertion."}
+      TV-010: unrelated
+      TV-011: unrelated
+      TV-012: broken_link_unrelated
+
+  # -- N2: title only. --
+  - id: N2
+    held_out: true
+    title: "DR-02 title changed, requirement text identical"
+    expect_nature: {VCU-DR-02: [reworded_same_meaning, other]}
+    edits:
+      - {op: set, req: VCU-DR-02, title: "Pedal input plausibility"}
+    tests:
+      TV-001: unrelated
+      TV-002: unrelated
+      TV-003: broken_link_unrelated
+      TV-004: unrelated
+      TV-005: unrelated
+      TV-006: unrelated
+      TV-007: broken_link_unrelated
+      TV-008: orphan
+      TV-009: unrelated
+      TV-010: {accept: [N, P], preferred: N, critical: true,
+               why: "Linked to DR-02 (7 ms spike injection against a 10 ms filter), but only the heading changed; the behaviour and the limit are the same. Directly affected would be an over-flag.",
+               actions: {must_not: [rerun, update_procedure]}}
+      TV-011: unrelated
+      TV-012: broken_link_unrelated
+
+  # -- N3: a requirement is added and another removed in the same revision. --
+  - id: N3
+    held_out: true
+    title: "VCU-THM-07 added and VCU-LOG-05 removed in the same revision"
+    expect_nature: {VCU-THM-07: [added], VCU-LOG-05: [removed]}
+    edits:
+      - {op: remove, req: VCU-LOG-05}
+      - {op: add, after: VCU-MOD-06, req: VCU-THM-07, title: "Thermal torque derating",
+         text: "When the inverter temperature exceeds 85 °C, the controller shall limit positive propulsion torque to 50% of the demanded torque."}
+    tests:
+      TV-001: unrelated
+      TV-002: unrelated
+      TV-003: {accept: [P, N, R], preferred: P,
+               why: "No link; high-load torque transient. High load is not necessarily thermal load, so P or N are both defensible."}
+      TV-004: unrelated
+      TV-005: unrelated
+      TV-006: {accept: [R, P, D], preferred: R, critical: true,
+               actions: {must: [owner_decision]}, related: {must: [VCU-LOG-05], must_not: [VCU-THM-07]},
+               why: "Its only link points to the removed LOG-05: retire or re-link (owner decision). It has nothing to do with thermal derating, so it must not be tied to THM-07."}
+      TV-007: {accept: [P, R], preferred: P, critical: true, related: {must: [VCU-THM-07]},
+               why: "'Acceleration at thermal load', TBD link, NOT RUN: the natural candidate to verify the new thermal requirement (as in S7)."}
+      TV-008: orphan
+      TV-009: unrelated
+      TV-010: unrelated
+      TV-011: unrelated
+      TV-012: broken_link_unrelated
+
+  # -- N4: a multi-paragraph requirement edit (a second paragraph is added to BRK-03). --
+  - id: N4
+    held_out: true
+    title: "BRK-03 gains a second paragraph: brake priority also applies while a diagnostic fault is active"
+    expect_nature: {VCU-BRK-03: [scope_changed]}
+    edits:
+      - {op: append_paragraph, req: VCU-BRK-03,
+         text: "The emergency brake priority shall also apply while a diagnostic fault is active."}
+    tests:
+      TV-001: unrelated
+      TV-002: {accept: [D, P], preferred: P, critical: true,
+               why: "Linked to BRK-03 (brake/pedal arbitration); no fault condition in its evidence, so the new clause is not covered."}
+      TV-003: broken_link_unrelated
+      TV-004: {accept: [N, P], preferred: N,
+               why: "Emergency brake alone, no fault injected; brake command latency is not what changed."}
+      TV-005: {accept: [P, N, R], preferred: P,
+               why: "Creates a diagnostic fault (wheel-speed unplugged) and checks degraded mode: the natural place to also check brake priority under a fault. Not linked to BRK-03, so P or N."}
+      TV-006: unrelated
+      TV-007: broken_link_unrelated
+      TV-008: orphan
+      TV-009: {accept: [N, P], preferred: N, why: "MOD-06 mentions brake priority, but the test only compares ramps between modes."}
+      TV-010: unrelated
+      TV-011: {accept: [D, P], preferred: P, critical: true,
+               why: "Linked to BRK-03 (torque cancellation on braking); verifies priority but not with an active fault."}
+      TV-012: broken_link_unrelated
+
+  # -- N5: a requirement is changed that no test references (its only test is dropped). --
+  - id: N5
+    held_out: true
+    title: "LOG-05 extended with the calibration version; its only test TV-006 is not in the register"
+    expect_nature: {VCU-LOG-05: [scope_changed]}
+    register_edits:
+      - {op: drop_test, test: TV-006}
+    edits:
+      - {op: replace, req: VCU-LOG-05, old: "the related software build identifier.",
+         new: "the related software build identifier and the calibration version."}
+    note: "Nothing in the register verifies LOG-05. Every test should be N; a good answer also says that no test covers LOG-05 (checked by reading, not scored)."
+    tests:
+      TV-001: unrelated
+      TV-002: unrelated
+      TV-003: broken_link_unrelated
+      TV-004: unrelated
+      TV-005: unrelated
+      TV-007: broken_link_unrelated
+      TV-008: orphan
+      TV-009: {accept: [N, P], preferred: N, critical: true,
+               why: "OVER-FLAG TRAP: it switches between Comfort and Sport, and LOG-05 is about logging mode changes, but the test does not check any log."}
+      TV-010: unrelated
+      TV-011: unrelated
+      TV-012: broken_link_unrelated
+
+  # -- N6: rename. The old ID disappears, a new ID with the same title and text appears. --
+  - id: N6
+    held_out: true
+    title: "VCU-LOG-05 renamed to VCU-LOG-15 (same title and text)"
+    expect_nature: {VCU-LOG-05: [removed], VCU-LOG-15: [added, reworded_same_meaning]}
+    edits:
+      - {op: rename, req: VCU-LOG-05, to: VCU-LOG-15}
+    tests:
+      TV-001: unrelated
+      TV-002: unrelated
+      TV-003: broken_link_unrelated
+      TV-004: unrelated
+      TV-005: unrelated
+      TV-006: {accept: [R, P], preferred: R, critical: true,
+               actions: {must_not: [rerun, update_procedure]}, related: {must: [VCU-LOG-15]},
+               why: "The behaviour is unchanged (same text under a new ID), so the evidence is still valid, but the test's link VCU-LOG-05 no longer exists: the link must be re-pointed to VCU-LOG-15. Directly affected would claim the behaviour changed. A good answer names VCU-LOG-15."}
+      TV-007: broken_link_unrelated
+      TV-008: orphan
+      TV-009: unrelated
+      TV-010: unrelated
+      TV-011: unrelated
+      TV-012: broken_link_unrelated

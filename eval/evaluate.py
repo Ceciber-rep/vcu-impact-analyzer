@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import sys
 import traceback
@@ -52,7 +53,8 @@ CONSISTENCY_SCENARIO, CONSISTENCY_REPS = "S1", 3
 
 
 def load_dataset() -> dict:
-    data = yaml.safe_load((EVAL / "dataset.yaml").read_text())
+    # VCU_EVAL_DATASET selects another label file with the same structure (e.g. dataset_assessment.yaml).
+    data = yaml.safe_load((EVAL / (os.getenv("VCU_EVAL_DATASET") or "dataset.yaml")).read_text())
     for sc in data["scenarios"]:
         for tid, label in sc["tests"].items():
             if isinstance(label, str):
@@ -121,52 +123,63 @@ def build_register(sc: dict, out: Path) -> None:
             for key, col in cols.items():
                 cell = ws.cell(new, col + 1, values[key])
                 cell._style = copy(ws.cell(prev, col + 1)._style)
+        elif e["op"] == "drop_test":
+            row = next(r for r in range(header + 1, ws.max_row + 1) if ws.cell(r, id_col).value == e["test"])
+            ws.delete_rows(row)
         else:
             raise ValueError(f"Unknown register edit {e['op']!r}")
     wb.save(out)
     wb.close()
 
 
+def _build_scenario_register(sc: dict, baseline: Path, force: bool) -> None:
+    out = register_path(sc)
+    if sc.get("register_edits") and (force or not out.exists()):
+        build_register(sc, out)
+        reg = parse_register(out, parse_spec(scenario_path(sc)), parse_spec(baseline))
+        print(f"{sc['id']}: {out.relative_to(ROOT)} -> {len(reg.tests)} tests")
+
+
 def cmd_build(args) -> None:
     SCEN_DIR.mkdir(exist_ok=True)
     baseline = INPUT / "VCU_Spec_Baseline.docx"
     for sc in load_dataset()["scenarios"]:
-        if sc.get("register_edits"):
-            out = register_path(sc)
-            if args.force or not out.exists():
-                build_register(sc, out)
-                reg = parse_register(out, parse_spec(scenario_path(sc)), parse_spec(baseline))
-                print(f"{sc['id']}: {out.relative_to(ROOT)} -> {len(reg.tests)} tests")
-        if sc.get("source") == "revised":
-            continue
-        out = scenario_path(sc)
-        if out.exists() and not args.force:
-            continue
-        base = INPUT / "VCU_Spec_Revised.docx" if sc.get("base") == "revised" else baseline
-        doc = spec_editor.load(base)
-        for e in sc["edits"]:
-            match e["op"]:
-                case "replace":
-                    spec_editor.replace_in_requirement(doc, e["req"], e["old"], e["new"])
-                case "set":
-                    spec_editor.set_requirement(doc, e["req"], text=e.get("text"), title=e.get("title"))
-                case "remove":
-                    spec_editor.remove_requirement(doc, e["req"])
-                case "add":
-                    spec_editor.add_requirement(doc, e["after"], e["req"], e["title"], e["text"])
-        label = f"Revision {sc['id']} | evaluation scenario"
-        spec_editor.replace_everywhere(doc, "Revision A | baseline", label)
-        spec_editor.replace_everywhere(doc, "Revision B | candidate change", label)
-        spec_editor.replace_everywhere(
-            doc,
-            "Initial validation baseline for this exercise package. The team has completed an earlier "
-            "bench campaign against this revision.",
-            "Evaluation scenario: candidate change prepared for engineering assessment.",
-        )
-        out.write_bytes(spec_editor.to_bytes(doc))
-        d = diff_specs(parse_spec(baseline), parse_spec(out))
-        summary = ", ".join(f"{c.req_id} {c.change_type.value}" for c in d.requirement_changes)
-        print(f"{sc['id']}: {out.relative_to(ROOT)} -> {summary}")
+        if sc.get("source") != "revised" and (args.force or not scenario_path(sc).exists()):
+            _build_scenario_spec(sc, baseline)
+        _build_scenario_register(sc, baseline, args.force)
+
+
+def _build_scenario_spec(sc: dict, baseline: Path) -> None:
+    out = scenario_path(sc)
+    base = INPUT / "VCU_Spec_Revised.docx" if sc.get("base") == "revised" else baseline
+    doc = spec_editor.load(base)
+    for e in sc["edits"]:
+        match e["op"]:
+            case "replace":
+                spec_editor.replace_in_requirement(doc, e["req"], e["old"], e["new"])
+            case "set":
+                spec_editor.set_requirement(doc, e["req"], text=e.get("text"), title=e.get("title"))
+            case "remove":
+                spec_editor.remove_requirement(doc, e["req"])
+            case "add":
+                spec_editor.add_requirement(doc, e["after"], e["req"], e["title"], e["text"])
+            case "append_paragraph":
+                spec_editor.append_paragraph(doc, e["req"], e["text"])
+            case "rename":
+                spec_editor.rename_requirement(doc, e["req"], e["to"])
+    label = f"Revision {sc['id']} | evaluation scenario"
+    spec_editor.replace_everywhere(doc, "Revision A | baseline", label)
+    spec_editor.replace_everywhere(doc, "Revision B | candidate change", label)
+    spec_editor.replace_everywhere(
+        doc,
+        "Initial validation baseline for this exercise package. The team has completed an earlier "
+        "bench campaign against this revision.",
+        "Evaluation scenario: candidate change prepared for engineering assessment.",
+    )
+    out.write_bytes(spec_editor.to_bytes(doc))
+    d = diff_specs(parse_spec(baseline), parse_spec(out))
+    summary = ", ".join(f"{c.req_id} {c.change_type.value}" for c in d.requirement_changes)
+    print(f"{sc['id']}: {out.relative_to(ROOT)} -> {summary}")
 
 
 # ---------------------------------------------------------------------------

@@ -90,20 +90,30 @@ def flow_f4(at):  # remove a requirement
 
 
 def flow_f5(at):  # change a trigger condition (no number involved)
-    _edit_form(at, "VCU-DGN-04", "If the wheel-speed input is unavailable", "If the wheel-speed input is unavailable "
-               "and the vehicle is moving")
+    _edit_form(
+        at,
+        "VCU-DGN-04",
+        "If the wheel-speed input is unavailable",
+        "If the wheel-speed input is unavailable and the vehicle is moving",
+    )
 
 
 def flow_f6(at):  # upload a modified spec
     def edit(doc, se):
-        se.replace_in_requirement(doc, "VCU-BRK-03", "regardless of pedal position or requested driving mode", "regardless of pedal position")
+        se.replace_in_requirement(
+            doc, "VCU-BRK-03", "regardless of pedal position or requested driving mode", "regardless of pedal position"
+        )
 
     at.sidebar.expander[0]  # the uploader lives in the sidebar expander
-    at.file_uploader(key="up_revised").set_value(("VCU_Spec_Revised_modified.docx", _spec_variant(edit), "application/octet-stream")).run()
+    at.file_uploader(key="up_revised").set_value(
+        ("VCU_Spec_Revised_modified.docx", _spec_variant(edit), "application/octet-stream")
+    ).run()
 
 
 def flow_f7(at):  # upload a modified register
-    at.file_uploader(key="up_register").set_value(("VCU_Test_Register_modified.xlsx", _register_variant(), "application/octet-stream")).run()
+    at.file_uploader(key="up_register").set_value(
+        ("VCU_Test_Register_modified.xlsx", _register_variant(), "application/octet-stream")
+    ).run()
 
 
 FLOWS = {
