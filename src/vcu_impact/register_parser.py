@@ -82,7 +82,12 @@ def classify_links(raw: str, revised: SpecDocument | None, baseline: SpecDocumen
     links = []
     revised_ids = set(revised.requirement_ids) if revised else set()
     baseline_ids = set(baseline.requirement_ids) if baseline else set()
-    for part in [p.strip() for p in re.split(r"[;,/\n]+", raw) if p.strip()]:
+    parts = []
+    for chunk in (p.strip() for p in re.split(r"[;,/\n]+", raw) if p.strip()):
+        found = _REQ_ID_RE.findall(chunk)
+        # Several IDs in one chunk (separated by a space or "and"): one link each.
+        parts += found if len(found) > 1 else [chunk]
+    for part in parts:
         m = _REQ_ID_RE.search(part)
         if not m:
             status = LinkStatus.TBD if re.search(r"(?i)tbd|tbc", part) else LinkStatus.UNKNOWN
@@ -145,6 +150,14 @@ def parse_register(
     return TestRegister(source_name=source_name, title_lines=title_lines, tests=tests, notes=notes)
 
 
+def _raw_cell(row, cols, key: str) -> str:
+    """Cell text with line breaks kept (a link cell may list one requirement per line)."""
+    if key not in cols or cols[key] >= len(row) or row[cols[key]] is None:
+        return ""
+    value = row[cols[key]]
+    return str(value).strip() if not isinstance(value, (datetime, date)) else _cell(value)
+
+
 def _parse_tests(ws, hdr, cols, revised, baseline) -> list[TestCase]:
     tests = []
     get = lambda row, key: _cell(row[cols[key]]) if key in cols and cols[key] < len(row) else ""  # noqa: E731
@@ -159,7 +172,7 @@ def _parse_tests(ws, hdr, cols, revised, baseline) -> list[TestCase]:
                 name=get(row, "name"),
                 procedure=procedure,
                 raw_reference=get(row, "reference"),
-                links=classify_links(get(row, "reference"), revised, baseline),
+                links=classify_links(_raw_cell(row, cols, "reference"), revised, baseline),
                 result_raw=result,
                 result_verdict=_verdict(result),
                 measurements=_measurements(result=result, procedure=procedure, comment=comment),
@@ -168,6 +181,11 @@ def _parse_tests(ws, hdr, cols, revised, baseline) -> list[TestCase]:
                 comment=comment,
             )
         )
+    seen: set[str] = set()
+    for t in tests:
+        if t.test_id in seen:
+            raise ValueError(f"Duplicate test ID in the register: {t.test_id}. Test IDs must be unique.")
+        seen.add(t.test_id)
     return tests
 
 

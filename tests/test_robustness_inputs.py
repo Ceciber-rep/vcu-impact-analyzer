@@ -263,7 +263,6 @@ def test_merged_cells_and_uncached_formulas_are_not_dropped_silently():  # E-025
     assert t.procedure and t.result_raw  # today both are empty strings and nothing says so
 
 
-@pytest.mark.xfail(strict=True, reason="F-015: duplicate test IDs are accepted silently")
 def test_duplicate_test_ids_are_flagged():  # E-026
     with pytest.raises(ValueError, match="TV-001"):
         _reg([make_test(1), make_test(1)])
@@ -285,7 +284,6 @@ def test_link_cells_in_common_formats(raw, expected):  # E-027
 
 
 @pytest.mark.parametrize("raw", ["VCU-A-01\nVCU-B-02", "VCU-A-01 VCU-B-02", "VCU-A-01 and VCU-B-02"])
-@pytest.mark.xfail(strict=True, reason="F-016: only the first ID is kept when IDs are separated by a newline or space")
 def test_link_cell_with_several_ids_keeps_all_of_them(raw):  # E-028
     reg = _reg([make_test(1, link=raw)])
     assert [link.req_id for link in reg.tests[0].links] == ["VCU-A-01", "VCU-B-02"]
