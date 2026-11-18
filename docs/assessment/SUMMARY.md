@@ -43,7 +43,7 @@ Not done for lack of time: items 6 and 7 of the priority list (by decision).
 | Exact commands for Windows or a container | Done for Docker (built and run here); Windows commands **not verified** |
 | Screenshot or demo and committed example report | Done (screenshots predate the last fixes; example report regenerated) |
 | Input files in the repository | Done |
-| No secrets or real data | Done (key values and patterns not in tree or history; one local path in frozen result files, F-006) |
+| No secrets or real data | Done (key values and patterns not in tree or history; one local path in frozen result files, F-006, and a Groq organisation id in the frozen `eval/results/v3/groq-gpt-oss-120b/availability_log.jsonl`, F-027: an identifier, not a credential; redacting needs your approval because the file is frozen, and it stays in git history) |
 | Working read-only share link to the AI conversation | **Pending, owner's responsibility** (link in README, not opened) |
 | License | **Pending, owner's decision** (no LICENSE file) |
 | Demo script for the interview | Done (`docs/demo_script.md`) |
