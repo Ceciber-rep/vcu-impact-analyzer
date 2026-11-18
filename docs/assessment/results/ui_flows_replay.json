@@ -1,0 +1,715 @@
+[
+ {
+  "flow": "F1",
+  "title": "Change a numeric limit (DR-01 80 -> 60 ms)",
+  "mode": "replay",
+  "after_change": {
+   "exceptions": [],
+   "banner": [
+    "Not analysed by an LLM. The register facts below come from the parser.",
+    "Edited VCU-DR-01. The diff in tab 1 is updated; run the analysis to update the assessment.",
+    "Not analysed by an LLM: no recorded analysis exists for these inputs. Run the analysis with a configured model.",
+    "No LLM assessment for these inputs: the report will contain the changes and register facts only."
+   ],
+   "changes_shown": [
+    [
+     "VCU-DR-01",
+     "🟨 Modified"
+    ]
+   ],
+   "statuses": {
+    "TV-001": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-002": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-003": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-004": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-005": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-006": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-007": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-008": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-009": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-010": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-011": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-012": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ]
+   },
+   "report_chars": 9557,
+   "report_contains_every_test": true,
+   "report_contains_every_status_label": true,
+   "approval_hits_in_report": []
+  },
+  "seconds": 0.4
+ },
+ {
+  "flow": "F2",
+  "title": "Reword a requirement, same meaning (DR-02)",
+  "mode": "replay",
+  "after_change": {
+   "exceptions": [],
+   "banner": [
+    "Not analysed by an LLM. The register facts below come from the parser.",
+    "Edited VCU-DR-02. The diff in tab 1 is updated; run the analysis to update the assessment.",
+    "Not analysed by an LLM: no recorded analysis exists for these inputs. Run the analysis with a configured model.",
+    "No LLM assessment for these inputs: the report will contain the changes and register facts only."
+   ],
+   "changes_shown": [
+    [
+     "VCU-DR-01",
+     "🟨 Modified"
+    ],
+    [
+     "VCU-DR-02",
+     "🟨 Modified"
+    ]
+   ],
+   "statuses": {
+    "TV-001": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-002": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-003": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-004": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-005": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-006": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-007": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-008": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-009": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-010": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-011": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-012": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ]
+   },
+   "report_chars": 9876,
+   "report_contains_every_test": true,
+   "report_contains_every_status_label": true,
+   "approval_hits_in_report": []
+  },
+  "seconds": 0.4
+ },
+ {
+  "flow": "F3",
+  "title": "Add a requirement (VCU-THM-07)",
+  "mode": "replay",
+  "after_change": {
+   "exceptions": [],
+   "banner": [
+    "Not analysed by an LLM. The register facts below come from the parser.",
+    "Added VCU-THM-07 (Thermal torque derating) after VCU-MOD-06. The diff in tab 1 is updated; run the analysis to update the assessment.",
+    "Not analysed by an LLM: no recorded analysis exists for these inputs. Run the analysis with a configured model.",
+    "No LLM assessment for these inputs: the report will contain the changes and register facts only."
+   ],
+   "changes_shown": [
+    [
+     "VCU-DR-01",
+     "🟨 Modified"
+    ],
+    [
+     "VCU-THM-07",
+     "🟩 Added"
+    ]
+   ],
+   "statuses": {
+    "TV-001": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-002": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-003": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-004": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-005": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-006": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-007": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-008": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-009": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-010": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-011": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-012": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ]
+   },
+   "report_chars": 9858,
+   "report_contains_every_test": true,
+   "report_contains_every_status_label": true,
+   "approval_hits_in_report": []
+  },
+  "seconds": 0.4
+ },
+ {
+  "flow": "F4",
+  "title": "Remove a requirement (VCU-LOG-05)",
+  "mode": "replay",
+  "after_change": {
+   "exceptions": [],
+   "banner": [
+    "Not analysed by an LLM. The register facts below come from the parser.",
+    "Removed VCU-LOG-05. The diff in tab 1 is updated; run the analysis to update the assessment.",
+    "Not analysed by an LLM: no recorded analysis exists for these inputs. Run the analysis with a configured model.",
+    "No LLM assessment for these inputs: the report will contain the changes and register facts only."
+   ],
+   "changes_shown": [
+    [
+     "VCU-DR-01",
+     "🟨 Modified"
+    ],
+    [
+     "VCU-LOG-05",
+     "🟥 Removed"
+    ]
+   ],
+   "statuses": {
+    "TV-001": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-002": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-003": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-004": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-005": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-006": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-007": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-008": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-009": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-010": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-011": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-012": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ]
+   },
+   "report_chars": 9802,
+   "report_contains_every_test": true,
+   "report_contains_every_status_label": true,
+   "approval_hits_in_report": []
+  },
+  "seconds": 0.4
+ },
+ {
+  "flow": "F5",
+  "title": "Change a trigger condition (DGN-04 adds 'and the vehicle is moving')",
+  "mode": "replay",
+  "after_change": {
+   "exceptions": [],
+   "banner": [
+    "Not analysed by an LLM. The register facts below come from the parser.",
+    "Edited VCU-DGN-04. The diff in tab 1 is updated; run the analysis to update the assessment.",
+    "Not analysed by an LLM: no recorded analysis exists for these inputs. Run the analysis with a configured model.",
+    "No LLM assessment for these inputs: the report will contain the changes and register facts only."
+   ],
+   "changes_shown": [
+    [
+     "VCU-DR-01",
+     "🟨 Modified"
+    ],
+    [
+     "VCU-DGN-04",
+     "🟨 Modified"
+    ]
+   ],
+   "statuses": {
+    "TV-001": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-002": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-003": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-004": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-005": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-006": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-007": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-008": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-009": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-010": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-011": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-012": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ]
+   },
+   "report_chars": 9863,
+   "report_contains_every_test": true,
+   "report_contains_every_status_label": true,
+   "approval_hits_in_report": []
+  },
+  "seconds": 0.4
+ },
+ {
+  "flow": "F6",
+  "title": "Upload a modified spec (BRK-03 loses a clause)",
+  "mode": "replay",
+  "after_change": {
+   "exceptions": [],
+   "banner": [
+    "Not analysed by an LLM. The register facts below come from the parser.",
+    "Loaded VCU_Spec_Revised_modified.docx as the revised file.",
+    "Not analysed by an LLM: no recorded analysis exists for these inputs. Run the analysis with a configured model.",
+    "No LLM assessment for these inputs: the report will contain the changes and register facts only."
+   ],
+   "changes_shown": [
+    [
+     "VCU-DR-01",
+     "🟨 Modified"
+    ],
+    [
+     "VCU-BRK-03",
+     "🟨 Modified"
+    ]
+   ],
+   "statuses": {
+    "TV-001": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-002": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-003": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-004": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-005": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-006": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-007": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-008": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-009": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-010": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-011": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-012": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ]
+   },
+   "report_chars": 9734,
+   "report_contains_every_test": true,
+   "report_contains_every_status_label": true,
+   "approval_hits_in_report": []
+  },
+  "seconds": 0.4
+ },
+ {
+  "flow": "F7",
+  "title": "Upload a modified register (TV-003 linked to DR-01)",
+  "mode": "replay",
+  "after_change": {
+   "exceptions": [],
+   "banner": [
+    "Not analysed by an LLM. The register facts below come from the parser.",
+    "Loaded VCU_Test_Register_modified.xlsx as the register file.",
+    "Not analysed by an LLM: no recorded analysis exists for these inputs. Run the analysis with a configured model.",
+    "No LLM assessment for these inputs: the report will contain the changes and register facts only."
+   ],
+   "changes_shown": [
+    [
+     "VCU-DR-01",
+     "🟨 Modified"
+    ]
+   ],
+   "statuses": {
+    "TV-001": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-002": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-003": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-004": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-005": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-006": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-007": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-008": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-009": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-010": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-011": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-012": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ]
+   },
+   "report_chars": 9455,
+   "report_contains_every_test": true,
+   "report_contains_every_status_label": true,
+   "approval_hits_in_report": []
+  },
+  "seconds": 0.2
+ },
+ {
+  "flow": "F0",
+  "title": "Provided files, nothing changed",
+  "mode": "replay",
+  "after_change": {
+   "exceptions": [],
+   "banner": [
+    "Replayed: real output of groq:qwen/qwen3.8-27b recorded at 2026-11-16T17:42:44+00:00 (evaluation scenario S1: DR-01 response time tightened 100 -> 80 ms (real revision B)). No model was called now."
+   ],
+   "changes_shown": [
+    [
+     "VCU-DR-01",
+     "🟨 Modified"
+    ]
+   ],
+   "statuses": {
+    "TV-001": [
+     "🔴 Directly affected",
+     "high",
+     "Re-run test, Update procedure"
+    ],
+    "TV-002": [
+     "🟠 Possibly affected",
+     "medium",
+     "Owner decision"
+    ],
+    "TV-003": [
+     "🟠 Possibly affected",
+     "medium",
+     "Re-run test, Update procedure, Fix requirement link *, Owner decision"
+    ],
+    "TV-004": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-005": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-006": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-007": [
+     "🔵 Needs human review",
+     "low",
+     "Fix requirement link *, Owner decision"
+    ],
+    "TV-008": [
+     "🟢 Not affected",
+     "high",
+     "Fix requirement link *"
+    ],
+    "TV-009": [
+     "🟢 Not affected",
+     "medium",
+     "None"
+    ],
+    "TV-010": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-011": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-012": [
+     "🟢 Not affected",
+     "high",
+     "Fix requirement link *"
+    ]
+   },
+   "report_chars": 17961,
+   "report_contains_every_test": true,
+   "report_contains_every_status_label": true,
+   "approval_hits_in_report": []
+  },
+  "seconds": 0.0
+ }
+]

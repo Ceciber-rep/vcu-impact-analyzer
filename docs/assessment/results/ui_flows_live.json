@@ -1,0 +1,1201 @@
+[
+ {
+  "flow": "F1",
+  "title": "Change a numeric limit (DR-01 80 -> 60 ms)",
+  "mode": "live",
+  "after_change": {
+   "exceptions": [],
+   "banner": [
+    "Not analysed by an LLM. The register facts below come from the parser.",
+    "Edited VCU-DR-01. The diff in tab 1 is updated; run the analysis to update the assessment.",
+    "Not analysed by an LLM: no recorded analysis exists for these inputs. Run the analysis with a configured model.",
+    "No LLM assessment for these inputs: the report will contain the changes and register facts only."
+   ],
+   "changes_shown": [
+    [
+     "VCU-DR-01",
+     "🟨 Modified"
+    ]
+   ],
+   "statuses": {
+    "TV-001": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-002": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-003": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-004": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-005": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-006": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-007": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-008": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-009": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-010": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-011": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-012": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ]
+   },
+   "report_chars": 9557,
+   "report_contains_every_test": true,
+   "report_contains_every_status_label": true,
+   "approval_hits_in_report": []
+  },
+  "after_analysis": {
+   "exceptions": [],
+   "banner": [
+    "Live LLM analysis by groq:qwen/qwen3.8-27b at 2026-11-18T11:44:13+00:00."
+   ],
+   "changes_shown": [
+    [
+     "VCU-DR-01",
+     "🟨 Modified"
+    ]
+   ],
+   "statuses": {
+    "TV-001": [
+     "🔴 Directly affected",
+     "high",
+     "Re-run test, Update procedure"
+    ],
+    "TV-002": [
+     "🟠 Possibly affected",
+     "medium",
+     "Re-run test, Update procedure"
+    ],
+    "TV-003": [
+     "🔴 Directly affected",
+     "medium",
+     "Re-run test, Update procedure, Fix requirement link *"
+    ],
+    "TV-004": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-005": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-006": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-007": [
+     "🔵 Needs human review",
+     "low",
+     "Fix requirement link *, Owner decision"
+    ],
+    "TV-008": [
+     "🟢 Not affected",
+     "high",
+     "Fix requirement link *"
+    ],
+    "TV-009": [
+     "🟢 Not affected",
+     "medium",
+     "None"
+    ],
+    "TV-010": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-011": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-012": [
+     "🟢 Not affected",
+     "high",
+     "Fix requirement link *"
+    ]
+   },
+   "report_chars": 18315,
+   "report_contains_every_test": true,
+   "report_contains_every_status_label": true,
+   "approval_hits_in_report": []
+  },
+  "seconds": 5.7
+ },
+ {
+  "flow": "F2",
+  "title": "Reword a requirement, same meaning (DR-02)",
+  "mode": "live",
+  "after_change": {
+   "exceptions": [],
+   "banner": [
+    "Not analysed by an LLM. The register facts below come from the parser.",
+    "Edited VCU-DR-02. The diff in tab 1 is updated; run the analysis to update the assessment.",
+    "Not analysed by an LLM: no recorded analysis exists for these inputs. Run the analysis with a configured model.",
+    "No LLM assessment for these inputs: the report will contain the changes and register facts only."
+   ],
+   "changes_shown": [
+    [
+     "VCU-DR-01",
+     "🟨 Modified"
+    ],
+    [
+     "VCU-DR-02",
+     "🟨 Modified"
+    ]
+   ],
+   "statuses": {
+    "TV-001": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-002": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-003": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-004": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-005": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-006": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-007": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-008": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-009": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-010": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-011": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-012": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ]
+   },
+   "report_chars": 9876,
+   "report_contains_every_test": true,
+   "report_contains_every_status_label": true,
+   "approval_hits_in_report": []
+  },
+  "after_analysis": {
+   "exceptions": [],
+   "banner": [
+    "Live LLM analysis by gemini:gemini-3.5-flash at 2026-11-18T11:45:19+00:00.",
+    "groq:qwen/qwen3.8-27b failed: RateLimitError: Error code: 429 - Request too large for model `qwen/qwen3.8-27b` in organization `org_REDACTED` service tier `on_demand` on output tokens per minute (OTPM): Limit 1000, Requested 183"
+   ],
+   "changes_shown": [
+    [
+     "VCU-DR-01",
+     "🟨 Modified"
+    ],
+    [
+     "VCU-DR-02",
+     "🟨 Modified"
+    ]
+   ],
+   "statuses": {
+    "TV-001": [
+     "🔴 Directly affected",
+     "high",
+     "Re-run test, Update procedure"
+    ],
+    "TV-002": [
+     "🔴 Directly affected",
+     "medium",
+     "Re-run test, Update procedure"
+    ],
+    "TV-003": [
+     "🔴 Directly affected",
+     "high",
+     "Re-run test, Update procedure, Fix requirement link *"
+    ],
+    "TV-004": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-005": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-006": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-007": [
+     "🔵 Needs human review",
+     "low",
+     "Fix requirement link *, Owner decision"
+    ],
+    "TV-008": [
+     "🟢 Not affected",
+     "high",
+     "Fix requirement link *"
+    ],
+    "TV-009": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-010": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-011": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-012": [
+     "🟢 Not affected",
+     "high",
+     "Fix requirement link *"
+    ]
+   },
+   "report_chars": 17793,
+   "report_contains_every_test": true,
+   "report_contains_every_status_label": true,
+   "approval_hits_in_report": []
+  },
+  "seconds": 65.9
+ },
+ {
+  "flow": "F3",
+  "title": "Add a requirement (VCU-THM-07)",
+  "mode": "live",
+  "after_change": {
+   "exceptions": [],
+   "banner": [
+    "Not analysed by an LLM. The register facts below come from the parser.",
+    "Added VCU-THM-07 (Thermal torque derating) after VCU-MOD-06. The diff in tab 1 is updated; run the analysis to update the assessment.",
+    "Not analysed by an LLM: no recorded analysis exists for these inputs. Run the analysis with a configured model.",
+    "No LLM assessment for these inputs: the report will contain the changes and register facts only."
+   ],
+   "changes_shown": [
+    [
+     "VCU-DR-01",
+     "🟨 Modified"
+    ],
+    [
+     "VCU-THM-07",
+     "🟩 Added"
+    ]
+   ],
+   "statuses": {
+    "TV-001": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-002": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-003": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-004": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-005": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-006": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-007": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-008": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-009": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-010": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-011": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-012": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ]
+   },
+   "report_chars": 9858,
+   "report_contains_every_test": true,
+   "report_contains_every_status_label": true,
+   "approval_hits_in_report": []
+  },
+  "after_analysis": {
+   "exceptions": [],
+   "banner": [
+    "Live LLM analysis by groq:qwen/qwen3.8-27b at 2026-11-18T11:45:31+00:00."
+   ],
+   "changes_shown": [
+    [
+     "VCU-DR-01",
+     "🟨 Modified"
+    ],
+    [
+     "VCU-THM-07",
+     "🟩 Added"
+    ]
+   ],
+   "statuses": {
+    "TV-001": [
+     "🔴 Directly affected",
+     "high",
+     "Re-run test, Update procedure"
+    ],
+    "TV-002": [
+     "🟠 Possibly affected",
+     "medium",
+     "Owner decision"
+    ],
+    "TV-003": [
+     "🔴 Directly affected",
+     "medium",
+     "Re-run test, Update procedure, Fix requirement link *"
+    ],
+    "TV-004": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-005": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-006": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-007": [
+     "🔵 Needs human review",
+     "low",
+     "Fix requirement link *, Owner decision"
+    ],
+    "TV-008": [
+     "🟢 Not affected",
+     "high",
+     "Fix requirement link *"
+    ],
+    "TV-009": [
+     "🟢 Not affected",
+     "medium",
+     "None"
+    ],
+    "TV-010": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-011": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-012": [
+     "🟢 Not affected",
+     "high",
+     "Fix requirement link *"
+    ]
+   },
+   "report_chars": 18499,
+   "report_contains_every_test": true,
+   "report_contains_every_status_label": true,
+   "approval_hits_in_report": []
+  },
+  "seconds": 11.5
+ },
+ {
+  "flow": "F4",
+  "title": "Remove a requirement (VCU-LOG-05)",
+  "mode": "live",
+  "after_change": {
+   "exceptions": [],
+   "banner": [
+    "Not analysed by an LLM. The register facts below come from the parser.",
+    "Removed VCU-LOG-05. The diff in tab 1 is updated; run the analysis to update the assessment.",
+    "Not analysed by an LLM: no recorded analysis exists for these inputs. Run the analysis with a configured model.",
+    "No LLM assessment for these inputs: the report will contain the changes and register facts only."
+   ],
+   "changes_shown": [
+    [
+     "VCU-DR-01",
+     "🟨 Modified"
+    ],
+    [
+     "VCU-LOG-05",
+     "🟥 Removed"
+    ]
+   ],
+   "statuses": {
+    "TV-001": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-002": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-003": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-004": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-005": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-006": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-007": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-008": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-009": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-010": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-011": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-012": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ]
+   },
+   "report_chars": 9802,
+   "report_contains_every_test": true,
+   "report_contains_every_status_label": true,
+   "approval_hits_in_report": []
+  },
+  "after_analysis": {
+   "exceptions": [],
+   "banner": [
+    "Live LLM analysis by gemini:gemini-3.5-flash at 2026-11-18T11:46:22+00:00.",
+    "groq:qwen/qwen3.8-27b failed: RateLimitError: Error code: 429 - Request too large for model `qwen/qwen3.8-27b` in organization `org_REDACTED` service tier `on_demand` on output tokens per minute (OTPM): Limit 1000, Requested 181"
+   ],
+   "changes_shown": [
+    [
+     "VCU-DR-01",
+     "🟨 Modified"
+    ],
+    [
+     "VCU-LOG-05",
+     "🟥 Removed"
+    ]
+   ],
+   "statuses": {
+    "TV-001": [
+     "🔴 Directly affected",
+     "high",
+     "Re-run test, Update procedure"
+    ],
+    "TV-002": [
+     "🟠 Possibly affected",
+     "medium",
+     "Re-run test, Update procedure"
+    ],
+    "TV-003": [
+     "🔴 Directly affected",
+     "high",
+     "Re-run test, Update procedure, Fix requirement link *"
+    ],
+    "TV-004": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-005": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-006": [
+     "🔴 Directly affected",
+     "high",
+     "Fix requirement link *, Owner decision"
+    ],
+    "TV-007": [
+     "🔵 Needs human review",
+     "medium",
+     "Fix requirement link *, Owner decision"
+    ],
+    "TV-008": [
+     "🟢 Not affected",
+     "high",
+     "Fix requirement link *"
+    ],
+    "TV-009": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-010": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-011": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-012": [
+     "🟢 Not affected",
+     "high",
+     "Fix requirement link *"
+    ]
+   },
+   "report_chars": 18219,
+   "report_contains_every_test": true,
+   "report_contains_every_status_label": true,
+   "approval_hits_in_report": []
+  },
+  "seconds": 50.7
+ },
+ {
+  "flow": "F5",
+  "title": "Change a trigger condition (DGN-04 adds 'and the vehicle is moving')",
+  "mode": "live",
+  "after_change": {
+   "exceptions": [],
+   "banner": [
+    "Not analysed by an LLM. The register facts below come from the parser.",
+    "Edited VCU-DGN-04. The diff in tab 1 is updated; run the analysis to update the assessment.",
+    "Not analysed by an LLM: no recorded analysis exists for these inputs. Run the analysis with a configured model.",
+    "No LLM assessment for these inputs: the report will contain the changes and register facts only."
+   ],
+   "changes_shown": [
+    [
+     "VCU-DR-01",
+     "🟨 Modified"
+    ],
+    [
+     "VCU-DGN-04",
+     "🟨 Modified"
+    ]
+   ],
+   "statuses": {
+    "TV-001": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-002": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-003": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-004": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-005": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-006": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-007": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-008": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-009": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-010": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-011": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-012": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ]
+   },
+   "report_chars": 9863,
+   "report_contains_every_test": true,
+   "report_contains_every_status_label": true,
+   "approval_hits_in_report": []
+  },
+  "after_analysis": {
+   "exceptions": [],
+   "banner": [
+    "Live LLM analysis by groq:qwen/qwen3.8-27b at 2026-11-18T11:46:28+00:00."
+   ],
+   "changes_shown": [
+    [
+     "VCU-DR-01",
+     "🟨 Modified"
+    ],
+    [
+     "VCU-DGN-04",
+     "🟨 Modified"
+    ]
+   ],
+   "statuses": {
+    "TV-001": [
+     "🔴 Directly affected",
+     "high",
+     "Re-run test, Update procedure"
+    ],
+    "TV-002": [
+     "🟠 Possibly affected",
+     "medium",
+     "Owner decision"
+    ],
+    "TV-003": [
+     "🔵 Needs human review",
+     "medium",
+     "Re-run test, Update procedure, Fix requirement link *, Owner decision"
+    ],
+    "TV-004": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-005": [
+     "🔴 Directly affected",
+     "high",
+     "Re-run test, Update procedure"
+    ],
+    "TV-006": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-007": [
+     "🔵 Needs human review",
+     "low",
+     "Fix requirement link *, Owner decision"
+    ],
+    "TV-008": [
+     "🟢 Not affected",
+     "high",
+     "Fix requirement link *"
+    ],
+    "TV-009": [
+     "🟠 Possibly affected",
+     "medium",
+     "Owner decision"
+    ],
+    "TV-010": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-011": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-012": [
+     "🟢 Not affected",
+     "high",
+     "Fix requirement link *"
+    ]
+   },
+   "report_chars": 19266,
+   "report_contains_every_test": true,
+   "report_contains_every_status_label": true,
+   "approval_hits_in_report": []
+  },
+  "seconds": 5.8
+ },
+ {
+  "flow": "F6",
+  "title": "Upload a modified spec (BRK-03 loses a clause)",
+  "mode": "live",
+  "after_change": {
+   "exceptions": [],
+   "banner": [
+    "Not analysed by an LLM. The register facts below come from the parser.",
+    "Loaded VCU_Spec_Revised_modified.docx as the revised file.",
+    "Not analysed by an LLM: no recorded analysis exists for these inputs. Run the analysis with a configured model.",
+    "No LLM assessment for these inputs: the report will contain the changes and register facts only."
+   ],
+   "changes_shown": [
+    [
+     "VCU-DR-01",
+     "🟨 Modified"
+    ],
+    [
+     "VCU-BRK-03",
+     "🟨 Modified"
+    ]
+   ],
+   "statuses": {
+    "TV-001": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-002": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-003": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-004": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-005": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-006": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-007": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-008": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-009": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-010": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-011": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-012": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ]
+   },
+   "report_chars": 9734,
+   "report_contains_every_test": true,
+   "report_contains_every_status_label": true,
+   "approval_hits_in_report": []
+  },
+  "after_analysis": {
+   "exceptions": [],
+   "banner": [
+    "Live LLM analysis by gemini:gemini-3.5-flash at 2026-11-18T11:47:12+00:00.",
+    "groq:qwen/qwen3.8-27b failed: RateLimitError: Error code: 429 - Request too large for model `qwen/qwen3.8-27b` in organization `org_REDACTED` service tier `on_demand` on output tokens per minute (OTPM): Limit 1000, Requested 183"
+   ],
+   "changes_shown": [
+    [
+     "VCU-DR-01",
+     "🟨 Modified"
+    ],
+    [
+     "VCU-BRK-03",
+     "🟨 Modified"
+    ]
+   ],
+   "statuses": {
+    "TV-001": [
+     "🔴 Directly affected",
+     "high",
+     "Re-run test, Update procedure"
+    ],
+    "TV-002": [
+     "🔴 Directly affected",
+     "high",
+     "Re-run test, Update procedure"
+    ],
+    "TV-003": [
+     "🔴 Directly affected",
+     "medium",
+     "Re-run test, Update procedure, Fix requirement link *, Owner decision"
+    ],
+    "TV-004": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-005": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-006": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-007": [
+     "🔵 Needs human review",
+     "medium",
+     "Re-run test, Update procedure, Fix requirement link *, Owner decision"
+    ],
+    "TV-008": [
+     "🟢 Not affected",
+     "high",
+     "Fix requirement link *"
+    ],
+    "TV-009": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-010": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-011": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-012": [
+     "🟢 Not affected",
+     "high",
+     "Fix requirement link *"
+    ]
+   },
+   "report_chars": 18111,
+   "report_contains_every_test": true,
+   "report_contains_every_status_label": true,
+   "approval_hits_in_report": []
+  },
+  "seconds": 43.6
+ },
+ {
+  "flow": "F7",
+  "title": "Upload a modified register (TV-003 linked to DR-01)",
+  "mode": "live",
+  "after_change": {
+   "exceptions": [],
+   "banner": [
+    "Not analysed by an LLM. The register facts below come from the parser.",
+    "Loaded VCU_Test_Register_modified.xlsx as the register file.",
+    "Not analysed by an LLM: no recorded analysis exists for these inputs. Run the analysis with a configured model.",
+    "No LLM assessment for these inputs: the report will contain the changes and register facts only."
+   ],
+   "changes_shown": [
+    [
+     "VCU-DR-01",
+     "🟨 Modified"
+    ]
+   ],
+   "statuses": {
+    "TV-001": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-002": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-003": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-004": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-005": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-006": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-007": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-008": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-009": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-010": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-011": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ],
+    "TV-012": [
+     "⚪ Not analysed",
+     "",
+     ""
+    ]
+   },
+   "report_chars": 9455,
+   "report_contains_every_test": true,
+   "report_contains_every_status_label": true,
+   "approval_hits_in_report": []
+  },
+  "after_analysis": {
+   "exceptions": [],
+   "banner": [
+    "Live LLM analysis by gemini:gemini-3.5-flash at 2026-11-18T11:48:07+00:00.",
+    "groq:qwen/qwen3.8-27b failed: RateLimitError: Error code: 429 - Request too large for model `qwen/qwen3.8-27b` in organization `org_REDACTED` service tier `on_demand` on output tokens per minute (OTPM): Limit 1000, Requested 202"
+   ],
+   "changes_shown": [
+    [
+     "VCU-DR-01",
+     "🟨 Modified"
+    ]
+   ],
+   "statuses": {
+    "TV-001": [
+     "🔴 Directly affected",
+     "high",
+     "Re-run test, Update procedure"
+    ],
+    "TV-002": [
+     "🔴 Directly affected",
+     "high",
+     "Re-run test"
+    ],
+    "TV-003": [
+     "🔴 Directly affected",
+     "high",
+     "Re-run test, Update procedure"
+    ],
+    "TV-004": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-005": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-006": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-007": [
+     "🔵 Needs human review",
+     "medium",
+     "Re-run test, Fix requirement link *, Owner decision"
+    ],
+    "TV-008": [
+     "🟢 Not affected",
+     "high",
+     "Fix requirement link *"
+    ],
+    "TV-009": [
+     "🟠 Possibly affected",
+     "medium",
+     "Owner decision"
+    ],
+    "TV-010": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-011": [
+     "🟢 Not affected",
+     "high",
+     "None"
+    ],
+    "TV-012": [
+     "🟢 Not affected",
+     "high",
+     "Fix requirement link *"
+    ]
+   },
+   "report_chars": 18209,
+   "report_contains_every_test": true,
+   "report_contains_every_status_label": true,
+   "approval_hits_in_report": []
+  },
+  "seconds": 54.3
+ }
+]
